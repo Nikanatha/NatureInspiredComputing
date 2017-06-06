@@ -1,0 +1,22 @@
+Aufgaben zum nächsten Mal:
+- Abfragethread Aufbau / Struktur überdenken
+- Github + Dokumentation
+- Wie können wir die Funktion Nähe/sensorausschlag mit RBF's darstellen am besten mit Code
+- Klassenentwurf! Nach welcher(n) Funktion(en) wollen wir optimieren
+
+
+Verschaltung 		-> unsymetrisches Dreieck (0-6 Sensoren)
+			-> ist undefiniert eine Funktion der Kurvenapproximation
+
+Sensoren 		-> Jeder Sensor hat entsprechend seiner Position einen unterschiedlichen Einfluss auf Winkel und Geschwindigkeit
+			-> (2/3 haben den höchsten "winkelfaktor")
+
+Multithreading 		-> Sensordaten an Aktoren mit jeweils eigenem Thread (Impliziert Linux nutzen?)
+
+Kurvenapproximation 	-> mit RBF's Motorleistung=f(Sensorwert,Kennlinie) Daher brauchen wir eine möglichst genaue approximation
+
+Klassen 		-> Der Controller liest "werte" aus dem Value system aus und handelt danach! Das Value system überwacht udn bewertet die "Leistung" des controllers
+
+Optimierungsziel 	-> Möglichst schnell möglichst wenig anstoßen
+			-> größtmögliche Fläche abfahren
+
