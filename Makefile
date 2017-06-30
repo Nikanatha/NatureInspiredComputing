@@ -1,4 +1,4 @@
-Khexplorer: Khexplorer.o KheperaInterface.o KheperaUtility.o Controller.o ValueSystem.o Operator.o
+Khexplorer: Khexplorer.o KheperaInterface.o KheperaUtility.o Controller.o ValueSystem.o Operator.o 
 	g++ -o $@ $+ 
 	
 %.o: %.cpp 
