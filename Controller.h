@@ -1,9 +1,8 @@
 #ifndef __Controller_H__
 #define __Controller_H__
-#else
 
 #include <thread>
-#include "KheparaUtility.h"
+#include "KheperaUtility.h"
 
 struct SNode { Int8 center; double lWeight; double rWeight; };
 

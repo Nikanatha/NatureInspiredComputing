@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __ValueSystem_H__
+#define __ValueSystem_H__
 
 #include <thread>
 #include "KheperaUtility.h"
@@ -22,3 +23,4 @@ private:
 	bool m_bStopFlag;
 };
 
+#endif
