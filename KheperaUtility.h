@@ -1,6 +1,5 @@
 #ifndef __KheperaUtility_H__
 #define __KheperaUtility_H__
-#else
 
 #include <random>
 

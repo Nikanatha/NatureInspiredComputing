@@ -1,6 +1,5 @@
 #ifndef __Operator_H__
 #define __Operator_H__
-#else
 
 #include <thread>
 #include "KheperaUtility.h"
