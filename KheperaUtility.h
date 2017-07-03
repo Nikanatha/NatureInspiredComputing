@@ -2,6 +2,7 @@
 #define __KheperaUtility_H__
 
 #include <random>
+#include <mutex>
 
 #include "KheperaInterface.h"
 
@@ -18,8 +19,18 @@ struct SIOSet
 	Int8 sensors;
 	SSpeed speed;
 	SIOSet(Int8 sens = Int8(), SSpeed spd = SSpeed()) { sensors = sens; speed = spd; }
+	SIOSet(const SIOSet &other) 
+	{
+		for (int i = 0; i < 8; i++)
+		{
+			this->sensors.data[i] = other.sensors.data[i];
+		}
+		this->speed.left = other.speed.left;
+		this->speed.right = other.speed.right;
+	}
 };
 
+typedef std::lock_guard<std::mutex> ScopedMutexLocker;
 
 // value defines
 #define MIN_SENSOR_VAL -1024
@@ -54,8 +65,9 @@ private:
 	SIOSet m_LastResult;
 	SIOSet m_LastCorrectedResult;
 
-	bool m_bReading;
-	bool m_bWriting;
+	std::mutex m_KheperaMutex;
+	std::mutex m_ResultMutex;
+	std::mutex m_CorrectedResultMutex;
 };
 
 #endif
