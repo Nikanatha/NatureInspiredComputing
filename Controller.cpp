@@ -203,7 +203,8 @@ SIOSet CController::Evaluate(Int8 sensors)
 	out.sensors = sensors;
 	double totalActivation = 0;
 
-	for each(SNode node in m_NetworkNodes)
+    for (auto node : m_NetworkNodes)
+	//for each(SNode node in m_NetworkNodes) //für jeden enthaltenen SNode in m_Networknodes do
 	{
 		double act = RbfBase(sensors, node.center);
 		out.speed.left += act * node.lWeight;
