@@ -1,26 +1,18 @@
 #ifndef __ValueSystem_H__
 #define __ValueSystem_H__
 
-#include <thread>
-#include "KheperaUtility.h"
+#include "ThreadableBase.h"
 
-class CValueSystem
+class CValueSystem : public CThreadableBase
 {
 public:
 	CValueSystem(CKheperaUtility* pUtil);
-	~CValueSystem();
 
-	void Start();
-	void Stop();
+protected:
+	virtual void DoCycle();
 
 private:
-	void Run();
 	SIOSet Correct(SIOSet calculated);
-
-private:
-	CKheperaUtility* m_pUtil;
-	std::thread* m_pThread;
-	bool m_bStopFlag;
 };
 
 #endif

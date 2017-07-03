@@ -1,8 +1,7 @@
 #ifndef __Controller_H__
 #define __Controller_H__
 
-#include <thread>
-#include "KheperaUtility.h"
+#include "ThreadableBase.h"
 
 struct SNode { Int8 center; double lWeight; double rWeight; };
 
@@ -10,17 +9,15 @@ struct SNode { Int8 center; double lWeight; double rWeight; };
 #define NODE_COUNT 100
 #define TRAINING_CYCLES 10000
 
-class CController
+class CController : public CThreadableBase
 {
 public:
 	CController(CKheperaUtility* pUtil);
-	~CController();
 
-	void Start();
-	void Stop();
+protected:
+	virtual void DoCycle();
 
 private:
-	void Run();
 	SIOSet Evaluate(Int8 sensors);
 	void Adapt(SIOSet ideal);
 
@@ -30,11 +27,6 @@ private:
 	void Train();
 
 private:
-	CKheperaUtility* m_pUtil;
-	std::thread* m_pThread;
-	bool m_bStopFlag;
-
-	// rbf network
 	std::vector<SNode> m_NetworkNodes;
 	double m_Sigma;
 	double m_LearnWeight;
