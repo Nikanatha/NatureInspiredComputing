@@ -1,26 +1,18 @@
 #ifndef __Operator_H__
 #define __Operator_H__
 
-#include <thread>
-#include "KheperaUtility.h"
+#include "ThreadableBase.h"
 
-class COperator
+class COperator : public CThreadableBase
 {
 public:
 	COperator(CKheperaUtility* pUtil);
-	~COperator();
 
-	void Start();
-	void Stop();
+protected:
+	virtual void DoCycle();
 
 private:
-	void Run();
 	Int2 NoiseRound(SSpeed target);
-
-private:
-	CKheperaUtility* m_pUtil;
-	std::thread* m_pThread;
-	bool m_bStopFlag;
 };
 
 #endif

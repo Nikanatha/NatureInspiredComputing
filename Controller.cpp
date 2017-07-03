@@ -3,10 +3,8 @@
 
 #define DISTANCE_LIMIT (0.9 * MIN_SENSOR_VAL)
 
-CController::CController(CKheperaUtility * pUtil)
+CController::CController(CKheperaUtility * pUtil) : CThreadableBase(pUtil)
 {
-	m_pUtil = pUtil;
-	m_bStopFlag = false;
 	m_Sigma = 1;
 	m_LearnWeight = 0.3;
 
@@ -31,21 +29,16 @@ CController::CController(CKheperaUtility * pUtil)
 	Train();
 }
 
-CController::~CController()
+void CController::DoCycle()
 {
-	Stop();
-}
+	// evaluate current sensor data
+	Int8 sensorData = m_pUtil->GetSensorData();
+	SIOSet result = Evaluate(sensorData);
+	m_pUtil->SetNetworkResult(result);
 
-void CController::Start()
-{
-	m_bStopFlag = false;
-	m_pThread = new std::thread(&CController::Run, this);
-	m_pThread->detach();
-}
-
-void CController::Stop()
-{
-	m_bStopFlag = true;
+	// get value system's correction
+	SIOSet ideal = m_pUtil->GetLastCorrectedResult();
+	Adapt(ideal);
 }
 
 void CController::Adapt(SIOSet ideal)
@@ -180,20 +173,9 @@ void CController::CreateTrainingData()
 
 void CController::Train()
 {
-}
-
-void CController::Run()
-{
-	while (!m_bStopFlag)
+	for (int i = 0; i < 10 * m_TrainingData.size(); i++)
 	{
-		// evaluate current sensor data
-		Int8 sensorData = m_pUtil->GetSensorData();
-		SIOSet result = Evaluate(sensorData);
-		m_pUtil->SetNetworkResult(result);
-
-		// get value system's correction
-		SIOSet ideal = m_pUtil->GetLastCorrectedResult();
-		Adapt(ideal);
+		Adapt(m_TrainingData[i%m_TrainingData.size()]);
 	}
 }
 
@@ -203,9 +185,9 @@ SIOSet CController::Evaluate(Int8 sensors)
 	out.sensors = sensors;
 	double totalActivation = 0;
 
-    for (auto node : m_NetworkNodes)
-	//for each(SNode node in m_NetworkNodes) //für jeden enthaltenen SNode in m_Networknodes do
+	for (int n = 0; n < m_NetworkNodes.size(); n++)
 	{
+		SNode node = m_NetworkNodes[n];
 		double act = RbfBase(sensors, node.center);
 		out.speed.left += act * node.lWeight;
 		out.speed.right += act * node.rWeight;
