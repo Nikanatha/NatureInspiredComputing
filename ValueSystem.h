@@ -13,6 +13,8 @@ protected:
 
 private:
 	SIOSet Correct(SIOSet calculated);
+	//double SpeedLimit(Int8 sensors);
+	int SafetyDistance(double straightSpeed);
 };
 
 #endif
