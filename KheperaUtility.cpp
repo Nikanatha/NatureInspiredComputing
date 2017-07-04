@@ -3,12 +3,16 @@
 CKheperaUtility::CKheperaUtility()
 {
 	m_pKhep = new KheperaInterface("/dev/ttyUSB0");
+	m_pKhep->setLEDState(0, LEDState::On);
+
 	m_LastResult = SIOSet(Int8(), SSpeed(MAX_SPEED, MAX_SPEED));
 	m_LastCorrectedResult = SIOSet(Int8(), SSpeed(MAX_SPEED, MAX_SPEED));
 }
 
 CKheperaUtility::~CKheperaUtility()
 {
+	m_pKhep->setLEDState(0, LEDState::Off);
+	m_pKhep->setSpeed(0, 0);
 	delete m_pKhep;
 }
 
