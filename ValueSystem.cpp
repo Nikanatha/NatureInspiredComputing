@@ -17,4 +17,45 @@ SIOSet CValueSystem::Correct(SIOSet calculated)
 {
 	// TODO: replace current dummy function.
 	return calculated;
+
+	// evaluate speeds
+	double straightSpeed = (calculated.speed.left + calculated.speed.right) / 2.0;
+	double rightTurnSpeed = (calculated.speed.left - calculated.speed.right);
+
+	// evaluate sensor data
+	double leftSum = calculated.sensors.data[0] + calculated.sensors.data[1] + calculated.sensors.data[2];
+	double rightSum = calculated.sensors.data[3] + calculated.sensors.data[4] + calculated.sensors.data[5];
+	double frontSum = calculated.sensors.data[2] + calculated.sensors.data[3];
+
+	if (frontSum > CLOSE_SENSOR_VAL / 2) // impending frontal collision
+	{
+		straightSpeed = fmin(straightSpeed, MAX_SPEED / 2);
+	}
+	else	// free road
+	{
+		straightSpeed = abs(straightSpeed);
+
+		// gradually speed up
+		if (straightSpeed < MAX_SPEED) straightSpeed *= 1.2;
+
+	}
+
+	if (leftSum > rightSum) // obstacle is to the left, turn right
+	{
+		rightTurnSpeed = abs(rightTurnSpeed);
+	}
+	else // obstacle is to the right, turn left
+	{
+		rightTurnSpeed = -abs(rightTurnSpeed);
+	}
+
+
+	// assemble resulting speed
+	SIOSet correction;
+
+	correction.sensors = calculated.sensors;
+	correction.speed.left = straightSpeed - rightTurnSpeed / 2;
+	correction.speed.right = straightSpeed + rightTurnSpeed / 2;
+
+	return correction;
 }
