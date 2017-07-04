@@ -19,7 +19,18 @@ CKheperaUtility::~CKheperaUtility()
 Int8 CKheperaUtility::GetSensorData()
 {
 	ScopedMutexLocker lock(m_KheperaMutex);
-	Int8 data = m_pKhep->getProximitySensors();
+	Int8 data;
+
+	try
+	{
+		data = m_pKhep->getProximitySensors();
+	}
+	catch (...)
+	{
+		printf("Error reading sensor data!");
+		return GetLastNetworkResult().sensors;
+	}
+
 	return data;
 }
 
