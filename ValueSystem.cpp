@@ -21,14 +21,16 @@ SIOSet CValueSystem::Correct(SIOSet calculated)
 	double straightSpeed = (calculated.speed.left + calculated.speed.right) / 2.0;
 	double rightTurnSpeed = (calculated.speed.left - calculated.speed.right);
 
+	int limit = SafetyDistance(straightSpeed);
+
 	// evaluate sensor data
 	double leftSum = calculated.sensors.data[0] + 2*calculated.sensors.data[1] + 3*calculated.sensors.data[2];
 	double rightSum = calculated.sensors.data[3] + 2*calculated.sensors.data[4] + 3*calculated.sensors.data[5];
-	double frontSum = calculated.sensors.data[2] + calculated.sensors.data[3];
+	double frontMax = fmax(calculated.sensors.data[2], calculated.sensors.data[3]);
 
-	if (frontSum > DISTANCE_LIMIT) // impending frontal collision
+	if (frontMax > limit) // impending frontal collision
 	{
-		straightSpeed = fmin(straightSpeed, 0);
+		straightSpeed *= 0.5;
 	}
 	else	// free road
 	{
@@ -37,10 +39,6 @@ SIOSet CValueSystem::Correct(SIOSet calculated)
 		// gradually speed up
 		if (straightSpeed < MAX_SPEED) straightSpeed *= 1.5;
 
-	}
-	if(frontSum < DISTANCE_LIMIT) // freeeeeee
-	{
-		straightSpeed = fmax(straightSpeed, MAX_SPEED/2);
 	}
 
 	if (leftSum < rightSum) // obstacle is to the left, turn right
@@ -63,4 +61,9 @@ SIOSet CValueSystem::Correct(SIOSet calculated)
 	correction.speed.right = straightSpeed + rightTurnSpeed / 2;
 
 	return correction;
+}
+
+int CValueSystem::SafetyDistance(double straightSpeed)
+{
+	return CLOSE_SENSOR_VAL*exp(-2*straightSpeed/(double)MAX_SPEED);
 }
