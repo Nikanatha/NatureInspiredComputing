@@ -37,7 +37,14 @@ Int8 CKheperaUtility::GetSensorData()
 void CKheperaUtility::SetSpeed(Int2 newSpeed)
 {
 	ScopedMutexLocker lock(m_KheperaMutex);
-	m_pKhep->setSpeed(newSpeed.data[0], newSpeed.data[1]);
+	try
+	{
+		m_pKhep->setSpeed(newSpeed.data[0], newSpeed.data[1]);
+	}
+	catch (...)
+	{
+		printf("Error setting speed!");
+	}	
 }
 
 void CKheperaUtility::SetNetworkResult(SIOSet results)
