@@ -1,5 +1,7 @@
 #include "ValueSystem.h"
 
+#define DISTANCE_LIMIT (0.3 * CLOSE_SENSOR_VAL)
+
 CValueSystem::CValueSystem(CKheperaUtility * pUtil) : CThreadableBase(pUtil)
 {
 
@@ -27,26 +29,28 @@ SIOSet CValueSystem::Correct(SIOSet calculated)
 	double rightSum = calculated.sensors.data[3] + calculated.sensors.data[4] + calculated.sensors.data[5];
 	double frontSum = calculated.sensors.data[2] + calculated.sensors.data[3];
 
-	if (frontSum > CLOSE_SENSOR_VAL / 2) // impending frontal collision
+	if (frontSum > DISTANCE_LIMIT) // impending frontal collision
 	{
-		straightSpeed = fmin(straightSpeed, MAX_SPEED / 2);
+		straightSpeed = fmin(straightSpeed, MAX_SPEED*0.8);
 	}
 	else	// free road
 	{
 		straightSpeed = abs(straightSpeed);
 
 		// gradually speed up
-		if (straightSpeed < MAX_SPEED) straightSpeed *= 1.2;
+		if (straightSpeed < MAX_SPEED) straightSpeed *= 2;
 
 	}
 
 	if (leftSum > rightSum) // obstacle is to the left, turn right
 	{
 		rightTurnSpeed = abs(rightTurnSpeed);
+		rightTurnSpeed = fmax(rightTurnSpeed, 2 * (double)MAX_SPEED*(leftSum / (3 * SENSOR_VAL_RANGE)));
 	}
 	else // obstacle is to the right, turn left
 	{
 		rightTurnSpeed = -abs(rightTurnSpeed);
+		rightTurnSpeed = fmin(rightTurnSpeed, -2 * (double)MAX_SPEED*(rightSum / (3 * SENSOR_VAL_RANGE)));
 	}
 
 
