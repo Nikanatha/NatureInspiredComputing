@@ -17,9 +17,6 @@ void CValueSystem::DoCycle()
 
 SIOSet CValueSystem::Correct(SIOSet calculated)
 {
-	// TODO: replace current dummy function.
-	return calculated;
-
 	// evaluate speeds
 	double straightSpeed = (calculated.speed.left + calculated.speed.right) / 2.0;
 	double rightTurnSpeed = (calculated.speed.left - calculated.speed.right);
