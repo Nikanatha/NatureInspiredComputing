@@ -65,5 +65,6 @@ SIOSet CValueSystem::Correct(SIOSet calculated)
 
 int CValueSystem::SafetyDistance(double straightSpeed)
 {
-	return CLOSE_SENSOR_VAL*exp(-2*straightSpeed/(double)MAX_SPEED);
+	return straightSpeed*50;
+	return 0.5*CLOSE_SENSOR_VAL*exp((straightSpeed-MAX_SPEED));
 }
