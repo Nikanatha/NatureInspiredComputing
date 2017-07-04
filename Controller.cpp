@@ -1,7 +1,7 @@
 #include <math.h>
 #include "Controller.h"
 
-#define DISTANCE_LIMIT (0.9 * MIN_SENSOR_VAL)
+#define DISTANCE_LIMIT (0.9 * CLOSE_SENSOR_VAL)
 
 CController::CController(CKheperaUtility * pUtil) : CThreadableBase(pUtil)
 {
@@ -14,7 +14,7 @@ CController::CController(CKheperaUtility * pUtil) : CThreadableBase(pUtil)
 		Int8 center;
 		for (int i = 0; i < INPUT_COUNT; i++)
 		{
-			center.data[i] = round(m_pUtil->GetUniformRandom(MAX_SENSOR_VAL, MIN_SENSOR_VAL));
+			center.data[i] = round(m_pUtil->GetUniformRandom(FAR_SENSOR_VAL, CLOSE_SENSOR_VAL));
 		}
 
 		SNode node;
@@ -71,33 +71,33 @@ void CController::CreateTrainingData()
 	Int8 sensors;
 
 	// free field
-	sensors.data[0] = MAX_SENSOR_VAL;
-	sensors.data[1] = MAX_SENSOR_VAL;
-	sensors.data[2] = MAX_SENSOR_VAL;
-	sensors.data[3] = MAX_SENSOR_VAL;
-	sensors.data[4] = MAX_SENSOR_VAL;
-	sensors.data[5] = MAX_SENSOR_VAL;
-	sensors.data[6] = MAX_SENSOR_VAL;
-	sensors.data[7] = MAX_SENSOR_VAL;
+	sensors.data[0] = FAR_SENSOR_VAL;
+	sensors.data[1] = FAR_SENSOR_VAL;
+	sensors.data[2] = FAR_SENSOR_VAL;
+	sensors.data[3] = FAR_SENSOR_VAL;
+	sensors.data[4] = FAR_SENSOR_VAL;
+	sensors.data[5] = FAR_SENSOR_VAL;
+	sensors.data[6] = FAR_SENSOR_VAL;
+	sensors.data[7] = FAR_SENSOR_VAL;
 	m_TrainingData.push_back(SIOSet(sensors, SSpeed(MAX_SPEED, MAX_SPEED)));
 
 	// corridor
 	sensors.data[0] = DISTANCE_LIMIT;
 	sensors.data[1] = 0.5*DISTANCE_LIMIT;
-	sensors.data[2] = MAX_SENSOR_VAL;
-	sensors.data[3] = MAX_SENSOR_VAL;
+	sensors.data[2] = FAR_SENSOR_VAL;
+	sensors.data[3] = FAR_SENSOR_VAL;
 	sensors.data[4] = 0.5*DISTANCE_LIMIT;
 	sensors.data[5] = DISTANCE_LIMIT;
-	sensors.data[6] = MAX_SENSOR_VAL;
-	sensors.data[7] = MAX_SENSOR_VAL;
+	sensors.data[6] = FAR_SENSOR_VAL;
+	sensors.data[7] = FAR_SENSOR_VAL;
 	m_TrainingData.push_back(SIOSet(sensors, SSpeed(MAX_SPEED, MAX_SPEED)));
 
 	// back to dead end
 	sensors.data[0] = DISTANCE_LIMIT;
-	sensors.data[1] = MAX_SENSOR_VAL;
-	sensors.data[2] = MAX_SENSOR_VAL;
-	sensors.data[3] = MAX_SENSOR_VAL;
-	sensors.data[4] = MAX_SENSOR_VAL;
+	sensors.data[1] = FAR_SENSOR_VAL;
+	sensors.data[2] = FAR_SENSOR_VAL;
+	sensors.data[3] = FAR_SENSOR_VAL;
+	sensors.data[4] = FAR_SENSOR_VAL;
 	sensors.data[5] = DISTANCE_LIMIT;
 	sensors.data[6] = DISTANCE_LIMIT;
 	sensors.data[7] = DISTANCE_LIMIT;
@@ -107,73 +107,73 @@ void CController::CreateTrainingData()
 	// soft left corner
 	sensors.data[0] = DISTANCE_LIMIT;
 	sensors.data[1] = DISTANCE_LIMIT;
-	sensors.data[2] = MAX_SENSOR_VAL;
-	sensors.data[3] = MAX_SENSOR_VAL;
-	sensors.data[4] = MAX_SENSOR_VAL;
-	sensors.data[5] = MAX_SENSOR_VAL;
-	sensors.data[6] = MAX_SENSOR_VAL;
-	sensors.data[7] = MAX_SENSOR_VAL;
+	sensors.data[2] = FAR_SENSOR_VAL;
+	sensors.data[3] = FAR_SENSOR_VAL;
+	sensors.data[4] = FAR_SENSOR_VAL;
+	sensors.data[5] = FAR_SENSOR_VAL;
+	sensors.data[6] = FAR_SENSOR_VAL;
+	sensors.data[7] = FAR_SENSOR_VAL;
 	m_TrainingData.push_back(SIOSet(sensors, SSpeed(MAX_SPEED, 0.5*MAX_SPEED)));
 
 	// left corner
 	sensors.data[0] = DISTANCE_LIMIT;
 	sensors.data[1] = DISTANCE_LIMIT;
 	sensors.data[2] = DISTANCE_LIMIT;
-	sensors.data[3] = MAX_SENSOR_VAL;
-	sensors.data[4] = MAX_SENSOR_VAL;
-	sensors.data[5] = MAX_SENSOR_VAL;
-	sensors.data[6] = MAX_SENSOR_VAL;
-	sensors.data[7] = MAX_SENSOR_VAL;
+	sensors.data[3] = FAR_SENSOR_VAL;
+	sensors.data[4] = FAR_SENSOR_VAL;
+	sensors.data[5] = FAR_SENSOR_VAL;
+	sensors.data[6] = FAR_SENSOR_VAL;
+	sensors.data[7] = FAR_SENSOR_VAL;
 	m_TrainingData.push_back(SIOSet(sensors, SSpeed(MAX_SPEED, -MAX_SPEED)));
 
 	// frontal left
-	sensors.data[0] = MAX_SENSOR_VAL;
-	sensors.data[1] = MAX_SENSOR_VAL;
+	sensors.data[0] = FAR_SENSOR_VAL;
+	sensors.data[1] = FAR_SENSOR_VAL;
 	sensors.data[2] = DISTANCE_LIMIT;
 	sensors.data[3] = DISTANCE_LIMIT;
-	sensors.data[4] = MAX_SENSOR_VAL;
-	sensors.data[5] = MAX_SENSOR_VAL;
-	sensors.data[6] = MAX_SENSOR_VAL;
-	sensors.data[7] = MAX_SENSOR_VAL;
+	sensors.data[4] = FAR_SENSOR_VAL;
+	sensors.data[5] = FAR_SENSOR_VAL;
+	sensors.data[6] = FAR_SENSOR_VAL;
+	sensors.data[7] = FAR_SENSOR_VAL;
 	m_TrainingData.push_back(SIOSet(sensors, SSpeed(-0.5*MAX_SPEED, -MAX_SPEED)));
 
 	// frontal right
-	sensors.data[0] = MAX_SENSOR_VAL;
-	sensors.data[1] = MAX_SENSOR_VAL;
-	sensors.data[2] = MAX_SENSOR_VAL;
+	sensors.data[0] = FAR_SENSOR_VAL;
+	sensors.data[1] = FAR_SENSOR_VAL;
+	sensors.data[2] = FAR_SENSOR_VAL;
 	sensors.data[3] = DISTANCE_LIMIT;
 	sensors.data[4] = DISTANCE_LIMIT;
-	sensors.data[5] = MAX_SENSOR_VAL;
-	sensors.data[6] = MAX_SENSOR_VAL;
-	sensors.data[7] = MAX_SENSOR_VAL;
+	sensors.data[5] = FAR_SENSOR_VAL;
+	sensors.data[6] = FAR_SENSOR_VAL;
+	sensors.data[7] = FAR_SENSOR_VAL;
 	m_TrainingData.push_back(SIOSet(sensors, SSpeed(-MAX_SPEED, -0.5*MAX_SPEED)));
 
 	// soft right corner
-	sensors.data[0] = MAX_SENSOR_VAL;
-	sensors.data[1] = MAX_SENSOR_VAL;
-	sensors.data[2] = MAX_SENSOR_VAL;
-	sensors.data[3] = MAX_SENSOR_VAL;
+	sensors.data[0] = FAR_SENSOR_VAL;
+	sensors.data[1] = FAR_SENSOR_VAL;
+	sensors.data[2] = FAR_SENSOR_VAL;
+	sensors.data[3] = FAR_SENSOR_VAL;
 	sensors.data[4] = DISTANCE_LIMIT;
 	sensors.data[5] = DISTANCE_LIMIT;
-	sensors.data[6] = MAX_SENSOR_VAL;
-	sensors.data[7] = MAX_SENSOR_VAL;
+	sensors.data[6] = FAR_SENSOR_VAL;
+	sensors.data[7] = FAR_SENSOR_VAL;
 	m_TrainingData.push_back(SIOSet(sensors, SSpeed(0.5*MAX_SPEED, MAX_SPEED)));
 
 	// right corner
-	sensors.data[0] = MAX_SENSOR_VAL;
-	sensors.data[1] = MAX_SENSOR_VAL;
-	sensors.data[2] = MAX_SENSOR_VAL;
+	sensors.data[0] = FAR_SENSOR_VAL;
+	sensors.data[1] = FAR_SENSOR_VAL;
+	sensors.data[2] = FAR_SENSOR_VAL;
 	sensors.data[3] = DISTANCE_LIMIT;
 	sensors.data[4] = DISTANCE_LIMIT;
 	sensors.data[5] = DISTANCE_LIMIT;
-	sensors.data[6] = MAX_SENSOR_VAL;
-	sensors.data[7] = MAX_SENSOR_VAL;
+	sensors.data[6] = FAR_SENSOR_VAL;
+	sensors.data[7] = FAR_SENSOR_VAL;
 	m_TrainingData.push_back(SIOSet(sensors, SSpeed(-MAX_SPEED, MAX_SPEED)));
 }
 
 void CController::Train()
 {
-	for (int i = 0; i < 10 * m_TrainingData.size(); i++)
+	for (int i = 0; i < TRAINING_CYCLES * m_TrainingData.size(); i++)
 	{
 		Adapt(m_TrainingData[i%m_TrainingData.size()]);
 	}

@@ -7,7 +7,7 @@ struct SNode { Int8 center; double lWeight; double rWeight; };
 
 #define INPUT_COUNT 8
 #define NODE_COUNT 100
-#define TRAINING_CYCLES 10000
+#define TRAINING_CYCLES 100
 
 class CController : public CThreadableBase
 {
