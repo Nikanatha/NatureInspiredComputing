@@ -15,6 +15,15 @@ private:
 	SIOSet Correct(SIOSet calculated);
 	//double SpeedLimit(Int8 sensors);
 	int SafetyDistance(double straightSpeed);
+
+	struct SDirectionalSpeed
+	{
+		double speed;
+		double angle;
+	};
+
+	SDirectionalSpeed ToDirectional(SSpeed components);
+	SSpeed ToComponents(SDirectionalSpeed direction);
 };
 
 #endif

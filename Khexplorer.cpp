@@ -1,40 +1,64 @@
 // Khexplorer.cpp : Defines the entry point for the console application.
 //
 
-#include "KheperaUtility.h"
-#include "Controller.h"
-#include "ValueSystem.h"
-#include "Operator.h"
+#include <iostream>
+
+#include "SmartKhepera.h"
+
+void ListCommands();
+
+static const std::string s_StartRunningCmd = "go";
+static const std::string s_StopRunningCmd = "stop";
+static const std::string s_StartVSCmd = "smart";
+static const std::string s_StopVSCmd = "stupid";
+static const std::string s_StartInfoCmd = "babble";
+static const std::string s_StopInfoCmd = "quiet";
+static const std::string s_Help = "help";
+static const std::string s_EndProgram = "exit";
 
 int main()
 {
-	CKheperaUtility util;
-	CController control(&util);
-	CValueSystem values(&util);
-	COperator operate(&util);
+	CSmartKhepera khexplore;
 
-	// stop is called in destructor
-	control.Start();
-	values.Start();
-	operate.Start();
+	// print welcome and help
+	std::cout << "Welcome to the Khexplorer. ";
+	ListCommands();
 
-	// keep running
-	bool bRunning = true;
-	while(bRunning) 
+	// run and listen for instructions until exit
+	std::string command;
+	do
 	{
-		// possibly look for stop command
-	}
+		std::cout << "What would you like to do? ";
+		std::cin >> command;
+
+		if (command == s_StartRunningCmd) khexplore.StartRobot();
+		if (command == s_StopRunningCmd) khexplore.StopRobot();
+		if (command == s_StartVSCmd) khexplore.StartLearning();
+		if (command == s_StopVSCmd) khexplore.StopLearning();
+		if (command == s_StartInfoCmd) khexplore.StartVerbosity();
+		if (command == s_StopInfoCmd) khexplore.StopVerbosity();
+		if (command == s_Help) ListCommands();
+	} while (command != s_EndProgram);
 
 	// stop our robot!
-	control.Stop();
-	values.Stop();
-	operate.Stop();
+	khexplore.StopLearning();
+	khexplore.StopRobot();
 
-	Int2 stop;
-	stop.data[0] = 0;
-	stop.data[1] = 0;
-	util.SetSpeed(stop);
-
+	std::cout << "Goodbye!" << std::endl;
     return 0;
 }
 
+void ListCommands()
+{
+	std::cout << "To issue a command, please type into the console and press \'enter\'." << std::endl;
+	std::cout << "Possible commands: " << std::endl;
+	std::cout << "   " << s_Help << "         : lists this help" << std::endl;
+	std::cout << "   " << s_EndProgram << "         : ends the program" << std::endl;
+	std::cout << "   " << s_StartRunningCmd << "           : starts the robot" << std::endl;
+	std::cout << "   " << s_StopRunningCmd << "         : stops the robot" << std::endl;
+	std::cout << "   " << s_StartVSCmd << "        : enables robot learning" << std::endl;
+	std::cout << "   " << s_StopVSCmd << "       : disables robot learning" << std::endl;
+	std::cout << "   " << s_StartInfoCmd << "       : enables info dumping" << std::endl;
+	std::cout << "   " << s_StopInfoCmd << "        : disables info dumping" << std::endl;
+	std::cout << std::endl;
+}

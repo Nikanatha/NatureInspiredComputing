@@ -1,15 +1,19 @@
 #include <math.h>
+#include <algorithm>
 #include "Controller.h"
 
 #define DISTANCE_LIMIT (0.9 * CLOSE_SENSOR_VAL)
 
+bool NodeActivitySort(SNode a, SNode b);
+
 CController::CController(CKheperaUtility * pUtil) : CThreadableBase(pUtil)
 {
-	m_Sigma = 1;
+	m_Sigma = 0.5;
 	m_LearnWeight = 0.3;
 
+	/*
 	// generate nodes for network
-	for (int n = 0; n < NODE_COUNT; n++)
+	for (int n = 0; n < 2*NODE_COUNT; n++)
 	{
 		Int8 center;
 		for (int i = 0; i < INPUT_COUNT; i++)
@@ -19,26 +23,38 @@ CController::CController(CKheperaUtility * pUtil) : CThreadableBase(pUtil)
 
 		SNode node;
 		node.center = center;
-		node.lWeight = m_pUtil->GetUniformRandom(MAX_SPEED, -MAX_SPEED);
-		node.rWeight = m_pUtil->GetUniformRandom(MAX_SPEED, -MAX_SPEED);
+		node.lWeight = m_pUtil->GetUniformRandom(-MAX_SPEED, MAX_SPEED);
+		node.rWeight = m_pUtil->GetUniformRandom(-MAX_SPEED, MAX_SPEED);
+		node.activity = 1;
 		m_NetworkNodes.push_back(node);
 	}
-
+	*/
 	// pre-train
 	CreateTrainingData();
-	Train();
+	//Train();
 }
 
 void CController::DoCycle()
 {
 	// evaluate current sensor data
 	Int8 sensorData = m_pUtil->GetSensorData();
+
+#ifdef SIM_ONLY
+	sensorData = m_TrainingData[round(m_pUtil->GetUniformRandom(0, m_TrainingData.size()-1))].sensors;
+#endif
+
 	SIOSet result = Evaluate(sensorData);
 	m_pUtil->SetNetworkResult(result);
 
 	// get value system's correction
 	SIOSet ideal = m_pUtil->GetLastCorrectedResult();
 	Adapt(ideal);
+
+	// check for surplus of nodes
+	if (m_NetworkNodes.size() > NODE_COUNT)
+	{
+		Forget();
+	}
 }
 
 void CController::Adapt(SIOSet ideal)
@@ -58,7 +74,7 @@ double CController::RbfBase(Int8 sensors, Int8 nodeCenter)
 	double sqdist = 0;
 	for (int i = 0; i < INPUT_COUNT; i++)
 	{
-		double diff = (sensors.data[i] - nodeCenter.data[i]) / SENSOR_VAL_RANGE;
+		double diff = (sensors.data[i] - nodeCenter.data[i]) / (double)SENSOR_VAL_RANGE;
 		sqdist += pow(diff, 2);
 	}
 	return exp(-sqrt(sqdist) / m_Sigma);
@@ -179,6 +195,12 @@ void CController::Train()
 	}
 }
 
+void CController::Forget()
+{
+	std::sort(m_NetworkNodes.begin(), m_NetworkNodes.end(), NodeActivitySort);
+	m_NetworkNodes.resize(NODE_COUNT);
+}
+
 SIOSet CController::Evaluate(Int8 sensors)
 {
 	SIOSet out;
@@ -189,12 +211,35 @@ SIOSet CController::Evaluate(Int8 sensors)
 	{
 		SNode node = m_NetworkNodes[n];
 		double act = RbfBase(sensors, node.center);
+		m_NetworkNodes[n].activity *= NODE_ACTIVITY_DECAY_FACTOR;
+		m_NetworkNodes[n].activity += act;
 		out.speed.left += act * node.lWeight;
 		out.speed.right += act * node.rWeight;
 		totalActivation += act;
 	}
 
-	out.speed.left /= totalActivation;
-	out.speed.right /= totalActivation;
+	if (totalActivation > 0)
+	{
+		out.speed.left /= totalActivation;
+		out.speed.right /= totalActivation;
+	}
+
+	// add extra nodes if activation is too low
+	if (totalActivation < TOTAL_ACTIVATION_LIMIT)
+	{
+		SNode newNode;
+		newNode.center = sensors;
+		newNode.lWeight = out.speed.left;
+		newNode.rWeight = out.speed.right;
+		newNode.activity = 10;
+		m_NetworkNodes.push_back(newNode);
+	}
+
 	return out;
+}
+
+// helper
+bool NodeActivitySort(SNode a, SNode b)
+{
+	return a.activity > b.activity;
 }
