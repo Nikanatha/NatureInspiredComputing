@@ -44,3 +44,13 @@ void CSmartKhepera::StopLearning()
 {
 	m_pValues->Stop();
 }
+
+void CSmartKhepera::StartVerbosity()
+{
+	m_pUtil->SetVerbosity(true);
+}
+
+void CSmartKhepera::StopVerbosity()
+{
+	m_pUtil->SetVerbosity(false);
+}

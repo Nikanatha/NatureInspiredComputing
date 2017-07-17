@@ -11,6 +11,7 @@ CController::CController(CKheperaUtility * pUtil) : CThreadableBase(pUtil)
 	m_Sigma = 0.5;
 	m_LearnWeight = 0.3;
 
+	/*
 	// generate nodes for network
 	for (int n = 0; n < 2*NODE_COUNT; n++)
 	{
@@ -27,10 +28,10 @@ CController::CController(CKheperaUtility * pUtil) : CThreadableBase(pUtil)
 		node.activity = 1;
 		m_NetworkNodes.push_back(node);
 	}
-
+	*/
 	// pre-train
 	CreateTrainingData();
-	Train();
+	//Train();
 }
 
 void CController::DoCycle()

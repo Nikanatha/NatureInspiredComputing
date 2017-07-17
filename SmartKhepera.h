@@ -17,6 +17,9 @@ public:
 	void StartLearning();
 	void StopLearning();
 
+	void StartVerbosity();
+	void StopVerbosity();
+
 private:
 	CKheperaUtility* m_pUtil;
 	CController* m_pControl;

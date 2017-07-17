@@ -7,6 +7,8 @@ CKheperaUtility::CKheperaUtility()
 
 	m_LastResult = SIOSet(Int8(), SSpeed(MAX_SPEED, MAX_SPEED));
 	m_LastCorrectedResult = SIOSet(Int8(), SSpeed(MAX_SPEED, MAX_SPEED));
+
+	m_bVerbose = false;
 }
 
 CKheperaUtility::~CKheperaUtility()
@@ -54,18 +56,21 @@ void CKheperaUtility::SetNetworkResult(SIOSet results)
 	m_LastResult = results;
 
 	// output info
-	printf("Controller's results:\n P0: %d P1: %d P2: %d P3: %d P4: %d P5: %d P6: %d P7: %d ==> L: %f R: %f \n",
-		results.sensors.data[0], 
-		results.sensors.data[1], 
-		results.sensors.data[2], 
-		results.sensors.data[3], 
-		results.sensors.data[4], 
-		results.sensors.data[5], 
-		results.sensors.data[6], 
-		results.sensors.data[7], 
+	if (m_bVerbose)
+	{
+		printf("Controller's results:\n P0: %d P1: %d P2: %d P3: %d P4: %d P5: %d P6: %d P7: %d ==> L: %f R: %f \n",
+			results.sensors.data[0],
+			results.sensors.data[1],
+			results.sensors.data[2],
+			results.sensors.data[3],
+			results.sensors.data[4],
+			results.sensors.data[5],
+			results.sensors.data[6],
+			results.sensors.data[7],
 
-		results.speed.left, 
-		results.speed.right);
+			results.speed.left,
+			results.speed.right);
+	}
 }
 
 SIOSet CKheperaUtility::GetLastNetworkResult()
@@ -82,18 +87,21 @@ void CKheperaUtility::SetCorrectedResult(SIOSet results)
 
 
 	// output info
-	printf("ValueSystem's ideal results:\n P0: %d P1: %d P2: %d P3: %d P4: %d P5: %d P6: %d P7: %d ==> L: %f R: %f \n",
-		results.sensors.data[0],
-		results.sensors.data[1],
-		results.sensors.data[2],
-		results.sensors.data[3],
-		results.sensors.data[4],
-		results.sensors.data[5],
-		results.sensors.data[6],
-		results.sensors.data[7],
+	if (m_bVerbose)
+	{
+		printf("ValueSystem's results:\n P0: %d P1: %d P2: %d P3: %d P4: %d P5: %d P6: %d P7: %d ==> L: %f R: %f \n",
+			results.sensors.data[0],
+			results.sensors.data[1],
+			results.sensors.data[2],
+			results.sensors.data[3],
+			results.sensors.data[4],
+			results.sensors.data[5],
+			results.sensors.data[6],
+			results.sensors.data[7],
 
-		results.speed.left,
-		results.speed.right);
+			results.speed.left,
+			results.speed.right);
+	}
 }
 
 SIOSet CKheperaUtility::GetLastCorrectedResult()
@@ -102,8 +110,13 @@ SIOSet CKheperaUtility::GetLastCorrectedResult()
 	return m_LastCorrectedResult;
 }
 
-double CKheperaUtility::GetUniformRandom(double max, double min)
+double CKheperaUtility::GetUniformRandom(double min, double max)
 {
 	std::uniform_real_distribution<double> rnd(min, max);
 	return rnd(m_rGenerator);
+}
+
+void CKheperaUtility::SetVerbosity(bool bVerbose)
+{
+	m_bVerbose = bVerbose;
 }

@@ -11,6 +11,8 @@ static const std::string s_StartRunningCmd = "go";
 static const std::string s_StopRunningCmd = "stop";
 static const std::string s_StartVSCmd = "smart";
 static const std::string s_StopVSCmd = "stupid";
+static const std::string s_StartInfoCmd = "babble";
+static const std::string s_StopInfoCmd = "quiet";
 static const std::string s_Help = "help";
 static const std::string s_EndProgram = "exit";
 
@@ -33,6 +35,8 @@ int main()
 		if (command == s_StopRunningCmd) khexplore.StopRobot();
 		if (command == s_StartVSCmd) khexplore.StartLearning();
 		if (command == s_StopVSCmd) khexplore.StopLearning();
+		if (command == s_StartInfoCmd) khexplore.StartVerbosity();
+		if (command == s_StopInfoCmd) khexplore.StopVerbosity();
 		if (command == s_Help) ListCommands();
 	} while (command != s_EndProgram);
 
@@ -54,5 +58,7 @@ void ListCommands()
 	std::cout << "   " << s_StopRunningCmd << "         : stops the robot" << std::endl;
 	std::cout << "   " << s_StartVSCmd << "        : enables robot learning" << std::endl;
 	std::cout << "   " << s_StopVSCmd << "       : disables robot learning" << std::endl;
+	std::cout << "   " << s_StartInfoCmd << "       : enables info dumping" << std::endl;
+	std::cout << "   " << s_StopInfoCmd << "        : disables info dumping" << std::endl;
 	std::cout << std::endl;
 }

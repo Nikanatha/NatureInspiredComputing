@@ -1,10 +1,9 @@
 #include "ValueSystem.h"
 
-#define DISTANCE_LIMIT (0.2 * CLOSE_SENSOR_VAL)
+#define PI 3.14159265
 
 CValueSystem::CValueSystem(CKheperaUtility * pUtil) : CThreadableBase(pUtil)
 {
-
 }
 
 void CValueSystem::DoCycle()
@@ -17,54 +16,72 @@ void CValueSystem::DoCycle()
 
 SIOSet CValueSystem::Correct(SIOSet calculated)
 {
-	// evaluate speeds
-	double straightSpeed = (calculated.speed.left + calculated.speed.right) / 2.0;
-	double rightTurnSpeed = (calculated.speed.left - calculated.speed.right);
+	// convert speed
+	SDirectionalSpeed directional = ToDirectional(calculated.speed);
 
-	int limit = SafetyDistance(straightSpeed);
+	int limit = SafetyDistance(directional.speed);
 
-	// evaluate sensor data
-	double leftSum = calculated.sensors.data[0] + 2*calculated.sensors.data[1] + 3*calculated.sensors.data[2];
-	double rightSum = calculated.sensors.data[3] + 2*calculated.sensors.data[4] + 3*calculated.sensors.data[5];
-	double frontMax = fmax(calculated.sensors.data[2], calculated.sensors.data[3]);
-
-	if (frontMax > limit) // impending frontal collision
-	{
-		straightSpeed *= 0.5;
+	// evaluate sensor data in movement direction
+	int proximity;
+	if (abs(directional.angle) < PI / 2)
+	{	// front half
+		double subIndex = fmax(0, ((PI / 2 - (directional.angle)) / (PI / 5)) - 1);
+		proximity = fmax(calculated.sensors.data[(int)floor(subIndex)], calculated.sensors.data[(int)ceil(subIndex)]);
 	}
-	else	// free road
-	{
-		straightSpeed = abs(straightSpeed);
-
-		// gradually speed up
-		if (straightSpeed < MAX_SPEED) straightSpeed *= 1.5;
-
+	else if (abs(directional.angle) > (5 * PI / 6))
+	{	// mid back
+		proximity = fmax(calculated.sensors.data[6], calculated.sensors.data[7]);
 	}
-
-	if (leftSum < rightSum) // obstacle is to the left, turn right
-	{
-		rightTurnSpeed = abs(rightTurnSpeed);
-		rightTurnSpeed = fmax(rightTurnSpeed, 2 * (double)MAX_SPEED*(leftSum / (6 * SENSOR_VAL_RANGE)));
+	else if (directional.angle > 0)
+	{	// left back
+		proximity = fmax(calculated.sensors.data[0], calculated.sensors.data[7]);
 	}
-	else // obstacle is to the right, turn left
-	{
-		rightTurnSpeed = -abs(rightTurnSpeed);
-		rightTurnSpeed = fmin(rightTurnSpeed, -2 * (double)MAX_SPEED*(rightSum / (6 * SENSOR_VAL_RANGE)));
+	else
+	{	// right back
+		proximity = fmax(calculated.sensors.data[5], calculated.sensors.data[6]);
 	}
 
+	if (proximity > limit)
+	{	// don't go there, you'll collide!
+		// go anywhere else, just not there. Preferably forward-ish.
+		directional.angle = m_pUtil->GetUniformRandom(-PI/2, PI/2);
+	}
+	else if (directional.speed < MAX_SPEED/2)
+	{	// you're fine, go faster
+		directional.speed += m_pUtil->GetUniformRandom(0.5, 1);
+		directional.speed *= 1.2;
+	}
 
-	// assemble resulting speed
-	SIOSet correction;
-
-	correction.sensors = calculated.sensors;
-	correction.speed.left = straightSpeed - rightTurnSpeed / 2;
-	correction.speed.right = straightSpeed + rightTurnSpeed / 2;
+	SIOSet correction = calculated;
+	correction.speed = ToComponents(directional);
 
 	return correction;
 }
 
-int CValueSystem::SafetyDistance(double straightSpeed)
+int CValueSystem::SafetyDistance(double speed)
 {
-	return straightSpeed*50;
-	return 0.5*CLOSE_SENSOR_VAL*exp((straightSpeed-MAX_SPEED));
+	int dist = CLOSE_SENSOR_VAL*exp(- speed / (double)MAX_SPEED);
+	return dist;
+}
+
+CValueSystem::SDirectionalSpeed CValueSystem::ToDirectional(SSpeed components)
+{
+	SDirectionalSpeed directional;
+	double straight = (components.left + components.right) / 2; // cos(a)*v
+	double turn = components.right - straight; // sin(a)*v
+	
+	directional.angle = atan2(turn, straight);
+	directional.speed = straight / cos(directional.angle);
+
+	return directional;
+}
+
+SSpeed CValueSystem::ToComponents(SDirectionalSpeed direction)
+{
+	SSpeed components;
+
+	components.left = direction.speed * (cos(direction.angle) - sin(direction.angle));
+	components.right = direction.speed * (cos(direction.angle) + sin(direction.angle));
+
+	return components;
 }

@@ -57,7 +57,10 @@ public:
 	SIOSet GetLastCorrectedResult();
 
 	// randomness
-	double GetUniformRandom(double max = 1, double min = 0);
+	double GetUniformRandom(double min = 0, double max = 1);
+
+	// info dumping
+	void SetVerbosity(bool bVerbose);
 
 private:
 	KheperaInterface* m_pKhep;
@@ -68,6 +71,8 @@ private:
 	std::mutex m_KheperaMutex;
 	std::mutex m_ResultMutex;
 	std::mutex m_CorrectedResultMutex;
+
+	bool m_bVerbose;
 };
 
 #endif
