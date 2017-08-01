@@ -1,3 +1,4 @@
+#include <math.h>
 #include <iostream>
 #include <iomanip>
 #include "Common.h"
@@ -10,12 +11,12 @@
 
 CSensorData::CSensorData(Int8 rawSensors)
 {
-	this->insert_or_assign(Direction_Left, LeftSide(rawSensors));
-	this->insert_or_assign(Direction_FrontLeft, LeftFront(rawSensors));
-	this->insert_or_assign(Direction_Front, Front(rawSensors));
-	this->insert_or_assign(Direction_FrontRight, RightFront(rawSensors));
-	this->insert_or_assign(Direction_Right, RightSide(rawSensors));
-	this->insert_or_assign(Direction_Back, Back(rawSensors));
+	(*this)[Direction_Left] = LeftSide(rawSensors);
+	(*this)[Direction_FrontLeft] = LeftFront(rawSensors);
+	(*this)[Direction_Front] = Front(rawSensors);
+	(*this)[Direction_FrontRight] = RightFront(rawSensors);
+	(*this)[Direction_Right] = RightSide(rawSensors);
+	(*this)[Direction_Back] = Back(rawSensors);
 }
 
 void CSensorData::Dump()

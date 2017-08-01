@@ -1,3 +1,4 @@
+#include <math.h>
 #include <iostream>
 
 #include "Node.h"
@@ -73,9 +74,9 @@ double CNode::BaseFunction(CSensorData sensors)
 {
 	double sqdist = 0;
 
-	for each(auto sens in sensors)
+	for (auto sens = sensors.begin(); sens != sensors.end(); sens++)
 	{
-		sqdist += pow(sens.second - m_Center[sens.first], 2);
+		sqdist += pow(sens->second - m_Center[sens->first], 2);
 	}
 
 	return exp(-sqrt(sqdist) / Sigma);
