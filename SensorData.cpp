@@ -4,9 +4,9 @@
 #include "Common.h"
 #include "SensorData.h"
 
-#define NEIGHBOR_WEIGHT 0.8
-#define PROX_NEAR_VALUE 500
-#define PROX_CLOSE_VALUE 800
+#define NEIGHBOR_WEIGHT 1
+#define PROX_NEAR_VALUE 200
+#define PROX_CLOSE_VALUE 500
 #define PROX_COLLISION_VALUE 1000
 
 CSensorData::CSensorData(Int8 rawSensors)

@@ -21,6 +21,13 @@ SIOSet CValueSystem::Correct(SIOSet calculated)
 	EProximity proximity;
 	proximity = calculated.sensors[AngleToDirection(calculated.speed.Angle())];
 
+    if(calculated.speed.Velocity() == 0) correction.speed.IncreaseVelocity(m_pUtil->GetUniformRandom(0.5, 1));
+
+    if(calculated.sensors.Collision() && calculated.sensors[Direction_Back] != Proximity_Collision)
+    {
+        correction.speed.SetVelocity(-1);
+    }
+
 	if (proximity > Proximity_Near)
 	{	// don't go there, you'll collide!
 		// go anywhere else, just not there. Preferably forward-ish.
@@ -28,9 +35,10 @@ SIOSet CValueSystem::Correct(SIOSet calculated)
 	}
     else if (calculated.speed.Velocity() < m_pUtil->MaxSpeed)
 	{	// you're fine, go faster
-		correction.speed.IncreaseVelocity(0.2*correction.speed.Velocity() + m_pUtil->GetUniformRandom(0.5, 1));
+		correction.speed *= 1.2;
 	}
 
+    if(abs(correction.speed.Angle())) correction.speed.SetAngle(m_pUtil->GetUniformRandom(-PI/2, PI/2));
 	if (correction.speed.Velocity() > m_pUtil->MaxSpeed) correction.speed.SetVelocity(m_pUtil->MaxSpeed);
     
 	return correction;

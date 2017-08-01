@@ -4,7 +4,7 @@
 
 CSpeed::CSpeed()
 {
-	SetVelocity(0);
+	SetVelocity(10);
 	SetAngle(0);
 }
 
