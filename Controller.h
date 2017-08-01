@@ -2,38 +2,34 @@
 #define __Controller_H__
 
 #include "ThreadableBase.h"
-
-struct SNode { Int8 center; double lWeight; double rWeight; double activity; };
-
-#define INPUT_COUNT 6
-#define NODE_COUNT 20
-#define TRAINING_CYCLES 100
-#define NODE_ACTIVITY_DECAY_FACTOR 0.8
-#define TOTAL_ACTIVATION_LIMIT 1
+#include "Settings.h"
+#include "SensorData.h"
+#include "Node.h"
 
 class CController : public CThreadableBase
 {
 public:
-	CController(CKheperaUtility* pUtil);
+	CController(CKheperaUtility* pUtil, CRbfSettings* pSettings);
+
+	void LoadNodesFromFile(std::string path);
+	void SaveNodesToFile(std::string path);
+    void ListNodes();
 
 protected:
 	virtual void DoCycle();
 
 private:
-	SIOSet Evaluate(Int8 sensors);
+	SIOSet Evaluate(CSensorData sensors);
 	void Adapt(SIOSet ideal);
 
 	// rbf network functions
-	double RbfBase(Int8 sensors, Int8 nodeCenter);
-	void CreateTrainingData();
-	void Train();
+	void AddNode(CSensorData, CSpeed speed);
 	void Forget();
 
 private:
-	std::vector<SNode> m_NetworkNodes;
-	double m_Sigma;
-	double m_LearnWeight;
-	std::vector<SIOSet> m_TrainingData;
+	CRbfSettings* m_pSettings;
+
+	std::vector<CNode> m_NetworkNodes;
 };
 
 #endif

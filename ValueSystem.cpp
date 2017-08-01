@@ -1,6 +1,5 @@
 #include "ValueSystem.h"
 
-#define PI 3.14159265
 
 CValueSystem::CValueSystem(CKheperaUtility * pUtil) : CThreadableBase(pUtil)
 {
@@ -16,72 +15,23 @@ void CValueSystem::DoCycle()
 
 SIOSet CValueSystem::Correct(SIOSet calculated)
 {
-	// convert speed
-	SDirectionalSpeed directional = ToDirectional(calculated.speed);
-
-	int limit = SafetyDistance(directional.speed);
+	SIOSet correction = calculated;
 
 	// evaluate sensor data in movement direction
-	int proximity;
-	if (abs(directional.angle) < PI / 2)
-	{	// front half
-		double subIndex = fmax(0, ((PI / 2 - (directional.angle)) / (PI / 5)) - 1);
-		proximity = fmax(calculated.sensors.data[(int)floor(subIndex)], calculated.sensors.data[(int)ceil(subIndex)]);
-	}
-	else if (abs(directional.angle) > (5 * PI / 6))
-	{	// mid back
-		proximity = fmax(calculated.sensors.data[6], calculated.sensors.data[7]);
-	}
-	else if (directional.angle > 0)
-	{	// left back
-		proximity = fmax(calculated.sensors.data[0], calculated.sensors.data[7]);
-	}
-	else
-	{	// right back
-		proximity = fmax(calculated.sensors.data[5], calculated.sensors.data[6]);
-	}
+	EProximity proximity;
+	proximity = calculated.sensors[AngleToDirection(calculated.speed.Angle())];
 
-	if (proximity > limit)
+	if (proximity > Proximity_Near)
 	{	// don't go there, you'll collide!
 		// go anywhere else, just not there. Preferably forward-ish.
-		directional.angle = m_pUtil->GetUniformRandom(-PI/2, PI/2);
+		correction.speed.IncreaseAngle(pow(-1, round(m_pUtil->GetUniformRandom(0, 1)))*(PI / 6 + m_pUtil->GetUniformRandom(0, PI / 6)));
 	}
-	else if (directional.speed < MAX_SPEED/2)
+    else if (calculated.speed.Velocity() < m_pUtil->MaxSpeed)
 	{	// you're fine, go faster
-		directional.speed += m_pUtil->GetUniformRandom(0.5, 1);
-		directional.speed *= 1.2;
+		correction.speed.IncreaseVelocity(0.2*correction.speed.Velocity() + m_pUtil->GetUniformRandom(0.5, 1));
 	}
 
-	SIOSet correction = calculated;
-	correction.speed = ToComponents(directional);
-
+	if (correction.speed.Velocity() > m_pUtil->MaxSpeed) correction.speed.SetVelocity(m_pUtil->MaxSpeed);
+    
 	return correction;
-}
-
-int CValueSystem::SafetyDistance(double speed)
-{
-	int dist = CLOSE_SENSOR_VAL*exp(- speed / (double)MAX_SPEED);
-	return dist;
-}
-
-CValueSystem::SDirectionalSpeed CValueSystem::ToDirectional(SSpeed components)
-{
-	SDirectionalSpeed directional;
-	double straight = (components.left + components.right) / 2; // cos(a)*v
-	double turn = components.right - straight; // sin(a)*v
-	
-	directional.angle = atan2(turn, straight);
-	directional.speed = straight / cos(directional.angle);
-
-	return directional;
-}
-
-SSpeed CValueSystem::ToComponents(SDirectionalSpeed direction)
-{
-	SSpeed components;
-
-	components.left = direction.speed * (cos(direction.angle) - sin(direction.angle));
-	components.right = direction.speed * (cos(direction.angle) + sin(direction.angle));
-
-	return components;
 }

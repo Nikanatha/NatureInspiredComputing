@@ -4,49 +4,33 @@
 #include <random>
 #include <mutex>
 
-#include "KheperaInterface.h"
+#include "Common.h"
+#include "SensorData.h"
+#include "Speed.h"
 
-// custom types
-struct SSpeed
-{
-	double left;
-	double right;
-	SSpeed(double l = 0, double r = 0) { left = l; right = r; }
-};
+// types
+class KheperaInterface;
 
 struct SIOSet
 {
-	Int8 sensors;
-	SSpeed speed;
-	SIOSet(Int8 sens = Int8(), SSpeed spd = SSpeed()) { sensors = sens; speed = spd; }
-	SIOSet(const SIOSet &other) 
-	{
-		for (int i = 0; i < 8; i++)
-		{
-			this->sensors.data[i] = other.sensors.data[i];
-		}
-		this->speed.left = other.speed.left;
-		this->speed.right = other.speed.right;
-	}
+	CSensorData sensors;
+	CSpeed speed;
 };
 
 typedef std::lock_guard<std::mutex> ScopedMutexLocker;
 
-// value defines
-#define CLOSE_SENSOR_VAL 1024
-#define FAR_SENSOR_VAL 0
-#define SENSOR_VAL_RANGE abs(FAR_SENSOR_VAL - CLOSE_SENSOR_VAL)
-#define MAX_SPEED 50
-
 class CKheperaUtility
 {
+public:
+	double MaxSpeed;
+
 public:
 	CKheperaUtility();
 	~CKheperaUtility();
 
 	// for khepera interaction
-	Int8 GetSensorData();
-	void SetSpeed(Int2 newSpeed);
+	CSensorData GetSensorData();
+	void SetSpeed(int left, int right);
 
 	// for controller output
 	void SetNetworkResult(SIOSet results);

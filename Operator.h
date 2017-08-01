@@ -12,7 +12,7 @@ protected:
 	virtual void DoCycle();
 
 private:
-	Int2 NoiseRound(SSpeed target);
+	CSpeed Noisy(CSpeed target);
 };
 
 #endif

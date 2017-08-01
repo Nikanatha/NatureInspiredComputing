@@ -1,14 +1,19 @@
+#include <iostream>
+#include <iomanip>
+
 #include "KheperaUtility.h"
+#include "KheperaInterface.h"
 
 CKheperaUtility::CKheperaUtility()
 {
 	m_pKhep = new KheperaInterface("/dev/ttyUSB0");
 	m_pKhep->setLEDState(0, LEDState::On);
 
-	m_LastResult = SIOSet(Int8(), SSpeed(MAX_SPEED, MAX_SPEED));
-	m_LastCorrectedResult = SIOSet(Int8(), SSpeed(MAX_SPEED, MAX_SPEED));
-
+	MaxSpeed = 20;
+		
 	m_bVerbose = false;
+    
+    m_rGenerator = std::default_random_engine(std::random_device{}());
 }
 
 CKheperaUtility::~CKheperaUtility()
@@ -18,7 +23,7 @@ CKheperaUtility::~CKheperaUtility()
 	delete m_pKhep;
 }
 
-Int8 CKheperaUtility::GetSensorData()
+CSensorData CKheperaUtility::GetSensorData()
 {
 	ScopedMutexLocker lock(m_KheperaMutex);
 	Int8 data;
@@ -33,15 +38,15 @@ Int8 CKheperaUtility::GetSensorData()
 		return GetLastNetworkResult().sensors;
 	}
 
-	return data;
+	return CSensorData(data);
 }
 
-void CKheperaUtility::SetSpeed(Int2 newSpeed)
+void CKheperaUtility::SetSpeed(int left, int right)
 {
 	ScopedMutexLocker lock(m_KheperaMutex);
 	try
 	{
-		m_pKhep->setSpeed(newSpeed.data[0], newSpeed.data[1]);
+		m_pKhep->setSpeed(left, right);
 	}
 	catch (...)
 	{
@@ -58,18 +63,10 @@ void CKheperaUtility::SetNetworkResult(SIOSet results)
 	// output info
 	if (m_bVerbose)
 	{
-		printf("Controller's results:\n P0: %d P1: %d P2: %d P3: %d P4: %d P5: %d P6: %d P7: %d ==> L: %f R: %f \n",
-			results.sensors.data[0],
-			results.sensors.data[1],
-			results.sensors.data[2],
-			results.sensors.data[3],
-			results.sensors.data[4],
-			results.sensors.data[5],
-			results.sensors.data[6],
-			results.sensors.data[7],
-
-			results.speed.left,
-			results.speed.right);
+        std::cout << "Controller's results:" << std::endl;
+		results.sensors.Dump();        
+        std::cout << " ==> Angle: " << results.speed.Angle() << " Speed: " << results.speed.Velocity();
+        std::cout << std::endl;
 	}
 }
 
@@ -89,18 +86,10 @@ void CKheperaUtility::SetCorrectedResult(SIOSet results)
 	// output info
 	if (m_bVerbose)
 	{
-		printf("ValueSystem's results:\n P0: %d P1: %d P2: %d P3: %d P4: %d P5: %d P6: %d P7: %d ==> L: %f R: %f \n",
-			results.sensors.data[0],
-			results.sensors.data[1],
-			results.sensors.data[2],
-			results.sensors.data[3],
-			results.sensors.data[4],
-			results.sensors.data[5],
-			results.sensors.data[6],
-			results.sensors.data[7],
-
-			results.speed.left,
-			results.speed.right);
+        std::cout << "ValueSystem's results:" << std::endl;
+		results.sensors.Dump();
+		std::cout << " ==> Angle: " << results.speed.Angle() << " Speed: " << results.speed.Velocity();
+        std::cout << std::endl;
 	}
 }
 

@@ -1,0 +1,92 @@
+#include <iostream>
+
+#include "Node.h"
+
+double CNode::Sigma = 1;
+double CNode::LearningWeight = 0.3;
+const double CNode::DecayRate = 0.9;
+
+CNode::CNode()
+{
+	m_Center = CSensorData();
+	m_Weight = CSpeed();
+	m_Activity = 0;
+}
+
+CNode::CNode(CSensorData c, CSpeed w) : CNode()
+{
+	m_Center = c;
+	m_Weight = w;
+	AddActivation();
+}
+
+double CNode::Activate(CSensorData input, CSpeed & output)
+{
+	double activation;
+	Decay();
+	activation = Calculate(input, output);
+	AddActivation(activation);
+	return activation;
+}
+
+double CNode::Calculate(CSensorData input, CSpeed & output)
+{
+	double activation;
+	activation = BaseFunction(input);
+	output = m_Weight * activation;
+	return activation;
+}
+
+void CNode::Adapt(CSensorData input, CSpeed difference)
+{
+	double activation;
+	CSpeed output;
+	activation = Calculate(input, output);
+
+	CSpeed change = difference * activation * LearningWeight;
+	m_Weight += change;
+}
+
+CSensorData CNode::Center()
+{
+	return m_Center;
+}
+
+CSpeed CNode::Weight()
+{
+	return m_Weight;
+}
+
+void CNode::Dump()
+{
+	std::cout << "Node (";
+	m_Center.Dump();
+	std::cout << " ) : W = " << m_Weight.Velocity() << "(" << m_Weight.Angle() << ")" << "; Act = " << m_Activity;
+}
+
+bool CNode::CompareActivity(CNode a, CNode b)
+{
+	return a.m_Activity > b.m_Activity;
+}
+
+double CNode::BaseFunction(CSensorData sensors)
+{
+	double sqdist = 0;
+
+	for each(auto sens in sensors)
+	{
+		sqdist += pow(sens.second - m_Center[sens.first], 2);
+	}
+
+	return exp(-sqrt(sqdist) / Sigma);
+}
+
+void CNode::Decay()
+{
+	m_Activity *= DecayRate;
+}
+
+void CNode::AddActivation(double act)
+{
+	m_Activity += act;
+}

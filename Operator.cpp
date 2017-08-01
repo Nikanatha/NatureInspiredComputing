@@ -10,16 +10,18 @@ COperator::COperator(CKheperaUtility * pUtil) : CThreadableBase(pUtil)
 void COperator::DoCycle()
 {
 	// convert target speed to noisy int for khepera
-	SSpeed target = m_pUtil->GetLastNetworkResult().speed;
-	Int2 rounded = NoiseRound(target);
-	m_pUtil->SetSpeed(rounded);
+	CSpeed target =m_pUtil->GetLastNetworkResult().speed;
+	CSpeed noisy = Noisy(target);
+	m_pUtil->SetSpeed(round(noisy.Left()), round(noisy.Right()));
 }
 
-Int2 COperator::NoiseRound(SSpeed target)
+CSpeed COperator::Noisy(CSpeed target)
 {
-	Int2 rounded;
-	rounded.data[0] = round(target.left + m_pUtil->GetUniformRandom(0.5, -0.5));
-	rounded.data[1] = round(target.right + m_pUtil->GetUniformRandom(0.5, -0.5));
-	return rounded;
+	CSpeed noisy = target;
+	noisy.SetComponents(
+		target.Left() + m_pUtil->GetUniformRandom(),
+		target.Right() + m_pUtil->GetUniformRandom()
+	);
+	return noisy;
 }
 

@@ -1,46 +1,94 @@
-#include <math.h>
+#include <fstream>
+#include <sstream>
+
 #include <algorithm>
+#include <iostream>
 #include "Controller.h"
 
-#define DISTANCE_LIMIT (0.9 * CLOSE_SENSOR_VAL)
+#define TOTAL_ACTIVATION_LIMIT 0.5
 
-bool NodeActivitySort(SNode a, SNode b);
-
-CController::CController(CKheperaUtility * pUtil) : CThreadableBase(pUtil)
+CController::CController(CKheperaUtility * pUtil, CRbfSettings* pSettings) : CThreadableBase(pUtil)
 {
-	m_Sigma = 0.5;
-	m_LearnWeight = 0.3;
+	m_pSettings = pSettings;
+}
 
-	/*
-	// generate nodes for network
-	for (int n = 0; n < 2*NODE_COUNT; n++)
+void CController::LoadNodesFromFile(std::string path)
+{
+	// Delete current nodes
+	m_NetworkNodes.clear();
+
+	std::fstream file;
+	std::string line;
+
+	file.open(path);
+	if (file.is_open())
 	{
-		Int8 center;
-		for (int i = 0; i < INPUT_COUNT; i++)
+		while (getline(file, line))
 		{
-			center.data[i] = round(m_pUtil->GetUniformRandom(FAR_SENSOR_VAL, CLOSE_SENSOR_VAL));
+			std::stringstream ss(line);
+
+			CSensorData sensors;
+			int prox;
+			for (int d = 0; d <= (int)Direction_Back; d++)
+			{
+				ss >> prox;
+				sensors[(EDirection)d] = (EProximity)prox;
+			}
+
+			CSpeed speed;
+			double left;
+			double right;
+			
+			ss >> left >> right;
+			speed.SetComponents(left, right);
+
+			AddNode(sensors, speed);
 		}
 
-		SNode node;
-		node.center = center;
-		node.lWeight = m_pUtil->GetUniformRandom(-MAX_SPEED, MAX_SPEED);
-		node.rWeight = m_pUtil->GetUniformRandom(-MAX_SPEED, MAX_SPEED);
-		node.activity = 1;
-		m_NetworkNodes.push_back(node);
 	}
-	*/
-	// pre-train
-	CreateTrainingData();
-	//Train();
+	else std::cout << "Unable to open file";
+
+	file.close();
+}
+
+void CController::SaveNodesToFile(std::string path)
+{
+	std::ofstream file;
+	file.open(path, std::ios_base::trunc);
+
+	for (auto it = m_NetworkNodes.begin(); it != m_NetworkNodes.end(); it++)
+	{
+
+		if (file.is_open())
+		{
+			for (int d = 0; d <= (int)Direction_Back; d++)
+			{
+				file << it->Center()[(EDirection)d] << " ";
+			}
+
+			file << it->Weight().Left() << " " << it->Weight().Right() << std::endl;
+		}
+		else std::cout << "Unable to open file";
+
+	}
+	
+	file.close();
 }
 
 void CController::DoCycle()
 {
 	// evaluate current sensor data
-	Int8 sensorData = m_pUtil->GetSensorData();
+	CSensorData sensorData = m_pUtil->GetSensorData();
 
 #ifdef SIM_ONLY
-	sensorData = m_TrainingData[round(m_pUtil->GetUniformRandom(0, m_TrainingData.size()-1))].sensors;
+	sensorData = CSensorData(Int8({ {
+			(int)round(m_pUtil->GetUniformRandom(0, 1024)),
+			(int)round(m_pUtil->GetUniformRandom(0, 1024)),
+			(int)round(m_pUtil->GetUniformRandom(0, 1024)),
+			(int)round(m_pUtil->GetUniformRandom(0, 1024)),
+			(int)round(m_pUtil->GetUniformRandom(0, 1024)),
+			(int)round(m_pUtil->GetUniformRandom(0, 1024))
+			} }));
 #endif
 
 	SIOSet result = Evaluate(sensorData);
@@ -51,7 +99,7 @@ void CController::DoCycle()
 	Adapt(ideal);
 
 	// check for surplus of nodes
-	if (m_NetworkNodes.size() > NODE_COUNT)
+	if (m_NetworkNodes.size() > m_pSettings->MaxNodes)
 	{
 		Forget();
 	}
@@ -59,187 +107,94 @@ void CController::DoCycle()
 
 void CController::Adapt(SIOSet ideal)
 {
-	SIOSet current = Evaluate(ideal.sensors);
+	double activation = 0;
+	CSpeed current;
 
 	for (int n = 0; n < m_NetworkNodes.size(); n++)
 	{
-		double act = RbfBase(ideal.sensors, m_NetworkNodes[n].center);
-		m_NetworkNodes[n].lWeight += (ideal.speed.left - current.speed.left) * act * m_LearnWeight;
-		m_NetworkNodes[n].rWeight += (ideal.speed.right - current.speed.right) * act * m_LearnWeight;
+		double act;
+		CSpeed out;
+		act = m_NetworkNodes[n].Calculate(ideal.sensors, out);
+		current += out;
+		activation += act;
 	}
-}
 
-double CController::RbfBase(Int8 sensors, Int8 nodeCenter)
-{
-	double sqdist = 0;
-	for (int i = 0; i < INPUT_COUNT; i++)
+	if (activation > 0)	current /= activation;
+
+	for (int n = 0; n < m_NetworkNodes.size(); n++)
 	{
-		double diff = (sensors.data[i] - nodeCenter.data[i]) / (double)SENSOR_VAL_RANGE;
-		sqdist += pow(diff, 2);
+		m_NetworkNodes[n].Adapt(ideal.sensors, ideal.speed - current);
 	}
-	return exp(-sqrt(sqdist) / m_Sigma);
 }
 
-void CController::CreateTrainingData()
+void CController::AddNode(CSensorData sensors, CSpeed speed)
 {
-	m_TrainingData.clear();
-
-	Int8 sensors;
-
-	// free field
-	sensors.data[0] = FAR_SENSOR_VAL;
-	sensors.data[1] = FAR_SENSOR_VAL;
-	sensors.data[2] = FAR_SENSOR_VAL;
-	sensors.data[3] = FAR_SENSOR_VAL;
-	sensors.data[4] = FAR_SENSOR_VAL;
-	sensors.data[5] = FAR_SENSOR_VAL;
-	sensors.data[6] = FAR_SENSOR_VAL;
-	sensors.data[7] = FAR_SENSOR_VAL;
-	m_TrainingData.push_back(SIOSet(sensors, SSpeed(MAX_SPEED, MAX_SPEED)));
-
-	// corridor
-	sensors.data[0] = DISTANCE_LIMIT;
-	sensors.data[1] = 0.5*DISTANCE_LIMIT;
-	sensors.data[2] = FAR_SENSOR_VAL;
-	sensors.data[3] = FAR_SENSOR_VAL;
-	sensors.data[4] = 0.5*DISTANCE_LIMIT;
-	sensors.data[5] = DISTANCE_LIMIT;
-	sensors.data[6] = FAR_SENSOR_VAL;
-	sensors.data[7] = FAR_SENSOR_VAL;
-	m_TrainingData.push_back(SIOSet(sensors, SSpeed(MAX_SPEED, MAX_SPEED)));
-
-	// back to dead end
-	sensors.data[0] = DISTANCE_LIMIT;
-	sensors.data[1] = FAR_SENSOR_VAL;
-	sensors.data[2] = FAR_SENSOR_VAL;
-	sensors.data[3] = FAR_SENSOR_VAL;
-	sensors.data[4] = FAR_SENSOR_VAL;
-	sensors.data[5] = DISTANCE_LIMIT;
-	sensors.data[6] = DISTANCE_LIMIT;
-	sensors.data[7] = DISTANCE_LIMIT;
-	m_TrainingData.push_back(SIOSet(sensors, SSpeed(MAX_SPEED, MAX_SPEED)));
-
-
-	// soft left corner
-	sensors.data[0] = DISTANCE_LIMIT;
-	sensors.data[1] = DISTANCE_LIMIT;
-	sensors.data[2] = FAR_SENSOR_VAL;
-	sensors.data[3] = FAR_SENSOR_VAL;
-	sensors.data[4] = FAR_SENSOR_VAL;
-	sensors.data[5] = FAR_SENSOR_VAL;
-	sensors.data[6] = FAR_SENSOR_VAL;
-	sensors.data[7] = FAR_SENSOR_VAL;
-	m_TrainingData.push_back(SIOSet(sensors, SSpeed(MAX_SPEED, 0.5*MAX_SPEED)));
-
-	// left corner
-	sensors.data[0] = DISTANCE_LIMIT;
-	sensors.data[1] = DISTANCE_LIMIT;
-	sensors.data[2] = DISTANCE_LIMIT;
-	sensors.data[3] = FAR_SENSOR_VAL;
-	sensors.data[4] = FAR_SENSOR_VAL;
-	sensors.data[5] = FAR_SENSOR_VAL;
-	sensors.data[6] = FAR_SENSOR_VAL;
-	sensors.data[7] = FAR_SENSOR_VAL;
-	m_TrainingData.push_back(SIOSet(sensors, SSpeed(MAX_SPEED, -MAX_SPEED)));
-
-	// frontal left
-	sensors.data[0] = FAR_SENSOR_VAL;
-	sensors.data[1] = FAR_SENSOR_VAL;
-	sensors.data[2] = DISTANCE_LIMIT;
-	sensors.data[3] = DISTANCE_LIMIT;
-	sensors.data[4] = FAR_SENSOR_VAL;
-	sensors.data[5] = FAR_SENSOR_VAL;
-	sensors.data[6] = FAR_SENSOR_VAL;
-	sensors.data[7] = FAR_SENSOR_VAL;
-	m_TrainingData.push_back(SIOSet(sensors, SSpeed(-0.5*MAX_SPEED, -MAX_SPEED)));
-
-	// frontal right
-	sensors.data[0] = FAR_SENSOR_VAL;
-	sensors.data[1] = FAR_SENSOR_VAL;
-	sensors.data[2] = FAR_SENSOR_VAL;
-	sensors.data[3] = DISTANCE_LIMIT;
-	sensors.data[4] = DISTANCE_LIMIT;
-	sensors.data[5] = FAR_SENSOR_VAL;
-	sensors.data[6] = FAR_SENSOR_VAL;
-	sensors.data[7] = FAR_SENSOR_VAL;
-	m_TrainingData.push_back(SIOSet(sensors, SSpeed(-MAX_SPEED, -0.5*MAX_SPEED)));
-
-	// soft right corner
-	sensors.data[0] = FAR_SENSOR_VAL;
-	sensors.data[1] = FAR_SENSOR_VAL;
-	sensors.data[2] = FAR_SENSOR_VAL;
-	sensors.data[3] = FAR_SENSOR_VAL;
-	sensors.data[4] = DISTANCE_LIMIT;
-	sensors.data[5] = DISTANCE_LIMIT;
-	sensors.data[6] = FAR_SENSOR_VAL;
-	sensors.data[7] = FAR_SENSOR_VAL;
-	m_TrainingData.push_back(SIOSet(sensors, SSpeed(0.5*MAX_SPEED, MAX_SPEED)));
-
-	// right corner
-	sensors.data[0] = FAR_SENSOR_VAL;
-	sensors.data[1] = FAR_SENSOR_VAL;
-	sensors.data[2] = FAR_SENSOR_VAL;
-	sensors.data[3] = DISTANCE_LIMIT;
-	sensors.data[4] = DISTANCE_LIMIT;
-	sensors.data[5] = DISTANCE_LIMIT;
-	sensors.data[6] = FAR_SENSOR_VAL;
-	sensors.data[7] = FAR_SENSOR_VAL;
-	m_TrainingData.push_back(SIOSet(sensors, SSpeed(-MAX_SPEED, MAX_SPEED)));
-}
-
-void CController::Train()
-{
-	for (int i = 0; i < TRAINING_CYCLES * m_TrainingData.size(); i++)
-	{
-		Adapt(m_TrainingData[i%m_TrainingData.size()]);
-	}
+	CNode node(sensors, speed);
+    
+    //if(dist > MAX_DIMENSION_DISTANCE || m_NetworkNodes.size() == 0)
+    {
+        m_NetworkNodes.push_back(node);
+        std::cout << "Added new ";
+		node.Dump();
+        std::cout << std::endl;
+    }
 }
 
 void CController::Forget()
 {
-	std::sort(m_NetworkNodes.begin(), m_NetworkNodes.end(), NodeActivitySort);
-	m_NetworkNodes.resize(NODE_COUNT);
+    printf("Too much knowledge! Must forget!");
+	std::sort(m_NetworkNodes.begin(), m_NetworkNodes.end(), CNode::CompareActivity);
+    
+    int count = 0;
+    for (auto it = m_NetworkNodes.begin(); it != m_NetworkNodes.end(); it++)
+    {
+        count++;
+        if(count > m_pSettings->MaxNodes)
+        {
+			std::cout << "Forgetting ";
+			it->Dump();
+			std::cout << std::endl;
+        }
+    }
+    
+	m_NetworkNodes.resize(m_pSettings->MaxNodes);
 }
 
-SIOSet CController::Evaluate(Int8 sensors)
+SIOSet CController::Evaluate(CSensorData sensors)
 {
-	SIOSet out;
-	out.sensors = sensors;
-	double totalActivation = 0;
+	double activation = 0;
+	CSpeed speed;
 
 	for (int n = 0; n < m_NetworkNodes.size(); n++)
 	{
-		SNode node = m_NetworkNodes[n];
-		double act = RbfBase(sensors, node.center);
-		m_NetworkNodes[n].activity *= NODE_ACTIVITY_DECAY_FACTOR;
-		m_NetworkNodes[n].activity += act;
-		out.speed.left += act * node.lWeight;
-		out.speed.right += act * node.rWeight;
-		totalActivation += act;
+		double act;
+		CSpeed out;
+		act = m_NetworkNodes[n].Activate(sensors, out);
+		speed += out;
+		activation += act;
 	}
 
-	if (totalActivation > 0)
-	{
-		out.speed.left /= totalActivation;
-		out.speed.right /= totalActivation;
-	}
+	if (activation > 0) speed /= activation;
+
+	SIOSet result;
+	result.sensors = sensors;
+	result.speed = speed;
 
 	// add extra nodes if activation is too low
-	if (totalActivation < TOTAL_ACTIVATION_LIMIT)
+	if (activation < TOTAL_ACTIVATION_LIMIT)
 	{
-		SNode newNode;
-		newNode.center = sensors;
-		newNode.lWeight = out.speed.left;
-		newNode.rWeight = out.speed.right;
-		newNode.activity = 10;
-		m_NetworkNodes.push_back(newNode);
+		AddNode(sensors, CSpeed());
 	}
 
-	return out;
+	return result;
 }
 
-// helper
-bool NodeActivitySort(SNode a, SNode b)
+void CController::ListNodes()
 {
-	return a.activity > b.activity;
+    std::cout << "These are my nodes:" << std::endl;
+    for (auto it = m_NetworkNodes.begin(); it != m_NetworkNodes.end(); it++)
+    {
+		it->Dump();
+        std::cout << std::endl;
+    }
 }
