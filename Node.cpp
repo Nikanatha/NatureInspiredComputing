@@ -7,6 +7,8 @@ double CNode::Sigma = 1;
 double CNode::LearningWeight = 0.3;
 const double CNode::DecayRate = 0.9;
 
+#define DIFF_FACTOR 0.0005
+
 CNode::CNode()
 {
 	m_Center = CSensorData();
@@ -76,7 +78,8 @@ double CNode::BaseFunction(CSensorData sensors)
 
 	for (auto sens = sensors.begin(); sens != sensors.end(); sens++)
 	{
-		sqdist += pow((sens->second.sensor - m_Center[sens->first].sensor)/1000, 2); // TODO: replae explicit 1000
+		int diff = sens->second.sensor - m_Center[sens->first].sensor;
+		sqdist += pow(DIFF_FACTOR*diff, 2); // TODO: replae explicit 1000
 	}
 
 	return exp(-sqrt(sqdist) / Sigma);
