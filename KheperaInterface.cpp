@@ -1,12 +1,17 @@
 #include "KheperaInterface.h"
 
 // For serial communication
-#ifndef SIM_ONLY
+#ifdef LINUX
 #include <termios.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/ioctl.h>
-#endif // !SIM_ONLY
+#endif // LINUX
+
+#ifdef WINDOWS
+
+#endif // WINDOWS
+
 
 #include <stdexcept>
 using std::runtime_error;
@@ -36,15 +41,21 @@ KheperaInterface::~KheperaInterface()
 	if (!simulate)
 	{
 		// Restore original serial configuration
-#ifndef SIM_ONLY
+#ifdef LINUX
 		tcsetattr(fileno(f), TCSANOW, &oldtio);
-#endif // !SIM_ONLY
+#endif // LINUX
+#ifdef WINDOWS
+		// close file
+		//khepStream.close();
+		CloseHandle(serial);
+#endif // WINDOWS
+
 	}
 }
 
 void KheperaInterface::setupSerial(const char* dev)
 {
-#ifndef SIM_ONLY
+#ifdef LINUX
 	f = fopen(dev, "r+");
 	if (!f)
 		throw runtime_error("Could not open device");
@@ -69,7 +80,36 @@ void KheperaInterface::setupSerial(const char* dev)
 	if (tcsetattr(fd,TCSANOW, &newtio) != 0)
 		throw runtime_error("Could not set serial configuration");
 
-#endif // !SIM_ONLY
+#endif // LINUX
+#ifdef WINDOWS
+	serial = CreateFile(L"COM5", GENERIC_READ | GENERIC_WRITE, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+
+	if(serial == NULL)
+		throw runtime_error("Could not open device");
+
+	// Do some basic settings
+	DCB serialParams = { 0 };
+	serialParams.DCBlength = sizeof(serialParams);
+
+	GetCommState(serial, &serialParams);
+	serialParams.BaudRate = 9600;
+	serialParams.ByteSize = 8;
+	serialParams.StopBits = 1;
+	serialParams.Parity = 0;
+	SetCommState(serial, &serialParams);
+
+	// Set timeouts
+	COMMTIMEOUTS timeout = { 0 };
+	timeout.ReadIntervalTimeout = 50;
+	timeout.ReadTotalTimeoutConstant = 50;
+	timeout.ReadTotalTimeoutMultiplier = 50;
+	timeout.WriteTotalTimeoutConstant = 50;
+	timeout.WriteTotalTimeoutMultiplier = 10;
+
+	SetCommTimeouts(serial, &timeout);
+
+#endif // WINDOWS
+
 }
 
 bool KheperaInterface::hasGripper()
@@ -80,12 +120,26 @@ bool KheperaInterface::hasCamera()
 
 void KheperaInterface::sendCommand(const char* cmd, char* answer, int maxAnswerLength)
 {
-#ifndef SIM_ONLY
+#ifdef LINUX
 	if (fputs(cmd, f) < 0)
 		throw runtime_error("Serial writing failed");
 	if (!fgets(answer, maxAnswerLength, f))
 		throw runtime_error("Serial reading failed");
-#endif // !SIM_ONLY
+#endif // LINUX
+
+#ifdef WINDOWS
+	BOOL bSuccess;
+
+	bSuccess = WriteFile(serial, cmd, strlen(cmd), 0, 0);
+	if(!bSuccess)
+		throw runtime_error("Serial writing failed");
+	
+	bSuccess = ReadFile(serial, answer, maxAnswerLength, 0, 0);
+	if (!bSuccess)
+		throw runtime_error("Serial reading failed");
+
+#endif // WINDOWS
+
 }		
 
 void KheperaInterface::setSpeedControllerPID(int proportional, int integral, int differential)

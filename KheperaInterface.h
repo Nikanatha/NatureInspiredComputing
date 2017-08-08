@@ -2,10 +2,17 @@
 #define __KHEPERAINTERFACE_H
 
 //#define SIM_ONLY
+#define WINDOWS
+//#define LINUX
 
-#ifndef SIM_ONLY 
+#ifdef LINUX 
 	#include <termios.h>
-#endif // !SIM_ONLY
+#endif // LINUX
+
+#ifdef WINDOWS
+//#include <fstream>
+#include <windows.h>
+#endif // WINDOWS
 
 
 #include <string>
@@ -28,10 +35,15 @@ typedef struct { int data[64]; } Int64;
 class KheperaInterface
 {
 private:
-	FILE* f;	
-		#ifndef SIM_ONLY 
-			struct termios oldtio;	
-		#endif // !SIM_ONLY
+#ifdef LINUX 
+	FILE* f;
+	struct termios oldtio;	
+#endif // LINUX
+
+#ifdef WINDOWS
+	HANDLE serial;
+#endif // WINDOWS
+
 
 	char buffer[10000];
 	bool simulate, hasgripper, hascamera;
@@ -41,12 +53,7 @@ private:
 	bool parseIntList(char* text, int expectedCount, int result[]);
 	
 public:
-		#ifndef SIM_ONLY 
-			KheperaInterface(const string& device = "/dev/ttyUSB0", bool simulate = false);
-		#else
-			KheperaInterface(const string& device = "/dev/ttyUSB0", bool simulate = true);
-		#endif // !SIM_ONLY
-
+	KheperaInterface(const string& device = "/dev/ttyUSB0", bool simulate = false);	
 	~KheperaInterface();
 
 	bool hasGripper();
