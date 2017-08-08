@@ -28,7 +28,7 @@ CController::CController(CKheperaUtility * pUtil, CRbfSettings* pSettings) : CTh
 				mod = div%steps;
 				div = div / steps;
 
-				center[(EDirection)(d-1)] = mod * 1000 / steps;
+				center[(EDirection)(d-1)] = mod * 1000 / (steps-1);
 			}
 
 			AddNode(center, CSpeed(m_pUtil->GetUniformRandom(0, 20), m_pUtil->GetUniformRandom(-PI / 2, PI / 2)));
