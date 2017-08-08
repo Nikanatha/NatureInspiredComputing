@@ -11,19 +11,19 @@
 
 CSensorData::CSensorData(Int8 rawSensors)
 {
-	(*this)[Direction_Left] = LeftSide(rawSensors);
-	(*this)[Direction_FrontLeft] = LeftFront(rawSensors);
-	(*this)[Direction_Front] = Front(rawSensors);
-	(*this)[Direction_FrontRight] = RightFront(rawSensors);
-	(*this)[Direction_Right] = RightSide(rawSensors);
-	(*this)[Direction_Back] = Back(rawSensors);
+	(*this)[Direction_Left] = SValue(LeftSide(rawSensors));
+	(*this)[Direction_FrontLeft] = SValue(LeftFront(rawSensors));
+	(*this)[Direction_Front] = SValue(Front(rawSensors));
+	(*this)[Direction_FrontRight] = SValue(RightFront(rawSensors));
+	(*this)[Direction_Right] = SValue(RightSide(rawSensors));
+	(*this)[Direction_Back] = SValue(Back(rawSensors));
 }
 
 void CSensorData::Dump()
 {
 	for (int d = 0; d <= (int)Direction_Back; d++)
 	{
-		std::cout << " " << std::setfill(' ') << std::setw(4) << this->at((EDirection)d);
+		std::cout << " " << std::setfill(' ') << std::setw(4) << this->at((EDirection)d).sensor;
 	}
 }
 
@@ -31,12 +31,23 @@ bool CSensorData::Collision()
 {
 	for (auto it = this->begin(); it != this->end(); it++)
 	{
-		if (it->second == Proximity_Collision) return true;
+		if (it->second.proximity == Proximity_Collision) return true;
 	}
 	return false;
 }
 
-EProximity CSensorData::Front(Int8 raw)
+CSensorData CSensorData::GradientFrom(CSensorData previous)
+{
+	CSensorData gradient;
+	for (auto it = this->begin(); it != this->end(); it++)
+	{
+		EDirection dir = it->first;
+		gradient[dir] = SValue(it->second.sensor - previous[dir].sensor);
+	}
+	return gradient;
+}
+
+int CSensorData::Front(Int8 raw)
 {
 	double val = 0;
 
@@ -45,30 +56,30 @@ EProximity CSensorData::Front(Int8 raw)
 	val = fmax(val, raw.data[3]);
 	val = fmax(val, raw.data[4] * NEIGHBOR_WEIGHT);
 
-	return FromValue(round(val));
+	return round(val);
 }
 
-EProximity CSensorData::Back(Int8 raw)
+int CSensorData::Back(Int8 raw)
 {
 	double val = 0;
 
 	val = fmax(val, raw.data[6]);
 	val = fmax(val, raw.data[7]);
-	
-	return FromValue(round(val));
+
+	return round(val);
 }
 
-EProximity CSensorData::LeftSide(Int8 raw)
+int CSensorData::LeftSide(Int8 raw)
 {
 	double val = 0;
 
 	val = fmax(val, raw.data[0]);
 	val = fmax(val, raw.data[1] * NEIGHBOR_WEIGHT);
 
-	return FromValue(round(val));
+	return round(val);
 }
 
-EProximity CSensorData::LeftFront(Int8 raw)
+int CSensorData::LeftFront(Int8 raw)
 {
 	double val = 0;
 
@@ -76,20 +87,20 @@ EProximity CSensorData::LeftFront(Int8 raw)
 	val = fmax(val, raw.data[1]);
 	val = fmax(val, raw.data[2] * NEIGHBOR_WEIGHT);
 
-	return FromValue(round(val));
+	return round(val);
 }
 
-EProximity CSensorData::RightSide(Int8 raw)
+int CSensorData::RightSide(Int8 raw)
 {
 	double val = 0;
 
 	val = fmax(val, raw.data[4] * NEIGHBOR_WEIGHT);
 	val = fmax(val, raw.data[5]);
-	
-	return FromValue(round(val));
+
+	return round(val);
 }
 
-EProximity CSensorData::RightFront(Int8 raw)
+int CSensorData::RightFront(Int8 raw)
 {
 	double val = 0;
 
@@ -97,16 +108,17 @@ EProximity CSensorData::RightFront(Int8 raw)
 	val = fmax(val, raw.data[4]);
 	val = fmax(val, raw.data[5] * NEIGHBOR_WEIGHT);
 
-	return FromValue(round(val));
+	return round(val);
 }
 
 
-EProximity CSensorData::FromValue(double sensorVal)
+EProximity SValue::ProximityFromValue(double sensorVal)
 {
 	if (sensorVal > PROX_COLLISION_VALUE) return Proximity_Collision;
 	if (sensorVal > PROX_CLOSE_VALUE) return Proximity_Close;
 	if (sensorVal > PROX_NEAR_VALUE) return Proximity_Near;
-	return Proximity_Clear;
+	if (sensorVal > 0) return Proximity_Clear;
+	return Proximity_Retreat;
 }
 
 EDirection AngleToDirection(double angle)

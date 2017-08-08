@@ -14,7 +14,7 @@ CSpeed::CSpeed(double velocity, double angle)
 	SetAngle(angle);
 }
 
-double CSpeed::Velocity()
+double CSpeed::Velocity() const
 {
 	return m_Velocity;
 }
@@ -29,7 +29,7 @@ void CSpeed::IncreaseVelocity(double v)
 	SetVelocity(m_Velocity + v);
 }
 
-double CSpeed::Angle()
+double CSpeed::Angle() const
 {
 	return m_Angle;
 }
@@ -44,12 +44,12 @@ void CSpeed::IncreaseAngle(double a)
 	SetAngle(m_Angle + a);
 }
 
-double CSpeed::Left()
+double CSpeed::Left() const
 {
 	return m_Velocity * (cos(m_Angle) - sin(m_Angle));
 }
 
-double CSpeed::Right()
+double CSpeed::Right() const
 {
 	return m_Velocity * (cos(m_Angle) + sin(m_Angle));
 }
@@ -115,4 +115,9 @@ CSpeed & CSpeed::operator/=(double factor)
 {
 	SetVelocity(this->Velocity()/factor);
 	return *this;
+}
+
+bool CSpeed::operator<(const CSpeed & other) const
+{
+	return this->Velocity() < other.Velocity();
 }

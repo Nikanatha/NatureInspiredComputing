@@ -18,31 +18,42 @@ EDirection AngleToDirection(double angle);
 
 enum EProximity
 {
+	Proximity_Retreat = -1,
 	Proximity_Clear = 0,
 	Proximity_Near = 1,
 	Proximity_Close = 2,
 	Proximity_Collision = 3
 };
 
-class CSensorData : public std::map<EDirection, EProximity>
+struct SValue
+{
+	int sensor;
+	EProximity proximity;
+	SValue() { sensor = 0; proximity = ProximityFromValue(0); }
+	SValue(int s) { sensor = s; proximity = ProximityFromValue(s); }
+
+private:
+	EProximity ProximityFromValue(double sensorVal);
+};
+
+class CSensorData : public std::map<EDirection, SValue>
 {
 public:
 	CSensorData(Int8 rawSensors = { {0, 0, 0, 0, 0, 0, 0, 0} });
 	void Dump();
 	bool Collision();
 
+	CSensorData GradientFrom(CSensorData previous);
+
 private:
-	EProximity Front(Int8 raw);
-	EProximity Back(Int8 raw);
+	int Front(Int8 raw);
+	int Back(Int8 raw);
 
-	EProximity LeftSide(Int8 raw);
-	EProximity LeftFront(Int8 raw);
+	int LeftSide(Int8 raw);
+	int LeftFront(Int8 raw);
 
-	EProximity RightSide(Int8 raw);
-	EProximity RightFront(Int8 raw);
-	
-
-	EProximity FromValue(double sensorVal);
+	int RightSide(Int8 raw);
+	int RightFront(Int8 raw);
 };
 
 #endif

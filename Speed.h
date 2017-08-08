@@ -7,16 +7,16 @@ public:
 	CSpeed();
 	CSpeed(double velocity, double angle);
 
-	double Velocity();
+	double Velocity() const;
 	void SetVelocity(double v);
 	void IncreaseVelocity(double v);
 
-	double Angle();
+	double Angle() const;
 	void SetAngle(double a);
 	void IncreaseAngle(double a);
 
-	double Left();
-	double Right();
+	double Left() const;
+	double Right() const;
 	void SetComponents(double left, double right);
 
 	CSpeed operator+(CSpeed other);
@@ -28,6 +28,8 @@ public:
 	CSpeed& operator-=(CSpeed other);
 	CSpeed& operator*=(double factor);
 	CSpeed& operator/=(double factor);
+
+	bool operator<(const CSpeed& other) const;
 
 private:
 	double m_Velocity;

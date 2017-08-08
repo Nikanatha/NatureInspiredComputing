@@ -28,11 +28,11 @@ void CController::LoadNodesFromFile(std::string path)
 			std::stringstream ss(line);
 
 			CSensorData sensors;
-			int prox;
+			int sval;
 			for (int d = 0; d <= (int)Direction_Back; d++)
 			{
-				ss >> prox;
-				sensors[(EDirection)d] = (EProximity)prox;
+				ss >> sval;
+				sensors[(EDirection)d] = SValue(sval);
 			}
 
 			CSpeed speed;
@@ -63,7 +63,7 @@ void CController::SaveNodesToFile(std::string path)
 		{
 			for (int d = 0; d <= (int)Direction_Back; d++)
 			{
-				file << it->Center()[(EDirection)d] << " ";
+				file << it->Center()[(EDirection)d].sensor << " ";
 			}
 
 			file << it->Weight().Left() << " " << it->Weight().Right() << std::endl;
@@ -92,7 +92,7 @@ void CController::DoCycle()
 #endif
 
 	SIOSet result = Evaluate(sensorData);
-	m_pUtil->SetNetworkResult(result);
+	m_pUtil->AddNetworkResult(result);
 
 	// get value system's correction
 	SIOSet ideal = m_pUtil->GetLastCorrectedResult();

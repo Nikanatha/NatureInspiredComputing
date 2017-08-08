@@ -54,11 +54,11 @@ void CKheperaUtility::SetSpeed(int left, int right)
 	}	
 }
 
-void CKheperaUtility::SetNetworkResult(SIOSet results)
+void CKheperaUtility::AddNetworkResult(SIOSet results)
 {
-	void* t = this;
+	//void* t = this;
 	ScopedMutexLocker lock(m_ResultMutex);
-	m_LastResult = results;
+	m_NetworkResults.push_back(results);
 
 	// output info
 	if (m_bVerbose)
@@ -68,20 +68,30 @@ void CKheperaUtility::SetNetworkResult(SIOSet results)
         std::cout << " ==> Angle: " << results.speed.Angle() << " Speed: " << results.speed.Velocity();
         std::cout << std::endl;
 	}
+
+	while (m_NetworkResults.size() > HISTORY_LENGTH)
+	{
+		m_NetworkResults.pop_back();
+	}
 }
 
 SIOSet CKheperaUtility::GetLastNetworkResult()
 {
-	void* t = this;
+	//void* t = this;
 	ScopedMutexLocker lock(m_ResultMutex);
-	return m_LastResult;
+	return (m_NetworkResults.back());
+}
+
+std::vector<SIOSet> CKheperaUtility::GetNetworkResults()
+{
+	ScopedMutexLocker lock(m_ResultMutex);
+	return m_NetworkResults;
 }
 
 void CKheperaUtility::SetCorrectedResult(SIOSet results)
 {
 	ScopedMutexLocker lock(m_CorrectedResultMutex);
 	m_LastCorrectedResult = results;
-
 
 	// output info
 	if (m_bVerbose)

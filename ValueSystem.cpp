@@ -8,38 +8,119 @@ CValueSystem::CValueSystem(CKheperaUtility * pUtil) : CThreadableBase(pUtil)
 void CValueSystem::DoCycle()
 {
 	// evaluate current results
-	SIOSet controllerResults = m_pUtil->GetLastNetworkResult();
+	std::vector<SIOSet> controllerResults = m_pUtil->GetNetworkResults();
+	if (controllerResults.size() < 2) return;
 	SIOSet correction = Correct(controllerResults);
 	m_pUtil->SetCorrectedResult(correction);
 }
 
-SIOSet CValueSystem::Correct(SIOSet calculated)
+SIOSet CValueSystem::Correct(std::vector<SIOSet> history)
 {
-	SIOSet correction = calculated;
+	SIOSet correction = history.front();
+	CSensorData grad = history[1].sensors.GradientFrom(correction.sensors);
 
-	// evaluate sensor data in movement direction
-	EProximity proximity;
-	proximity = calculated.sensors[AngleToDirection(calculated.speed.Angle())];
+	std::map<CSpeed, double> speedFitness;
 
-    if(calculated.speed.Velocity() == 0) correction.speed.IncreaseVelocity(m_pUtil->GetUniformRandom(0.5, 1));
+	// insert controller's results
+	speedFitness[correction.speed] = Fitness(correction.sensors, grad, correction.speed);
 
-    if(calculated.sensors.Collision() && calculated.sensors[Direction_Back] != Proximity_Collision)
-    {
-        correction.speed.SetVelocity(-1);
-    }
+	// generate alternatives
+	CSpeed alt;
+	
+		// more left
+	alt = correction.speed;
+	alt.IncreaseAngle(m_pUtil->GetUniformRandom());
+	speedFitness[alt] = Fitness(correction.sensors,
+		PredictChange(correction.sensors, alt),
+		alt);
 
-	if (proximity > Proximity_Near)
-	{	// don't go there, you'll collide!
-		// go anywhere else, just not there. Preferably forward-ish.
-		correction.speed.IncreaseAngle(pow(-1, round(m_pUtil->GetUniformRandom(0, 1)))*(PI / 6 + m_pUtil->GetUniformRandom(0, PI / 6)));
+		// more right
+	alt = correction.speed;
+	alt.IncreaseAngle(-m_pUtil->GetUniformRandom());
+	speedFitness[alt] = Fitness(correction.sensors,
+		PredictChange(correction.sensors, alt),
+		alt);
+
+		// more speed
+	alt = correction.speed;
+	alt *= 1 + m_pUtil->GetUniformRandom();
+	speedFitness[alt] = Fitness(correction.sensors,
+		PredictChange(correction.sensors, alt),
+		alt);
+
+		// less speed
+	alt = correction.speed;
+	alt *= m_pUtil->GetUniformRandom();
+	speedFitness[alt] = Fitness(correction.sensors,
+		PredictChange(correction.sensors, alt),
+		alt);
+
+	// choose best solution
+	for (auto it = speedFitness.begin(); it != speedFitness.end(); it++)
+	{
+		if (it->second < speedFitness[correction.speed]) correction.speed = it->first;
 	}
-    else if (calculated.speed.Velocity() < m_pUtil->MaxSpeed)
-	{	// you're fine, go faster
-		correction.speed *= 1.2;
-	}
 
-    if(abs(correction.speed.Angle())) correction.speed.SetAngle(m_pUtil->GetUniformRandom(-PI/2, PI/2));
-	if (correction.speed.Velocity() > m_pUtil->MaxSpeed) correction.speed.SetVelocity(m_pUtil->MaxSpeed);
-    
 	return correction;
+}
+
+double CValueSystem::Fitness(CSensorData old, CSensorData change, CSpeed speed)
+{
+	// maximize velocity
+	// minimize total change
+	// weight directions in a way that front should not increase, neither should back (to prevent driving backwards)
+
+	double speedPart;
+	speedPart = speed.Velocity() * 1; // expect values of up to 100
+
+
+	double frontPart;
+	frontPart = (change[Direction_FrontLeft].sensor + change[Direction_Front].sensor + change[Direction_FrontRight].sensor) * 2; // expect values of up to +- 3000
+
+	double sidePart;
+	sidePart = (change[Direction_Left].sensor + change[Direction_Right].sensor) * 1; // expect values of up to +- 2000
+
+	double backPart;
+	backPart = change[Direction_Back].sensor * 5; // expect alues of up to +- 1000
+
+	return - speedPart + frontPart + sidePart + backPart;
+}
+
+CSensorData CValueSystem::PredictChange(CSensorData start, CSpeed speed)
+{
+	// very basic, naive assumptions:
+		// linear (instead of exponential) sensor value increase for approaching
+		// turning results in shifting the sensor values around
+
+	CSensorData next;
+
+	// straight component
+	double straight = (speed.Left() + speed.Right()) / 2;
+
+	// increases front and side front, decrease back
+	EDirection dir;
+	dir = Direction_FrontLeft;
+	start[dir] = SValue(start[dir].sensor + straight);
+	dir = Direction_Front;
+	start[dir] = SValue(start[dir].sensor + straight);
+	dir = Direction_FrontRight;
+	start[dir] = SValue(start[dir].sensor + straight);
+
+	dir = Direction_Back;
+	start[dir] = SValue(start[dir].sensor - straight);
+
+	// turning component
+	EDirection turnDir;
+	turnDir = AngleToDirection(speed.Angle());
+	
+	int limit = Direction_Back + 1;
+
+	for (auto it = start.begin(); it != start.end(); it++)
+	{
+		EDirection dir = it->first;
+		next[(EDirection)(((int)dir + limit + ((int)turnDir - (int)Direction_Front))%limit)] = SValue(it->second.sensor);
+	}
+
+	// return gradient
+	return next.GradientFrom(start);
 }

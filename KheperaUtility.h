@@ -3,10 +3,13 @@
 
 #include <random>
 #include <mutex>
+#include <vector>
 
 #include "Common.h"
 #include "SensorData.h"
 #include "Speed.h"
+
+#define HISTORY_LENGTH 10
 
 // types
 class KheperaInterface;
@@ -33,8 +36,9 @@ public:
 	void SetSpeed(int left, int right);
 
 	// for controller output
-	void SetNetworkResult(SIOSet results);
+	void AddNetworkResult(SIOSet results);
 	SIOSet GetLastNetworkResult();
+	std::vector<SIOSet> GetNetworkResults();
 
 	// for value system output 
 	void SetCorrectedResult(SIOSet results);
@@ -49,7 +53,8 @@ public:
 private:
 	KheperaInterface* m_pKhep;
 	std::default_random_engine m_rGenerator;
-	SIOSet m_LastResult;
+
+	std::vector<SIOSet> m_NetworkResults;
 	SIOSet m_LastCorrectedResult;
 
 	std::mutex m_KheperaMutex;

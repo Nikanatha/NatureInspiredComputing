@@ -12,8 +12,9 @@ protected:
 	virtual void DoCycle();
 
 private:
-	SIOSet Correct(SIOSet calculated);
-	
+	SIOSet Correct(std::vector<SIOSet> history);
+	double Fitness(CSensorData old, CSensorData change, CSpeed speed);
+	CSensorData PredictChange(CSensorData start, CSpeed speed);
 };
 
 #endif

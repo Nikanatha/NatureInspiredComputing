@@ -76,7 +76,7 @@ double CNode::BaseFunction(CSensorData sensors)
 
 	for (auto sens = sensors.begin(); sens != sensors.end(); sens++)
 	{
-		sqdist += pow(sens->second - m_Center[sens->first], 2);
+		sqdist += pow((sens->second.sensor - m_Center[sens->first].sensor)/1000, 2); // TODO: replae explicit 1000
 	}
 
 	return exp(-sqrt(sqdist) / Sigma);
