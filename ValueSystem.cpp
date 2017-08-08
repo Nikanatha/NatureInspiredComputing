@@ -40,7 +40,7 @@ SIOSet CValueSystem::Correct(std::vector<SIOSet> history)
 	speedFitness[alt] = Fitness(correction.sensors,
 		PredictChange(correction.sensors, alt),
 		alt);
-
+	/*
 		// more speed
 	alt = correction.speed;
 	alt *= 1 + m_pUtil->GetUniformRandom();
@@ -54,7 +54,7 @@ SIOSet CValueSystem::Correct(std::vector<SIOSet> history)
 	speedFitness[alt] = Fitness(correction.sensors,
 		PredictChange(correction.sensors, alt),
 		alt);
-
+		*/
 	// choose best solution
 	for (auto it = speedFitness.begin(); it != speedFitness.end(); it++)
 	{
@@ -71,7 +71,7 @@ double CValueSystem::Fitness(CSensorData old, CSensorData change, CSpeed speed)
 	// weight directions in a way that front should not increase, neither should back (to prevent driving backwards)
 
 	double speedPart;
-	speedPart = exp(-speed.Velocity()); // expect values of up to 100
+	speedPart = 0; //exp(-speed.Velocity()); // expect values of up to 100
 
 
 	double frontPart;
