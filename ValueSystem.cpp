@@ -71,7 +71,7 @@ double CValueSystem::Fitness(CSensorData old, CSensorData change, CSpeed speed)
 	// weight directions in a way that front should not increase, neither should back (to prevent driving backwards)
 
 	double speedPart;
-	speedPart = speed.Velocity() * 1; // expect values of up to 100
+	speedPart = exp(-speed.Velocity()); // expect values of up to 100
 
 
 	double frontPart;
