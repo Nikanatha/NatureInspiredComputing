@@ -2,7 +2,7 @@
 
 #include "Speed.h"
 
-#define MAX_SPEED
+#define MAX_SPEED 5
 
 CSpeed::CSpeed()
 {
