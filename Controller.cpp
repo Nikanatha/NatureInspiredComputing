@@ -5,7 +5,7 @@
 #include <iostream>
 #include "Controller.h"
 
-#define TOTAL_ACTIVATION_LIMIT 0.5
+#define TOTAL_ACTIVATION_LIMIT 1
 
 CController::CController(CKheperaUtility * pUtil, CRbfSettings* pSettings) : CThreadableBase(pUtil)
 {

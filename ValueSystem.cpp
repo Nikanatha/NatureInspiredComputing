@@ -92,6 +92,7 @@ CSensorData CValueSystem::PredictChange(CSensorData start, CSpeed speed)
 		// linear (instead of exponential) sensor value increase for approaching
 		// turning results in shifting the sensor values around
 
+	CSensorData moved;
 	CSensorData next;
 
 	// straight component
@@ -100,14 +101,19 @@ CSensorData CValueSystem::PredictChange(CSensorData start, CSpeed speed)
 	// increases front and side front, decrease back
 	EDirection dir;
 	dir = Direction_FrontLeft;
-	start[dir] = SValue(start[dir].sensor + straight);
+	moved[dir] = SValue(start[dir].sensor + straight);
 	dir = Direction_Front;
-	start[dir] = SValue(start[dir].sensor + straight);
+	moved[dir] = SValue(start[dir].sensor + straight);
 	dir = Direction_FrontRight;
-	start[dir] = SValue(start[dir].sensor + straight);
+	moved[dir] = SValue(start[dir].sensor + straight);
 
 	dir = Direction_Back;
-	start[dir] = SValue(start[dir].sensor - straight);
+	moved[dir] = SValue(start[dir].sensor - straight);
+
+	dir = Direction_Left;
+	moved[dir] = SValue(start[dir].sensor);
+	dir = Direction_Right;
+	moved[dir] = SValue(start[dir].sensor);
 
 	// turning component
 	EDirection turnDir;
