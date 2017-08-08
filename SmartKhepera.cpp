@@ -49,7 +49,7 @@ void CSmartKhepera::StopRobot()
 	m_pControl->Stop();
 	m_pUtil->SetSpeed(0, 0);
     
-    m_pControl->ListNodes();
+    //m_pControl->ListNodes();
 }
 
 void CSmartKhepera::StartLearning()

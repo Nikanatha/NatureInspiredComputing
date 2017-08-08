@@ -7,7 +7,7 @@ double CNode::Sigma = 1;
 double CNode::LearningWeight = 0.3;
 const double CNode::DecayRate = 0.9;
 
-#define DIFF_FACTOR 0.0005
+#define DIFF_FACTOR 0.05
 
 CNode::CNode()
 {
