@@ -13,10 +13,10 @@ CController::CController(CKheperaUtility * pUtil, CRbfSettings* pSettings) : CTh
 
 	// generate nodes
 	bool gen = true;
-	int steps = 4;
+	int steps = 3;
 	if (gen)
 	{
-		for (int i = 0; i < pow(steps, 6); i++)
+		for (int i = 0; i < pow(steps, (int)Direction_Back + 1); i++)
 		{
 			CSensorData center;
 			int mod;
@@ -147,7 +147,7 @@ void CController::Adapt(SIOSet ideal)
 
 	for (int n = 0; n < m_NetworkNodes.size(); n++)
 	{
-		m_NetworkNodes[n].Adapt(ideal.sensors, ideal.speed - current);
+		m_NetworkNodes[n].Adapt(ideal.sensors, current - ideal.speed);
 	}
 }
 
