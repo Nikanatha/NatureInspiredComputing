@@ -5,11 +5,35 @@
 #include <iostream>
 #include "Controller.h"
 
-#define TOTAL_ACTIVATION_LIMIT 1
+#define TOTAL_ACTIVATION_LIMIT 0.5
 
 CController::CController(CKheperaUtility * pUtil, CRbfSettings* pSettings) : CThreadableBase(pUtil)
 {
 	m_pSettings = pSettings;
+
+	// generate nodes
+	bool gen = true;
+	int steps = 4;
+	if (gen)
+	{
+		for (int i = 0; i < pow(steps, 6); i++)
+		{
+			CSensorData center;
+			int mod;
+			int div;
+
+			div = i;
+			for (int d = (int)Direction_FrontLeft; d <= (int)Direction_Back; d++)
+			{
+				mod = div%steps;
+				div = div / steps;
+
+				center[(EDirection)d] = mod * 1000 / steps;
+			}
+
+			AddNode(center, CSpeed(m_pUtil->GetUniformRandom(0, 20), m_pUtil->GetUniformRandom(-PI / 2, PI / 2)));
+		}
+	}
 }
 
 void CController::LoadNodesFromFile(std::string path)
@@ -101,7 +125,7 @@ void CController::DoCycle()
 	// check for surplus of nodes
 	if (m_NetworkNodes.size() > m_pSettings->MaxNodes)
 	{
-		Forget();
+		//Forget();
 	}
 }
 
@@ -134,9 +158,9 @@ void CController::AddNode(CSensorData sensors, CSpeed speed)
     //if(dist > MAX_DIMENSION_DISTANCE || m_NetworkNodes.size() == 0)
     {
         m_NetworkNodes.push_back(node);
-        std::cout << "Added new ";
-		node.Dump();
-        std::cout << std::endl;
+  //      std::cout << "Added new ";
+		//node.Dump();
+  //      std::cout << std::endl;
     }
 }
 
@@ -183,7 +207,7 @@ SIOSet CController::Evaluate(CSensorData sensors)
 	// add extra nodes if activation is too low
 	if (activation < TOTAL_ACTIVATION_LIMIT)
 	{
-		AddNode(sensors, CSpeed());
+		//AddNode(sensors, CSpeed());
 	}
 
 	return result;
