@@ -2,6 +2,8 @@
 
 #include "Speed.h"
 
+#define MAX_SPEED
+
 CSpeed::CSpeed()
 {
 	SetVelocity(10);
@@ -21,7 +23,7 @@ double CSpeed::Velocity() const
 
 void CSpeed::SetVelocity(double v)
 {
-	m_Velocity = v;
+	m_Velocity = fmin(v, MAX_SPEED);
 }
 
 void CSpeed::IncreaseVelocity(double v)

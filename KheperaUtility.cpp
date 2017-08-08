@@ -65,7 +65,7 @@ void CKheperaUtility::AddNetworkResult(SIOSet results)
 	{
         std::cout << "Controller's results:" << std::endl;
 		results.sensors.Dump();        
-        std::cout << " ==> Angle: " << results.speed.Angle() << " Speed: " << results.speed.Velocity();
+        std::cout << " ==> Angle: " << results.speed.Angle() << " Speed: " << round(results.speed.Velocity());
         std::cout << std::endl;
 	}
 
@@ -99,7 +99,7 @@ void CKheperaUtility::SetCorrectedResult(SIOSet results)
 	{
         std::cout << "ValueSystem's results:" << std::endl;
 		results.sensors.Dump();
-		std::cout << " ==> Angle: " << results.speed.Angle() << " Speed: " << results.speed.Velocity();
+		std::cout << " ==> Angle: " << results.speed.Angle() << " Speed: " << round(results.speed.Velocity());
         std::cout << std::endl;
 	}
 }
