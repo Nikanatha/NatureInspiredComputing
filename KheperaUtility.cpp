@@ -79,6 +79,7 @@ SIOSet CKheperaUtility::GetLastNetworkResult()
 {
 	//void* t = this;
 	ScopedMutexLocker lock(m_ResultMutex);
+	if (m_NetworkResults.size() == 0) return SIOSet();
 	return (m_NetworkResults.back());
 }
 
