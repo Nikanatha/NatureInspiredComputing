@@ -71,7 +71,7 @@ void CKheperaUtility::AddNetworkResult(SIOSet results)
 
 	while (m_NetworkResults.size() > HISTORY_LENGTH)
 	{
-		m_NetworkResults.pop_back();
+		m_NetworkResults.erase(m_NetworkResults.begin());
 	}
 }
 
