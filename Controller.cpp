@@ -23,7 +23,7 @@ CController::CController(CKheperaUtility * pUtil, CRbfSettings* pSettings) : CTh
 			int div;
 
 			div = i;
-			for (int d = (int)Direction_FrontLeft; d <= (int)Direction_Back; d++)
+			for (int d = (int)Direction_FrontLeft; d <= (int)Direction_Back+1; d++)
 			{
 				mod = div%steps;
 				div = div / steps;
