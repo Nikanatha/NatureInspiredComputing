@@ -63,6 +63,7 @@ void CSpeed::SetComponents(double left, double right)
 
 	m_Angle = atan2(turn, straight);
 	m_Velocity = straight / cos(m_Angle);
+	if (m_Velocity == 0) m_Velocity = turn / sin(m_Angle);
 }
 
 CSpeed CSpeed::operator+(CSpeed other)
