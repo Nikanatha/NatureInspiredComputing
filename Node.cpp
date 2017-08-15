@@ -53,14 +53,16 @@ void CNode::Adapt(CSensorData input, CSpeed difference)
 	m_Weight += change;
 }
 
-void CNode::Adapt(CSensorData input, CSpeed old, CSpeed better)
+void CNode::Adapt(CSensorData input, CSpeed old, CSpeed better, double totalActivity)
 {
 	double activation;
 	CSpeed output;
 	activation = Calculate(input, output);
+	
+	double strength = LearningWeight * activation / totalActivity;
 
-	double vChange = (better.Velocity() - old.Velocity()) * activation * LearningWeight;
-	double aChange = (better.Angle() - old.Angle()) * activation * LearningWeight;
+	double vChange = (better.Velocity() - old.Velocity()) * strength;
+	double aChange = (better.Angle() - old.Angle()) * strength;
 	m_Weight.IncreaseVelocity(vChange);
 	m_Weight.IncreaseAngle(aChange);
 }

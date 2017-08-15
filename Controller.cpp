@@ -171,7 +171,7 @@ void CController::Adapt(SIOSet ideal)
 	for (int n = 0; n < m_NetworkNodes.size(); n++)
 	{
 		//m_NetworkNodes[n].Adapt(ideal.sensors, ideal.speed - current);
-		m_NetworkNodes[n].Adapt(ideal.sensors, current, ideal.speed);
+		m_NetworkNodes[n].Adapt(ideal.sensors, current, ideal.speed, activation);
 	}
 }
 

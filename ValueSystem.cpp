@@ -184,7 +184,7 @@ std::pair<CSpeed, double> CValueSystem::FitSpeed(CSensorData start, CSpeed speed
 	}
 	catch(...)
 	{
-		return std::make_pair(CSpeed(0,0), 10000);
+		return std::make_pair(CSpeed(0,0), 100000);
 	}
 
 	return std::make_pair(speed, fit);
