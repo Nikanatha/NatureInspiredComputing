@@ -10,8 +10,8 @@ import numpy as np
 import re
 #import map
 
-#path = "/home/jakob/studium/master3/NIC/FORK/NatureInspiredComputing/babble1.txt"
-path = "/home/jh432/NatureInspiredComputing/babble1.txt"
+path = "/home/jakob/studium/master3/NIC/FORK/NatureInspiredComputing/babble1.txt"
+#path = "/home/jh432/NatureInspiredComputing/babble1.txt"
 
 
 controller = []
@@ -62,7 +62,9 @@ def burnflag():
 
 with open(path, "r") as fileread:
     #read line by line
+    valuesysteminputtemp = []
     for line in fileread:
+        #valuesysteminputtemp = []
         #check for added controller Value set the flags
         check(line)
         if (controllerlineflag == 1) and (datalineflag ==1):
@@ -73,6 +75,10 @@ with open(path, "r") as fileread:
             append.append( [int(s) for s in splitline[0].split() if s.isdigit()] )
             append.append( re.findall(r"[-+]?\d*\.\d+|\d+", splitline[1]))
             controller.append(np.hstack(append))
+            #writes the value Systemtmp to the array
+            if len(valuesysteminputtemp):     
+                valueSystem.append(np.asarray(valuesysteminputtemp[0].astype(np.float)))
+                valuesysteminputtemp = []
             burnflag()
         elif (nodeaddlineflag == 1):
             burnflag()
@@ -81,9 +87,10 @@ with open(path, "r") as fileread:
             append = []
             append.append( [int(s) for s in splitline[0].split() if s.isdigit()] )
             append.append( re.findall(r"[-+]?\d*\.\d+|\d+", splitline[1]))
-            valueSystem.append(np.hstack(append))
+            #append.append( re.findall(r"[-+]?(\d+(\.\d*)?|\.\d+)([eE][-+]?\d+)?", splitline[1]))
+            #print np.hstack(append)
+            valuesysteminputtemp.append(np.hstack(append))
             burnflag()
-
 
 
 for iter in range (0,8):
@@ -103,55 +110,28 @@ controllerangle = controlleranglearray.astype(np.float)
 valueSystemangle = valueSystemanglearray.astype(np.float)
 
 
-"""
-#speeddelta =map(float.__sub__, controllerspeed , valueSystemspeed)
-#angledelte =map(float.__sub__, controllerangle , valueSystemangle)
+print len(valueSystemArray)
+print len(controllerspeed)
+
+speeddelta =map(float.__sub__, controllerspeed , valueSystemspeed)
+angledelte =map(float.__sub__, controllerangle , valueSystemangle)
 fig, axs = plt.subplots(2, 2)
-#axs[0, 0].plot(np.arange(0,len(speeddelta),1),speeddelta)
-#axs[0, 0].set_title("controllerspeed-valuesystemspeed")
+axs[0, 0].plot(np.arange(0,len(speeddelta),1),speeddelta)
+axs[0, 0].set_title("controllerspeed-valuesystemspeed")
 axs[0, 1].plot(np.arange(0,len(valueSystemspeed),1), valueSystemspeed)
 axs[0, 1].set_title("valueSystemSpeed")
 axs[1, 0].plot(np.arange(0,len(controllerspeed),1), controllerspeed)
 axs[1, 0].set_title("ControllerSpeed")
 axs[1, 1].axis('off')
-#axs[1, 1].text(-0.1, 0.7, r'Deltameanspeed: %s '%(np.mean(speeddelta)), fontsize=15)
+axs[1, 1].text(-0.1, 0.7, r'Deltameanspeed: %s '%(np.mean(speeddelta)), fontsize=15)
 axs[1, 1].text(-0.1, 0.5, r'ValueSystemmeanspeed: %s '%(np.mean(valueSystemspeed)), fontsize=15)
 axs[1, 1].text(-0.1, 0.3, r'Controllermeanspeed: %s '%(np.mean(controllerspeed)), fontsize=15)
 
 fig2, axs = plt.subplots(2, 2)
-#axs[0, 0].plot(np.arange(0,len(angledelte),1),angledelte)
-#axs[0, 0].set_title("controllerangle-Valuesystemangle")
+axs[0, 0].plot(np.arange(0,len(angledelte),1),angledelte)
+axs[0, 0].set_title("controllerangle-Valuesystemangle")
 axs[0, 1].plot(np.arange(0,len(valueSystemangle),1), valueSystemangle)
 axs[0, 1].set_title("valueSystemangle")
 axs[1, 0].plot(np.arange(0,len(controllerangle),1), controllerangle)
 axs[1, 0].set_title("controllerangle")
 axs[1, 1].axis('off')
-print valueSystemangle
-"""
-print valueSystemspeed
-print len(valueSystemspeed)
-print len(controllerspeed)
-
-"""
-fig, axs = plt.subplots(1, 2)
-#axs[0, 0].plot(np.arange(0,len(speeddelta),1),speeddelta)
-#axs[0, 0].set_title("controllerspeed-valuesystemspeed")
-axs[0, 0].plot(np.arange(0,len(valueSystemspeed),1), valueSystemspeed)
-axs[0, 0].set_title("valueSystemSpeed")
-axs[0, 1].plot(np.arange(0,len(controllerspeed),1), controllerspeed)
-axs[0, 1].set_title("ControllerSpeed")
-#axs[1, 1].axis('off')
-#axs[1, 1].text(-0.1, 0.7, r'Deltameanspeed: %s '%(np.mean(speeddelta)), fontsize=15)
-axs[0, 0].text(-0.1, 0.5, r'ValueSystemmeanspeed: %s '%(np.mean(valueSystemspeed)), fontsize=15)
-axs[0, 1].text(-0.1, 0.3, r'Controllermeanspeed: %s '%(np.mean(controllerspeed)), fontsize=15)
-
-fig2, axs = plt.subplots(1, 2)
-#axs[0, 0].plot(np.arange(0,len(angledelte),1),angledelte)
-#axs[0, 0].set_title("controllerangle-Valuesystemangle")
-axs[0, 0].plot(np.arange(0,len(valueSystemangle),1), valueSystemangle)
-axs[0, 0].set_title("valueSystemangle")
-axs[0, 1].plot(np.arange(0,len(controllerangle),1), controllerangle)
-axs[0, 1].set_title("controllerangle")
-#axs[1, 1].axis('off')
-"""
-
