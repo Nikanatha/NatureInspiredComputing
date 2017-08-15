@@ -122,7 +122,6 @@ void KheperaInterface::sendCommand(const char* cmd, char* answer, int maxAnswerL
 {
 #ifdef LINUX
 	if (fputs(cmd, f) < 0)
-		std::cout << "Error " << errno() << std::endl;
 		throw Exception("Serial writing failed");
 	if (!fgets(answer, maxAnswerLength, f))
 		throw Exception("Serial reading failed");

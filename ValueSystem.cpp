@@ -32,7 +32,7 @@ SIOSet CValueSystem::Correct(std::vector<SIOSet> history)
 
 		// backwards
 	altBackwards = correction.speed;
-	altBackwards.SetVelocity(altBackwards.Velocity());
+	altBackwards.SetVelocity(-altBackwards.Velocity());
 	speedFitness.push_back(std::make_pair(altBackwards, Fitness(correction.sensors,
 		PredictChange(correction.sensors, altBackwards),
 		altBackwards)));
@@ -44,7 +44,7 @@ SIOSet CValueSystem::Correct(std::vector<SIOSet> history)
 		PredictChange(correction.sensors, alt),
 		alt)));
 	altBackwards = alt;
-	altBackwards.SetVelocity(altBackwards.Velocity());
+	altBackwards.SetVelocity(-altBackwards.Velocity());
 	speedFitness.push_back(std::make_pair(altBackwards, Fitness(correction.sensors,
 		PredictChange(correction.sensors, altBackwards),
 		altBackwards)));
@@ -56,12 +56,12 @@ SIOSet CValueSystem::Correct(std::vector<SIOSet> history)
 		PredictChange(correction.sensors, alt),
 		alt)));
 	altBackwards = alt;
-	altBackwards.SetVelocity(altBackwards.Velocity());
+	altBackwards.SetVelocity(-altBackwards.Velocity());
 	speedFitness.push_back(std::make_pair(altBackwards, Fitness(correction.sensors,
 		PredictChange(correction.sensors, altBackwards),
 		altBackwards)));
 
-	/*
+	
 		// more speed
 	alt = correction.speed;
 	alt *= 1 + m_pUtil->GetUniformRandom();
@@ -69,7 +69,7 @@ SIOSet CValueSystem::Correct(std::vector<SIOSet> history)
 		PredictChange(correction.sensors, alt),
 		alt)));
 	altBackwards = alt;
-	altBackwards.SetVelocity(altBackwards.Velocity());
+	altBackwards.SetVelocity(-altBackwards.Velocity());
 	speedFitness.push_back(std::make_pair(altBackwards, Fitness(correction.sensors,
 		PredictChange(correction.sensors, altBackwards),
 		altBackwards)));
@@ -81,11 +81,11 @@ SIOSet CValueSystem::Correct(std::vector<SIOSet> history)
 		PredictChange(correction.sensors, alt),
 		alt)));
 	altBackwards = alt;
-	altBackwards.SetVelocity(altBackwards.Velocity());
+	altBackwards.SetVelocity(-altBackwards.Velocity());
 	speedFitness.push_back(std::make_pair(altBackwards, Fitness(correction.sensors,
 		PredictChange(correction.sensors, altBackwards),
 		altBackwards)));
-		*/
+		
 	// choose best solution
 	std::pair<CSpeed, double> best = speedFitness.front();
 	for (auto it = speedFitness.begin(); it != speedFitness.end(); it++)
@@ -117,7 +117,11 @@ double CValueSystem::Fitness(CSensorData old, CSensorData change, CSpeed speed)
 	backPart = change[Direction_Back].sensor * 5; // expect alues of up to +- 1000
 
 	double fit = - speedPart + frontPart + sidePart + backPart;
-	if(old[Direction_Front].proximity == Proximity_Collision && speed.Left()>0 && speed.Right()>0) fit += 100000;
+	if(old[Direction_Front].proximity == Proximity_Collision && speed.Left()>0 && speed.Right()>0)
+	{
+		Exception("Reflex triggered!", -1);
+	}
+
 	return fit;
 }
 
@@ -168,3 +172,20 @@ CSensorData CValueSystem::PredictChange(CSensorData start, CSpeed speed)
 	return next;//.GradientFrom(start);
 }
 
+std::pair<CSpeed, double> CValueSystem::FitSpeed(CSensorData start, CSpeed speed)
+{
+	double fit;
+
+	try
+	{
+	fit = Fitness(start,
+		PredictChange(start, speed),
+		speed);
+	}
+	catch(...)
+	{
+		return std::make_pair(CSpeed(0,0), 10000);
+	}
+
+	return std::make_pair(speed, fit);
+}

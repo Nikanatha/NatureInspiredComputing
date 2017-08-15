@@ -26,7 +26,7 @@ static const std::string path = "RBF.txt";
 int main()
 {
 	CSmartKhepera* pKhexplore = nullptr;
-
+/*
 	while(pKhexplore == nullptr)
 	{
 		std::cout << "Accessing Khepera... ";
@@ -41,6 +41,8 @@ int main()
 			pKhexplore = nullptr;
 		}
 	}
+*/
+	pKhexplore = new CSmartKhepera();
 
 	// print welcome and help
 	std::cout << "Welcome to the Khexplorer. ";

@@ -15,6 +15,8 @@ private:
 	SIOSet Correct(std::vector<SIOSet> history);
 	double Fitness(CSensorData old, CSensorData change, CSpeed speed);
 	CSensorData PredictChange(CSensorData start, CSpeed speed);
+
+	std::pair<CSpeed, double> FitSpeed(CSensorData start, CSpeed speed);
 };
 
 #endif
