@@ -17,12 +17,18 @@ void CValueSystem::DoCycle()
 SIOSet CValueSystem::Correct(std::vector<SIOSet> history)
 {
 	SIOSet correction = history.front();
-	CSensorData grad = history[1].sensors.GradientFrom(correction.sensors);
+	CSensorData next;
 
-	std::map<CSpeed, double> speedFitness;
+	if (history.size() < 2)
+		next = PredictChange(correction.sensors, correction.speed);
+	else
+		next = history[1].sensors;
+	
+	std::vector<std::pair<CSpeed, double>> speedFitness;
+	//std::map<CSpeed, double> speedFitness;
 
 	// insert controller's results
-	speedFitness[correction.speed] = Fitness(correction.sensors, grad, correction.speed);
+	speedFitness.push_back(std::make_pair(correction.speed, Fitness(correction.sensors, next, correction.speed)));
 
 	// generate alternatives
 	CSpeed alt;
@@ -30,37 +36,39 @@ SIOSet CValueSystem::Correct(std::vector<SIOSet> history)
 		// more left
 	alt = correction.speed;
 	alt.IncreaseAngle(m_pUtil->GetUniformRandom());
-	speedFitness[alt] = Fitness(correction.sensors,
+	speedFitness.push_back(std::make_pair(alt, Fitness(correction.sensors,
 		PredictChange(correction.sensors, alt),
-		alt);
+		alt)));
 
 		// more right
 	alt = correction.speed;
 	alt.IncreaseAngle(-m_pUtil->GetUniformRandom());
-	speedFitness[alt] = Fitness(correction.sensors,
+	speedFitness.push_back(std::make_pair(alt, Fitness(correction.sensors,
 		PredictChange(correction.sensors, alt),
-		alt);
+		alt)));
 	/*
 		// more speed
 	alt = correction.speed;
 	alt *= 1 + m_pUtil->GetUniformRandom();
-	speedFitness[alt] = Fitness(correction.sensors,
+	speedFitness.push_back(std::make_pair(alt, Fitness(correction.sensors,
 		PredictChange(correction.sensors, alt),
-		alt);
+		alt)));
 
 		// less speed
 	alt = correction.speed;
 	alt *= m_pUtil->GetUniformRandom();
-	speedFitness[alt] = Fitness(correction.sensors,
+	speedFitness.push_back(std::make_pair(alt, Fitness(correction.sensors,
 		PredictChange(correction.sensors, alt),
-		alt);
+		alt)));
 		*/
 	// choose best solution
+	std::pair<CSpeed, double> best = speedFitness.front();
 	for (auto it = speedFitness.begin(); it != speedFitness.end(); it++)
 	{
-		if (it->second < speedFitness[correction.speed]) correction.speed = it->first;
+		if (it->second < best.second) best = *it;
 	}
 
+	correction.speed = best.first;
 	return correction;
 }
 
@@ -69,7 +77,7 @@ double CValueSystem::Fitness(CSensorData old, CSensorData change, CSpeed speed)
 	// maximize velocity
 	// minimize total change
 	// weight directions in a way that front should not increase, neither should back (to prevent driving backwards)
-
+	
 	double speedPart;
 	speedPart = 0; //exp(-speed.Velocity()); // expect values of up to 100
 
@@ -121,12 +129,15 @@ CSensorData CValueSystem::PredictChange(CSensorData start, CSpeed speed)
 	
 	int limit = Direction_Back + 1;
 
-	for (auto it = start.begin(); it != start.end(); it++)
+	for (auto it = moved.begin(); it != moved.end(); it++)
 	{
 		EDirection dir = it->first;
-		next[(EDirection)(((int)dir + limit + ((int)turnDir - (int)Direction_Front))%limit)] = SValue(it->second.sensor);
+		EDirection newDir = (EDirection)(((int)dir + limit + ((int)turnDir - (int)Direction_Front)) % limit);
+//		next[newDir] = SValue((it->second.sensor + moved[newDir].sensor) / 2);
+		next[newDir] = SValue(min(max(0, it->second.sensor), 1024));
 	}
 
 	// return gradient
-	return next.GradientFrom(start);
+	return next;//.GradientFrom(start);
 }
+

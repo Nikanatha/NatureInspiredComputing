@@ -6,7 +6,13 @@
 
 CKheperaUtility::CKheperaUtility()
 {
-	m_pKhep = new KheperaInterface("/dev/ttyUSB0");
+	bool sim = false;
+#ifdef SIM_ONLY
+	sim = true;
+#endif // SIM_ONLY
+
+
+	m_pKhep = new KheperaInterface("/dev/ttyUSB0", sim);
 	m_pKhep->setLEDState(0, LEDState::On);
 
 	MaxSpeed = 20;
