@@ -146,6 +146,23 @@ void CController::Adapt(SIOSet ideal)
 
 	if (activation > 0)	current /= activation;
 
+	// output info
+	bool babble = true;
+	if (babble)
+	{
+		std::cout << "ValueSystem's results:" << std::endl;
+		ideal.sensors.Dump();
+		std::cout << " ==> Angle: " << (double)((int)(10 * ideal.speed.Angle())) / 10.0 << " Speed: " << round(ideal.speed.Velocity());
+		std::cout << std::endl;
+	}
+	if (babble)
+	{
+		std::cout << "Controller's results:" << std::endl;
+		ideal.sensors.Dump();
+		std::cout << " ==> Angle: " << (double)((int)(10 * ideal.speed.Angle())) / 10.0 << " Speed: " << round(ideal.speed.Velocity());
+		std::cout << std::endl;
+	}
+
 	for (int n = 0; n < m_NetworkNodes.size(); n++)
 	{
 		m_NetworkNodes[n].Adapt(ideal.sensors, ideal.speed - current);
