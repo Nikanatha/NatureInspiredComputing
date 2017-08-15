@@ -117,7 +117,7 @@ double CValueSystem::Fitness(CSensorData old, CSensorData change, CSpeed speed)
 	backPart = change[Direction_Back].sensor * 5; // expect alues of up to +- 1000
 
 	double fit = - speedPart + frontPart + sidePart + backPart;
-	if(old[Direction_Front].proximity == Proximity_Collision && speed.Left()>0 && speed.Right()>0)
+	if(old[Direction_Front].proximity == Proximity_Close && speed.Left()>0 && speed.Right()>0)
 	{
 		Exception("Reflex triggered!", -1);
 	}

@@ -3,7 +3,7 @@
 
 #include "Node.h"
 
-double CNode::Sigma = 1;
+double CNode::Sigma = 10;
 double CNode::LearningWeight = 0.3;
 const double CNode::DecayRate = 0.9;
 
@@ -20,6 +20,7 @@ CNode::CNode(CSensorData c, CSpeed w) : CNode()
 {
 	m_Center = c;
 	m_Weight = w;
+	m_Weight.Limit();
 	AddActivation();
 }
 
@@ -34,6 +35,8 @@ double CNode::Activate(CSensorData input, CSpeed & output)
 
 double CNode::Calculate(CSensorData input, CSpeed & output)
 {
+	m_Weight.Limit();
+
 	double activation;
 	activation = BaseFunction(input);
 	output = m_Weight * activation;
