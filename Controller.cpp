@@ -12,7 +12,7 @@ CController::CController(CKheperaUtility * pUtil, CRbfSettings* pSettings) : CTh
 	m_pSettings = pSettings;
 
 	// generate nodes
-	bool gen = true;
+	bool gen = false;
 	int steps = 3;
 	if (gen)
 	{
@@ -126,7 +126,7 @@ void CController::DoCycle()
 	// check for surplus of nodes
 	if (m_NetworkNodes.size() > m_pSettings->MaxNodes)
 	{
-		//Forget();
+		Forget();
 	}
 }
 
@@ -180,14 +180,12 @@ void CController::Adapt(SIOSet ideal)
 void CController::AddNode(CSensorData sensors, CSpeed speed)
 {
 	CNode node(sensors, speed);
-    
-    //if(dist > MAX_DIMENSION_DISTANCE || m_NetworkNodes.size() == 0)
-    {
+	
         m_NetworkNodes.push_back(node);
-  //      std::cout << "Added new ";
-		//node.Dump();
-  //      std::cout << std::endl;
-    }
+        std::cout << "Added new ";
+		node.Dump();
+        std::cout << std::endl;
+    
 }
 
 void CController::Forget()
@@ -213,6 +211,7 @@ void CController::Forget()
 SIOSet CController::Evaluate(CSensorData sensors)
 {
 	double activation = 0;
+	double maxAct = 0;
 	CSpeed speed;
 
 	for (int n = 0; n < m_NetworkNodes.size(); n++)
@@ -222,6 +221,7 @@ SIOSet CController::Evaluate(CSensorData sensors)
 		act = m_NetworkNodes[n].Activate(sensors, out);
 		speed += out;
 		activation += act;
+		maxAct = fmax(maxAct, act);
 	}
 
 	if (activation > 0) speed /= activation;
@@ -231,9 +231,9 @@ SIOSet CController::Evaluate(CSensorData sensors)
 	result.speed = speed;
 
 	// add extra nodes if activation is too low
-	if (activation < TOTAL_ACTIVATION_LIMIT)
+	if (maxAct < 0.5)
 	{
-		//AddNode(sensors, CSpeed());
+		AddNode(sensors, speed);
 	}
 
 	return result;
