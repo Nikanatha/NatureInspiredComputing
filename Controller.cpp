@@ -116,6 +116,7 @@ void CController::DoCycle()
 #endif
 
 	SIOSet result = Evaluate(sensorData);
+	result.speed.Limit();
 	m_pUtil->AddNetworkResult(result);
 
 	// get value system's correction
@@ -147,7 +148,7 @@ void CController::Adapt(SIOSet ideal)
 
 	for (int n = 0; n < m_NetworkNodes.size(); n++)
 	{
-		m_NetworkNodes[n].Adapt(ideal.sensors, current - ideal.speed);
+		m_NetworkNodes[n].Adapt(ideal.sensors, ideal.speed - current);
 	}
 }
 

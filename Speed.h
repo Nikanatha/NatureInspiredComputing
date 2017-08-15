@@ -19,6 +19,8 @@ public:
 	double Right() const;
 	void SetComponents(double left, double right);
 
+	void Limit();
+
 	CSpeed operator+(CSpeed other);
 	CSpeed operator-(CSpeed other);
 	CSpeed operator*(double factor);

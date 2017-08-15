@@ -1,5 +1,6 @@
 #include <math.h>
 
+#include "Common.h"
 #include "Speed.h"
 
 #define MAX_SPEED 5
@@ -23,7 +24,7 @@ double CSpeed::Velocity() const
 
 void CSpeed::SetVelocity(double v)
 {
-	m_Velocity = fmin(v, MAX_SPEED);
+	m_Velocity = v;
 }
 
 void CSpeed::IncreaseVelocity(double v)
@@ -38,7 +39,10 @@ double CSpeed::Angle() const
 
 void CSpeed::SetAngle(double a)
 {
-	m_Angle = a;
+	double simple = a;
+	while (simple > PI) simple -= 2 * PI;
+	while (simple < -PI) simple += 2 * PI;
+	m_Angle = simple;
 }
 
 void CSpeed::IncreaseAngle(double a)
@@ -61,9 +65,17 @@ void CSpeed::SetComponents(double left, double right)
 	double straight = (left + right) / 2; // cos(a)*v
 	double turn = right - straight; // sin(a)*v
 
-	m_Angle = atan2(turn, straight);
-	m_Velocity = straight / cos(m_Angle);
-	if (m_Velocity == 0) m_Velocity = turn / sin(m_Angle);
+	double a = atan2(turn, straight);
+	double v = straight / cos(a);
+	if (v == 0) v = turn / sin(a);
+
+	SetAngle(a);
+	SetVelocity(v);
+}
+
+void CSpeed::Limit()
+{
+	m_Velocity = fmin(m_Velocity, MAX_SPEED);
 }
 
 CSpeed CSpeed::operator+(CSpeed other)
