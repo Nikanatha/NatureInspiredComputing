@@ -2,7 +2,7 @@
 
 CRbfSettings::CRbfSettings()
 {
-	MaxNodes = 10;
+	MaxNodes = 40;
 }
 
 CMscSettings::CMscSettings()
