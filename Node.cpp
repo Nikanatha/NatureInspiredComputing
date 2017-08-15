@@ -3,7 +3,7 @@
 
 #include "Node.h"
 
-double CNode::Sigma = 0.5;
+double CNode::Sigma = 20;
 double CNode::LearningWeight = 0.3;
 const double CNode::DecayRate = 0.9;
 
