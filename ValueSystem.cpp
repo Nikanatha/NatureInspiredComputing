@@ -28,13 +28,26 @@ SIOSet CValueSystem::Correct(std::vector<SIOSet> history)
 
 	// generate alternatives
 	CSpeed alt;
-	
+	CSpeed altBackwards;
+
+		// backwards
+	altBackwards = correction.speed;
+	altBackwards.SetVelocity(altBackwards.Velocity());
+	speedFitness.push_back(std::make_pair(altBackwards, Fitness(correction.sensors,
+		PredictChange(correction.sensors, altBackwards),
+		altBackwards)));
+
 		// more left
 	alt = correction.speed;
 	alt.IncreaseAngle(m_pUtil->GetUniformRandom());
 	speedFitness.push_back(std::make_pair(alt, Fitness(correction.sensors,
 		PredictChange(correction.sensors, alt),
 		alt)));
+	altBackwards = alt;
+	altBackwards.SetVelocity(altBackwards.Velocity());
+	speedFitness.push_back(std::make_pair(altBackwards, Fitness(correction.sensors,
+		PredictChange(correction.sensors, altBackwards),
+		altBackwards)));
 
 		// more right
 	alt = correction.speed;
@@ -42,6 +55,12 @@ SIOSet CValueSystem::Correct(std::vector<SIOSet> history)
 	speedFitness.push_back(std::make_pair(alt, Fitness(correction.sensors,
 		PredictChange(correction.sensors, alt),
 		alt)));
+	altBackwards = alt;
+	altBackwards.SetVelocity(altBackwards.Velocity());
+	speedFitness.push_back(std::make_pair(altBackwards, Fitness(correction.sensors,
+		PredictChange(correction.sensors, altBackwards),
+		altBackwards)));
+
 	/*
 		// more speed
 	alt = correction.speed;
@@ -49,6 +68,11 @@ SIOSet CValueSystem::Correct(std::vector<SIOSet> history)
 	speedFitness.push_back(std::make_pair(alt, Fitness(correction.sensors,
 		PredictChange(correction.sensors, alt),
 		alt)));
+	altBackwards = alt;
+	altBackwards.SetVelocity(altBackwards.Velocity());
+	speedFitness.push_back(std::make_pair(altBackwards, Fitness(correction.sensors,
+		PredictChange(correction.sensors, altBackwards),
+		altBackwards)));
 
 		// less speed
 	alt = correction.speed;
@@ -56,6 +80,11 @@ SIOSet CValueSystem::Correct(std::vector<SIOSet> history)
 	speedFitness.push_back(std::make_pair(alt, Fitness(correction.sensors,
 		PredictChange(correction.sensors, alt),
 		alt)));
+	altBackwards = alt;
+	altBackwards.SetVelocity(altBackwards.Velocity());
+	speedFitness.push_back(std::make_pair(altBackwards, Fitness(correction.sensors,
+		PredictChange(correction.sensors, altBackwards),
+		altBackwards)));
 		*/
 	// choose best solution
 	std::pair<CSpeed, double> best = speedFitness.front();

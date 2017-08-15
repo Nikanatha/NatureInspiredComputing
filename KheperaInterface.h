@@ -2,8 +2,8 @@
 #define __KHEPERAINTERFACE_H
 
 //#define SIM_ONLY
-//#define WINDOWS
-#define LINUX
+#define WINDOWS
+//#define LINUX
 
 #ifdef LINUX 
 	#include <termios.h>
@@ -14,7 +14,7 @@
 #include <windows.h>
 #endif // WINDOWS
 
-
+#include <stdexcept>
 #include <string>
 using std::string;
 
@@ -118,6 +118,13 @@ public:
 	void setCameraReadingPeriod(int period); //T,2,U
 	// ... T,2,Z - unused
 };
+
+#ifdef LINUX
+std::runtime_error Exception(std::string message, int error = errno());
+#endif
+#ifdef WINDOWS
+std::runtime_error Exception(std::string message, int error = GetLastError());
+#endif
 
 #endif
 
