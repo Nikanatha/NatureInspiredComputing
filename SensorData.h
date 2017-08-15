@@ -2,6 +2,7 @@
 #define __SensorData_H__
 
 #include <map>
+#include <iostream>
 #include "KheperaInterface.h"
 
 enum EDirection
@@ -40,7 +41,7 @@ class CSensorData : public std::map<EDirection, SValue>
 {
 public:
 	CSensorData(Int8 rawSensors = { {0, 0, 0, 0, 0, 0, 0, 0} });
-	void Dump();
+	void Dump(std::ostream &stream = std::cout);
 	bool Collision();
 
 	CSensorData GradientFrom(CSensorData previous);

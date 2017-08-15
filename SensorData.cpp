@@ -19,11 +19,11 @@ CSensorData::CSensorData(Int8 rawSensors)
 	(*this)[Direction_Back] = SValue(Back(rawSensors));
 }
 
-void CSensorData::Dump()
+void CSensorData::Dump(std::ostream &stream)
 {
 	for (int d = 0; d <= (int)Direction_Back; d++)
 	{
-		std::cout << " " << std::setfill(' ') << std::setw(4) << this->at((EDirection)d).sensor;
+		stream << " " << std::setfill(' ') << std::setw(4) << this->at((EDirection)d).sensor;
 	}
 }
 

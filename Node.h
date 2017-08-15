@@ -17,6 +17,7 @@ public:
 	double Activate(CSensorData input, CSpeed& output);
 	double Calculate(CSensorData input, CSpeed& output);
 	void Adapt(CSensorData input, CSpeed difference);
+	void Adapt(CSensorData input, CSpeed old, CSpeed better);
 
 	CSensorData Center();
 	CSpeed Weight();

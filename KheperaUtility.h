@@ -9,7 +9,7 @@
 #include "SensorData.h"
 #include "Speed.h"
 
-#define HISTORY_LENGTH 2
+#define HISTORY_LENGTH 10
 
 // types
 class KheperaInterface;

@@ -3,7 +3,7 @@
 
 #include "Node.h"
 
-double CNode::Sigma = 1;
+double CNode::Sigma = 0.5;
 double CNode::LearningWeight = 0.3;
 const double CNode::DecayRate = 0.9;
 
@@ -48,6 +48,18 @@ void CNode::Adapt(CSensorData input, CSpeed difference)
 
 	CSpeed change = difference * activation * LearningWeight;
 	m_Weight += change;
+}
+
+void CNode::Adapt(CSensorData input, CSpeed old, CSpeed better)
+{
+	double activation;
+	CSpeed output;
+	activation = Calculate(input, output);
+
+	double vChange = (better.Velocity() - old.Velocity()) * activation * LearningWeight;
+	double aChange = (better.Angle() - old.Angle()) * activation * LearningWeight;
+	m_Weight.IncreaseVelocity(vChange);
+	m_Weight.IncreaseAngle(aChange);
 }
 
 CSensorData CNode::Center()

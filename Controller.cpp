@@ -147,25 +147,33 @@ void CController::Adapt(SIOSet ideal)
 	if (activation > 0)	current /= activation;
 
 	// output info
+	std::ofstream file;
+	file.open("History.txt", std::ios_base::app);
+
 	bool babble = true;
 	if (babble)
 	{
-		std::cout << "ValueSystem's results:" << std::endl;
-		ideal.sensors.Dump();
-		std::cout << " ==> Angle: " << (double)((int)(10 * ideal.speed.Angle())) / 10.0 << " Speed: " << round(ideal.speed.Velocity());
-		std::cout << std::endl;
+		file << "ValueSystem's results:" << std::endl;
+		ideal.sensors.Dump(file);
+		file << " ==> Angle: " << (double)((int)(10 * ideal.speed.Angle())) / 10.0 << " Speed: " << round(ideal.speed.Velocity());
+		file << std::endl;
 	}
 	if (babble)
 	{
-		std::cout << "Controller's results:" << std::endl;
-		ideal.sensors.Dump();
-		std::cout << " ==> Angle: " << (double)((int)(10 * ideal.speed.Angle())) / 10.0 << " Speed: " << round(ideal.speed.Velocity());
-		std::cout << std::endl;
+		CSpeed output = current;
+		output.Limit();
+		file << "Controller's results:" << std::endl;
+		ideal.sensors.Dump(file);
+		file << " ==> Angle: " << (double)((int)(10 * output.Angle())) / 10.0 << " Speed: " << round(output.Velocity());
+		file << std::endl;
 	}
+
+	file.close();
 
 	for (int n = 0; n < m_NetworkNodes.size(); n++)
 	{
-		m_NetworkNodes[n].Adapt(ideal.sensors, ideal.speed - current);
+		//m_NetworkNodes[n].Adapt(ideal.sensors, ideal.speed - current);
+		m_NetworkNodes[n].Adapt(ideal.sensors, current, ideal.speed);
 	}
 }
 

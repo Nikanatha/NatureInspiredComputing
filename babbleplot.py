@@ -10,7 +10,7 @@ import numpy as np
 import re
 #import map
 
-path = "/home/jakob/studium/master3/NIC/FORK/NatureInspiredComputing/babble3.txt"
+path = "/home/jakob/studium/master3/NIC/FORK/NatureInspiredComputing/History.txt"
 #path = "/home/jh432/NatureInspiredComputing/babble1.txt"
 
 

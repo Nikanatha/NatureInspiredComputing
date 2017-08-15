@@ -1,330 +1,412 @@
 ValueSystem's results:
-   80  128  140  140  140  104 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-   80  128  140  140  140  104 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-   80  128  140  140  140  104 ==> Angle: 0 Speed: 5
+    0    0    0    0    0    0 ==> Angle: 0 Speed: 10
 Controller's results:
-   92  148  148   92   92   80 ==> Angle: 0 Speed: 5
+    0    0    0    0    0    0 ==> Angle: 0 Speed: 10
 ValueSystem's results:
-   80  128  140  140  140  104 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-   80  128  140  140  140  104 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-   80  128  140  140  140  104 ==> Angle: 0 Speed: 5
+    0    0    0    0    0    0 ==> Angle: 0 Speed: 10
 Controller's results:
-   88  120  120   92   92  120 ==> Angle: 0 Speed: 5
+    0    0    0    0    0    0 ==> Angle: 0 Speed: 10
 ValueSystem's results:
-   80  128  140  140  140  104 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-   80  128  140  140  140  104 ==> Angle: 0 Speed: 5
+  112  648  648  456  244  112 ==> Angle: 0 Speed: 5
 Controller's results:
-   92   92   88   88   88  104 ==> Angle: 0 Speed: 5
+  112  648  648  456  244  112 ==> Angle: 0 Speed: 5
 ValueSystem's results:
-   80  128  140  140  140  104 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-   80  128  140  140  140  104 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-   80  128  140  140  140  104 ==> Angle: 0 Speed: 5
+  112  620  620  440  252  120 ==> Angle: 0.6 Speed: 5
 Controller's results:
-   76   88  128  128  128  132 ==> Angle: 0 Speed: 5
+  112  620  620  440  252  120 ==> Angle: 0.6 Speed: 5
 ValueSystem's results:
-   80  128  140  140  140  104 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-   80  128  140  140  140  104 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-   80  128  140  140  140  104 ==> Angle: 0 Speed: 5
+  112  636  636  456  248  120 ==> Angle: 0 Speed: 5
 Controller's results:
-   92   92  148  148  148  116 ==> Angle: 0 Speed: 5
+  112  636  636  456  248  120 ==> Angle: 0 Speed: 5
 ValueSystem's results:
-   80  128  140  140  140  104 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-   80  128  140  140  140  104 ==> Angle: 0 Speed: 5
+  104  604  604  448  244  128 ==> Angle: -0.9 Speed: 5
 Controller's results:
-   92   96  136  136  136   84 ==> Angle: 0 Speed: 5
+  104  604  604  448  244  128 ==> Angle: -0.9 Speed: 5
 ValueSystem's results:
-   80  128  140  140  140  104 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-   80  128  140  140  140  104 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-   80  128  140  140  140  104 ==> Angle: 0 Speed: 5
+  116  636  636  452  252  132 ==> Angle: 0 Speed: 5
 Controller's results:
-   72  132  132  120  120   92 ==> Angle: 0 Speed: 5
+  116  636  636  452  252  132 ==> Angle: 0 Speed: 5
 ValueSystem's results:
-   80  128  140  140  140  104 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-   80  128  140  140  140  104 ==> Angle: 0 Speed: 5
+  116  596  596  452  240  120 ==> Angle: 0.5 Speed: 5
 Controller's results:
-   76  140  140   96   96   80 ==> Angle: 0 Speed: 5
+  116  596  596  452  240  120 ==> Angle: 0.5 Speed: 5
 ValueSystem's results:
-   80  128  140  140  140  104 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-   80  128  140  140  140  104 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-   80  128  140  140  140  104 ==> Angle: 0 Speed: 5
+  116  596  596  448  260  136 ==> Angle: 0 Speed: 5
 Controller's results:
-   84  136  136   96   96   84 ==> Angle: 0 Speed: 5
+  116  596  596  448  260  136 ==> Angle: 0 Speed: 5
 ValueSystem's results:
-   56  152  152   96   96   88 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-   56  152  152   96   96   88 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-   92  148  148   92   92   80 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-   92  148  148   92   92   80 ==> Angle: 0 Speed: 5
+  124  588  588  448  248  136 ==> Angle: 0.2 Speed: 5
 Controller's results:
-   84   84  100  100  100  112 ==> Angle: 0 Speed: 5
+  124  588  588  448  248  136 ==> Angle: 0.2 Speed: 5
 ValueSystem's results:
-   88  120  120   92   92  120 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-   88  120  120   92   92  120 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-   88  120  120   92   92  120 ==> Angle: 0 Speed: 5
+  124  600  600  436  272  132 ==> Angle: 0 Speed: 5
 Controller's results:
-   72   72  132  132  132  120 ==> Angle: 0 Speed: 5
+  124  600  600  436  272  132 ==> Angle: 0 Speed: 5
 ValueSystem's results:
-   92   92   88   88   88  104 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-   92   92   88   88   88  104 ==> Angle: 0 Speed: 5
+  132  584  584  440  264  128 ==> Angle: 0.1 Speed: 5
 Controller's results:
-   92   92  156  156  156  112 ==> Angle: 0 Speed: 5
+  132  584  584  440  264  128 ==> Angle: 0.1 Speed: 5
 ValueSystem's results:
-   76   88  128  128  128  132 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-   76   88  128  128  128  132 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-   76   88  128  128  128  132 ==> Angle: 0 Speed: 5
+  124  616  616  436  288  132 ==> Angle: 0 Speed: 5
 Controller's results:
-   88  112  144  144  144   92 ==> Angle: 0 Speed: 5
+  124  616  616  436  288  132 ==> Angle: 0 Speed: 5
 ValueSystem's results:
-   92   92  148  148  148  116 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-   92   92  148  148  148  116 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-   92   92  148  148  148  116 ==> Angle: 0 Speed: 5
+  132  608  608  440  276  120 ==> Angle: 0.4 Speed: 5
 Controller's results:
-   60  148  152  152  152   92 ==> Angle: 0 Speed: 5
+  132  608  608  440  276  120 ==> Angle: 0.4 Speed: 5
 ValueSystem's results:
-   92   96  136  136  136   84 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-   92   96  136  136  136   84 ==> Angle: 0 Speed: 5
+  120  624  624  428  288  124 ==> Angle: 0 Speed: 5
 Controller's results:
-   76  152  152  136  136   72 ==> Angle: 0 Speed: 5
+  120  624  624  428  288  124 ==> Angle: 0 Speed: 5
 ValueSystem's results:
-   72  132  132  120  120   92 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-   72  132  132  120  120   92 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-   72  132  132  120  120   92 ==> Angle: 0 Speed: 5
+  116  640  640  408  272  116 ==> Angle: 0 Speed: 5
 Controller's results:
-   88  144  144  112  112   52 ==> Angle: 0 Speed: 5
+  116  640  640  408  272  116 ==> Angle: 0 Speed: 5
 ValueSystem's results:
-   76  140  140   96   96   80 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-   76  140  140   96   96   80 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-   76  140  140   96   96   80 ==> Angle: 0 Speed: 5
+  108  632  632  408  284  108 ==> Angle: 0.6 Speed: 5
 Controller's results:
-   80   96   96  100  100   84 ==> Angle: 0 Speed: 5
+  108  632  632  408  284  108 ==> Angle: 0.6 Speed: 5
 ValueSystem's results:
-   84  136  136   96   96   84 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-   84  136  136   96   96   84 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-   84  136  136   96   96   84 ==> Angle: 0 Speed: 5
+   96  640  640  428  272  108 ==> Angle: 0 Speed: 5
 Controller's results:
-   80  116  128  128  128  116 ==> Angle: 0 Speed: 5
+   96  640  640  428  272  108 ==> Angle: 0 Speed: 5
 ValueSystem's results:
-   80  104  108  108  108  120 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-   80  104  108  108  108  120 ==> Angle: 0 Speed: 5
+  104  640  640  416  280  108 ==> Angle: 0 Speed: 5
 Controller's results:
-   84   84  128  128  128  120 ==> Angle: 0 Speed: 5
+  104  640  640  416  280  108 ==> Angle: 0 Speed: 5
 ValueSystem's results:
-   84   84  100  100  100  112 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-   84   84  100  100  100  112 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-   84   84  100  100  100  112 ==> Angle: 0 Speed: 5
+   96  628  628  432  260  108 ==> Angle: 0.6 Speed: 5
 Controller's results:
-   96   96  160  160  160  124 ==> Angle: 0 Speed: 5
+   96  628  628  432  260  108 ==> Angle: 0.6 Speed: 5
 ValueSystem's results:
-   72   72  132  132  132  120 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-   72   72  132  132  132  120 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-   72   72  132  132  132  120 ==> Angle: 0 Speed: 5
+  112  636  636  424  272  108 ==> Angle: 0 Speed: 5
 Controller's results:
-   92  140  180  180  180  104 ==> Angle: 0 Speed: 5
+  112  636  636  424  272  108 ==> Angle: 0 Speed: 5
 ValueSystem's results:
-   92   92  156  156  156  112 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-   92   92  156  156  156  112 ==> Angle: 0 Speed: 5
+  116  616  616  432  240  108 ==> Angle: -0.6 Speed: 5
 Controller's results:
-   84  128  188  188  188   92 ==> Angle: 0 Speed: 5
+  116  616  616  432  240  108 ==> Angle: -0.6 Speed: 5
 ValueSystem's results:
-   88  112  144  144  144   92 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-   88  112  144  144  144   92 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-   88  112  144  144  144   92 ==> Angle: 0 Speed: 5
+  116  624  624  436  244  120 ==> Angle: 0 Speed: 5
 Controller's results:
-   68  176  196  196  196   92 ==> Angle: 0 Speed: 5
+  116  624  624  436  244  120 ==> Angle: 0 Speed: 5
 ValueSystem's results:
-   60  148  152  152  152   92 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-   60  148  152  152  152   92 ==> Angle: 0 Speed: 5
+  112  584  584  448  244  116 ==> Angle: 0.3 Speed: 5
 Controller's results:
-   80  192  200  200  200   76 ==> Angle: 0 Speed: 5
+  112  584  584  448  244  116 ==> Angle: 0.3 Speed: 5
 ValueSystem's results:
-   76  152  152  136  136   72 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-   76  152  152  136  136   72 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-   76  152  152  136  136   72 ==> Angle: 0 Speed: 5
+  116  612  612  444  256  128 ==> Angle: 0 Speed: 5
 Controller's results:
-   80  192  192  192  192   96 ==> Angle: 0 Speed: 5
+  116  612  612  444  256  128 ==> Angle: 0 Speed: 5
 ValueSystem's results:
-   88  144  144  112  112   52 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-   88  144  144  112  112   52 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-   88  144  144  112  112   52 ==> Angle: 0 Speed: 5
+  120  576  576  448  240  136 ==> Angle: 0.5 Speed: 5
 Controller's results:
-   84  180  220  220  220   76 ==> Angle: 0 Speed: 5
+  120  576  576  448  240  136 ==> Angle: 0.5 Speed: 5
 ValueSystem's results:
-   80   96   96  100  100   84 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-   80   96   96  100  100   84 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-   80   96   96  100  100   84 ==> Angle: 0 Speed: 5
+  132  584  584  440  264  136 ==> Angle: 0 Speed: 5
 Controller's results:
-   84  248  280  280  280  108 ==> Angle: 0 Speed: 5
+  132  584  584  440  264  136 ==> Angle: 0 Speed: 5
 ValueSystem's results:
-   80  116  128  128  128  116 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-   80  116  128  128  128  116 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-   80  116  128  128  128  116 ==> Angle: 0 Speed: 5
+  132  584  584  440  280  128 ==> Angle: -0.8 Speed: 5
 Controller's results:
-   92  272  364  364  364  108 ==> Angle: 0 Speed: 5
+  132  584  584  440  280  128 ==> Angle: -0.8 Speed: 5
 ValueSystem's results:
-   84   84  128  128  128  120 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-   84   84  128  128  128  120 ==> Angle: 0 Speed: 5
+  132  588  588  432  280  132 ==> Angle: -0.8 Speed: 5
 Controller's results:
-   96  428  628  628  560  124 ==> Angle: 0 Speed: 5
+  132  588  588  432  280  132 ==> Angle: -0.8 Speed: 5
 ValueSystem's results:
-   96   96  160  160  160  124 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-   96   96  160  160  160  124 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-   96   96  160  160  160  124 ==> Angle: 0 Speed: 5
+  124  616  616  412  284  120 ==> Angle: 0 Speed: 5
 Controller's results:
-  116  656 1020 1020  968  112 ==> Angle: 0 Speed: 5
+  124  616  616  412  284  120 ==> Angle: 0 Speed: 5
 ValueSystem's results:
-   92  140  180  180  180  104 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-   92  140  180  180  180  104 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-   92  140  180  180  180  104 ==> Angle: 0 Speed: 5
+  124  596  596  404  268  112 ==> Angle: 0.1 Speed: 5
 Controller's results:
-  116  988 1020 1020 1020   88 ==> Angle: 0 Speed: 5
+  124  596  596  404  268  112 ==> Angle: 0.1 Speed: 5
 ValueSystem's results:
-   84  128  188  188  188   92 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-   84  128  188  188  188   92 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-   84  128  188  188  188   92 ==> Angle: 0 Speed: 5
+  100  616  616  408  276  116 ==> Angle: 0 Speed: 5
 Controller's results:
-  100  968 1020 1020 1020   88 ==> Angle: 0 Speed: 5
+  100  616  616  408  276  116 ==> Angle: 0 Speed: 5
 ValueSystem's results:
-   68  176  196  196  196   92 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-   68  176  196  196  196   92 ==> Angle: 0 Speed: 5
+  120  608  608  412  268  112 ==> Angle: 0 Speed: 5
 Controller's results:
-  104  932 1020 1020 1020   84 ==> Angle: 0 Speed: 5
+  120  608  608  412  268  112 ==> Angle: 0 Speed: 5
 ValueSystem's results:
-   80  192  200  200  200   76 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-   80  192  200  200  200   76 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-   80  192  200  200  200   76 ==> Angle: 0 Speed: 5
+  104  628  628  408  272  104 ==> Angle: 0.1 Speed: 5
 Controller's results:
-   80  960 1020 1020 1020   88 ==> Angle: 0 Speed: 5
+  104  628  628  408  272  104 ==> Angle: 0.1 Speed: 5
 ValueSystem's results:
-   80  192  192  192  192   96 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-   80  192  192  192  192   96 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-   80  192  192  192  192   96 ==> Angle: 0 Speed: 5
+  104  632  632  436  248  108 ==> Angle: 0 Speed: 5
 Controller's results:
-   92  948 1020 1020 1020   84 ==> Angle: 0 Speed: 5
+  104  632  632  436  248  108 ==> Angle: 0 Speed: 5
 ValueSystem's results:
-   84  180  220  220  220   76 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-   84  180  220  220  220   76 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-   84  180  220  220  220   76 ==> Angle: 0 Speed: 5
+  112  628  628  420  260   96 ==> Angle: 0.8 Speed: 5
 Controller's results:
-   84  948 1020 1020 1020   84 ==> Angle: 0 Speed: 5
+  112  628  628  420  260   96 ==> Angle: 0.8 Speed: 5
 ValueSystem's results:
-   84  248  280  280  280  108 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-   84  248  280  280  280  108 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-   84  248  280  280  280  108 ==> Angle: 0 Speed: 5
+  112  628  628  436  240  108 ==> Angle: 0 Speed: 5
 Controller's results:
-   84  912 1020 1020 1020   68 ==> Angle: 0 Speed: 5
+  112  628  628  436  240  108 ==> Angle: 0 Speed: 5
 ValueSystem's results:
-   92  272  364  364  364  108 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-   92  272  364  364  364  108 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-   92  272  364  364  364  108 ==> Angle: 0 Speed: 5
+  116  620  620  432  248  100 ==> Angle: 0 Speed: 5
 Controller's results:
-   92  880 1020 1020 1020   76 ==> Angle: 0 Speed: 5
+  116  620  620  432  248  100 ==> Angle: 0 Speed: 5
 ValueSystem's results:
-   96  428  628  628  560  124 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-   96  428  628  628  560  124 ==> Angle: 0 Speed: 5
+  116  596  596  440  240  116 ==> Angle: -0.8 Speed: 5
 Controller's results:
-   88  900 1020 1020 1020   72 ==> Angle: 0 Speed: 5
+  116  596  596  440  240  116 ==> Angle: -0.8 Speed: 5
 ValueSystem's results:
-  116  656 1020 1020  968  112 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-  116  656 1020 1020  968  112 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-  116  656 1020 1020  968  112 ==> Angle: 0 Speed: 5
+  108  608  608  440  244  128 ==> Angle: 0 Speed: 5
 Controller's results:
-   88  880 1020 1020 1020   56 ==> Angle: 0 Speed: 5
+  108  608  608  440  244  128 ==> Angle: 0 Speed: 5
 ValueSystem's results:
-  116  988 1020 1020 1020   88 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-  116  988 1020 1020 1020   88 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-  116  988 1020 1020 1020   88 ==> Angle: 0 Speed: 5
+  116  580  580  440  244  128 ==> Angle: 0.3 Speed: 5
 Controller's results:
-   92  888 1020 1020 1020   96 ==> Angle: 0 Speed: 5
+  116  580  580  440  244  128 ==> Angle: 0.3 Speed: 5
 ValueSystem's results:
-  100  968 1020 1020 1020   88 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-  100  968 1020 1020 1020   88 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-  100  968 1020 1020 1020   88 ==> Angle: 0 Speed: 5
+  116  588  588  440  244  136 ==> Angle: 0 Speed: 5
 Controller's results:
-   96  876 1020 1020 1020   84 ==> Angle: 0 Speed: 5
+  116  588  588  440  244  136 ==> Angle: 0 Speed: 5
 ValueSystem's results:
-  104  932 1020 1020 1020   84 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-  104  932 1020 1020 1020   84 ==> Angle: 0 Speed: 5
-ValueSystem's results:
-  104  932 1020 1020 1020   84 ==> Angle: 0 Speed: 5
+  128  568  568  408  272  128 ==> Angle: 0 Speed: 5
 Controller's results:
-   92  876 1020 1020 1020  120 ==> Angle: 0 Speed: 5
+  128  568  568  408  272  128 ==> Angle: 0 Speed: 5
 ValueSystem's results:
-   80  960 1020 1020 1020   88 ==> Angle: 0 Speed: 5
+  128  588  588  424  268  112 ==> Angle: 0 Speed: 5
+Controller's results:
+  128  588  588  424  268  112 ==> Angle: 0 Speed: 5
 ValueSystem's results:
-   80  960 1020 1020 1020   88 ==> Angle: 0 Speed: 5
+  132  580  580  396  276  120 ==> Angle: 0.8 Speed: 5
+Controller's results:
+  132  580  580  396  276  120 ==> Angle: 0.8 Speed: 5
 ValueSystem's results:
-   80  960 1020 1020 1020   88 ==> Angle: 0 Speed: 5
+  120  600  600  400  276  112 ==> Angle: 0.3 Speed: 5
+Controller's results:
+  120  600  600  400  276  112 ==> Angle: 0.3 Speed: 5
+ValueSystem's results:
+  124  620  620  396  272  112 ==> Angle: 0 Speed: 5
+Controller's results:
+  124  620  620  396  272  112 ==> Angle: 0 Speed: 5
+ValueSystem's results:
+  112  620  620  392  268  112 ==> Angle: 0 Speed: 5
+Controller's results:
+  112  620  620  392  268  112 ==> Angle: 0 Speed: 5
+ValueSystem's results:
+   88  612  612  396  264  112 ==> Angle: 0 Speed: 5
+Controller's results:
+   88  612  612  396  264  112 ==> Angle: 0 Speed: 5
+ValueSystem's results:
+  100  612  612  392  264  108 ==> Angle: 0 Speed: 5
+Controller's results:
+  100  612  612  392  264  108 ==> Angle: 0 Speed: 5
+ValueSystem's results:
+   92  596  596  400  252  108 ==> Angle: 0 Speed: 5
+Controller's results:
+   92  596  596  400  252  108 ==> Angle: 0 Speed: 5
+ValueSystem's results:
+  112  600  600  400  220  104 ==> Angle: 0.8 Speed: 5
+Controller's results:
+  112  600  600  400  220  104 ==> Angle: 0.8 Speed: 5
+ValueSystem's results:
+  120  588  588  412  232  108 ==> Angle: 0.9 Speed: 5
+Controller's results:
+  120  588  588  412  232  108 ==> Angle: 0.9 Speed: 5
+ValueSystem's results:
+  120  584  584  400  240  116 ==> Angle: 0 Speed: 5
+Controller's results:
+  120  584  584  400  240  116 ==> Angle: 0 Speed: 5
+ValueSystem's results:
+  108  568  568  420  236  112 ==> Angle: 0 Speed: 5
+Controller's results:
+  108  568  568  420  236  112 ==> Angle: 0 Speed: 5
+ValueSystem's results:
+  112  560  560  400  240  124 ==> Angle: 0 Speed: 5
+Controller's results:
+  112  560  560  400  240  124 ==> Angle: 0 Speed: 5
+ValueSystem's results:
+  112  552  552  408  232  124 ==> Angle: 0.7 Speed: 5
+Controller's results:
+  112  552  552  408  232  124 ==> Angle: 0.7 Speed: 5
+ValueSystem's results:
+  108  544  544  408  248  132 ==> Angle: -0.9 Speed: 5
+Controller's results:
+  108  544  544  408  248  132 ==> Angle: -0.9 Speed: 5
+ValueSystem's results:
+  124  552  552  416  244  128 ==> Angle: 0 Speed: 5
+Controller's results:
+  124  552  552  416  244  128 ==> Angle: 0 Speed: 5
+ValueSystem's results:
+  128  560  560  400  260  128 ==> Angle: 0 Speed: 5
+Controller's results:
+  128  560  560  400  260  128 ==> Angle: 0 Speed: 5
+ValueSystem's results:
+  128  532  532  376  268  120 ==> Angle: -0.6 Speed: 5
+Controller's results:
+  128  532  532  376  268  120 ==> Angle: -0.6 Speed: 5
+ValueSystem's results:
+  120  576  576  388  268  128 ==> Angle: 0 Speed: 5
+Controller's results:
+  120  576  576  388  268  128 ==> Angle: 0 Speed: 5
+ValueSystem's results:
+  120  556  556  376  260  112 ==> Angle: 0.9 Speed: 5
+Controller's results:
+  120  556  556  376  260  112 ==> Angle: 0.9 Speed: 5
+ValueSystem's results:
+  116  596  596  388  264  120 ==> Angle: 0 Speed: 5
+Controller's results:
+  116  596  596  388  264  120 ==> Angle: 0 Speed: 5
+ValueSystem's results:
+  120  600  600  396  264  108 ==> Angle: 0 Speed: 5
+Controller's results:
+  120  600  600  396  264  108 ==> Angle: 0 Speed: 5
+ValueSystem's results:
+  104  604  604  384  260  108 ==> Angle: 0.7 Speed: 5
+Controller's results:
+  104  604  604  384  260  108 ==> Angle: 0.7 Speed: 5
+ValueSystem's results:
+  108  604  604  396  244  108 ==> Angle: 0.6 Speed: 5
+Controller's results:
+  108  604  604  396  244  108 ==> Angle: 0.6 Speed: 5
+ValueSystem's results:
+  112  616  616  388  252  100 ==> Angle: 0 Speed: 5
+Controller's results:
+  112  616  616  388  252  100 ==> Angle: 0 Speed: 5
+ValueSystem's results:
+  100  612  612  412  228  100 ==> Angle: 0.6 Speed: 5
+Controller's results:
+  100  612  612  412  228  100 ==> Angle: 0.6 Speed: 5
+ValueSystem's results:
+  112  612  612  404  240  116 ==> Angle: 0 Speed: 5
+Controller's results:
+  112  612  612  404  240  116 ==> Angle: 0 Speed: 5
+ValueSystem's results:
+  116  584  584  424  224  108 ==> Angle: 0.9 Speed: 5
+Controller's results:
+  116  584  584  424  224  108 ==> Angle: 0.9 Speed: 5
+ValueSystem's results:
+  116  580  580  432  232  120 ==> Angle: 0.4 Speed: 5
+Controller's results:
+  116  580  580  432  232  120 ==> Angle: 0.4 Speed: 5
+ValueSystem's results:
+  116  588  588  432  232  128 ==> Angle: 0.9 Speed: 5
+Controller's results:
+  116  588  588  432  232  128 ==> Angle: 0.9 Speed: 5
+ValueSystem's results:
+  136  572  572  464  248  128 ==> Angle: 0.6 Speed: 5
+Controller's results:
+  136  572  572  464  248  128 ==> Angle: 0.6 Speed: 5
+ValueSystem's results:
+  128  596  596  432  248  124 ==> Angle: 0.6 Speed: 5
+Controller's results:
+  128  596  596  432  248  124 ==> Angle: 0.6 Speed: 5
+ValueSystem's results:
+  136  600  600  428  264  120 ==> Angle: 0.7 Speed: 5
+Controller's results:
+  136  600  600  428  264  120 ==> Angle: 0.7 Speed: 5
+ValueSystem's results:
+  132  632  632  408  272  124 ==> Angle: 0 Speed: 5
+Controller's results:
+  132  632  632  408  272  124 ==> Angle: 0 Speed: 5
+ValueSystem's results:
+  132  616  616  412  268  112 ==> Angle: 0.9 Speed: 5
+Controller's results:
+  132  616  616  412  268  112 ==> Angle: 0.9 Speed: 5
+ValueSystem's results:
+  116  640  640  400  260  112 ==> Angle: 0 Speed: 5
+Controller's results:
+  116  640  640  400  260  112 ==> Angle: 0 Speed: 5
+ValueSystem's results:
+  116  632  632  396  264  112 ==> Angle: 0.1 Speed: 5
+Controller's results:
+  116  632  632  396  264  112 ==> Angle: 0.1 Speed: 5
+ValueSystem's results:
+  100  640  640  408  264  108 ==> Angle: 0 Speed: 5
+Controller's results:
+  100  640  640  408  264  108 ==> Angle: 0 Speed: 5
+ValueSystem's results:
+  104  636  636  396  240  104 ==> Angle: 0 Speed: 5
+Controller's results:
+  104  636  636  396  240  104 ==> Angle: 0 Speed: 5
+ValueSystem's results:
+  112  644  644  416  252  108 ==> Angle: 0 Speed: 5
+Controller's results:
+  112  644  644  416  252  108 ==> Angle: 0 Speed: 5
+ValueSystem's results:
+  108  648  648  408  228  104 ==> Angle: -0.8 Speed: 5
+Controller's results:
+  108  648  648  408  228  104 ==> Angle: -0.8 Speed: 5
+ValueSystem's results:
+  116  636  636  428  236  108 ==> Angle: 0 Speed: 5
+Controller's results:
+  116  636  636  428  236  108 ==> Angle: 0 Speed: 5
+ValueSystem's results:
+  116  644  644  420  232  112 ==> Angle: 0 Speed: 5
+Controller's results:
+  116  644  644  420  232  112 ==> Angle: 0 Speed: 5
+ValueSystem's results:
+  116  624  624  436  232  108 ==> Angle: 0.5 Speed: 5
+Controller's results:
+  116  624  624  436  232  108 ==> Angle: 0.5 Speed: 5
+ValueSystem's results:
+  124  604  604  444  240  128 ==> Angle: 0.1 Speed: 5
+Controller's results:
+  124  604  604  444  240  128 ==> Angle: 0.1 Speed: 5
+ValueSystem's results:
+  124  608  608  440  252  132 ==> Angle: 0.7 Speed: 5
+Controller's results:
+  124  608  608  440  252  132 ==> Angle: 0.7 Speed: 5
+ValueSystem's results:
+  140  608  608  436  248  132 ==> Angle: 0 Speed: 5
+Controller's results:
+  140  608  608  436  248  132 ==> Angle: 0 Speed: 5
+ValueSystem's results:
+  132  604  604  444  260  128 ==> Angle: 0 Speed: 5
+Controller's results:
+  132  604  604  444  260  128 ==> Angle: 0 Speed: 5
+ValueSystem's results:
+  136  612  612  432  260  128 ==> Angle: 0 Speed: 5
+Controller's results:
+  136  612  612  432  260  128 ==> Angle: 0 Speed: 5
+ValueSystem's results:
+  136  612  612  412  272  124 ==> Angle: 0.6 Speed: 5
+Controller's results:
+  136  612  612  412  272  124 ==> Angle: 0.6 Speed: 5
+ValueSystem's results:
+  128  616  616  420  268  128 ==> Angle: 0 Speed: 5
+Controller's results:
+  128  616  616  420  268  128 ==> Angle: 0 Speed: 5
+ValueSystem's results:
+  140  624  624  408  264  116 ==> Angle: 0 Speed: 5
+Controller's results:
+  140  624  624  408  264  116 ==> Angle: 0 Speed: 5
+ValueSystem's results:
+  128  648  648  408  268  108 ==> Angle: 0 Speed: 5
+Controller's results:
+  128  648  648  408  268  108 ==> Angle: 0 Speed: 5
+ValueSystem's results:
+  128  640  640  404  260  108 ==> Angle: -0.9 Speed: 5
+Controller's results:
+  128  640  640  404  260  108 ==> Angle: -0.9 Speed: 5
+ValueSystem's results:
+  112  652  652  404  260  108 ==> Angle: 0.2 Speed: 5
+Controller's results:
+  112  652  652  404  260  108 ==> Angle: 0.2 Speed: 5
+ValueSystem's results:
+  120  648  648  416  248  108 ==> Angle: 0 Speed: 5
+Controller's results:
+  120  648  648  416  248  108 ==> Angle: 0 Speed: 5
+ValueSystem's results:
+  108  656  656  408  252  104 ==> Angle: 0 Speed: 5
+Controller's results:
+  108  656  656  408  252  104 ==> Angle: 0 Speed: 5
+ValueSystem's results:
+  104  636  636  420  232  104 ==> Angle: -0.7 Speed: 5
+Controller's results:
+  104  636  636  420  232  104 ==> Angle: -0.7 Speed: 5
+ValueSystem's results:
+  120  652  652  404  244  100 ==> Angle: 0 Speed: 5
+Controller's results:
+  120  652  652  404  244  100 ==> Angle: 0 Speed: 5
+ValueSystem's results:
+  116  632  632  432  224  100 ==> Angle: -0.9 Speed: 5
+Controller's results:
+  116  632  632  432  224  100 ==> Angle: -0.9 Speed: 5Goodbye!

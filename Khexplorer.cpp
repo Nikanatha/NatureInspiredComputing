@@ -25,7 +25,22 @@ static const std::string path = "RBF.txt";
 
 int main()
 {
-	CSmartKhepera khexplore;
+	CSmartKhepera* pKhexplore = nullptr;
+
+	while(pKhexplore == nullptr)
+	{
+		std::cout << "Accessing Khepera... ";
+		try
+		{
+			pKhexplore = new CSmartKhepera();
+		}
+		catch(...)
+		{
+			std::cout << "Failed!" << std::endl;
+			delete pKhexplore;
+			pKhexplore = nullptr;
+		}
+	}
 
 	// print welcome and help
 	std::cout << "Welcome to the Khexplorer. ";
@@ -38,28 +53,29 @@ int main()
 		std::cout << "What would you like to do? ";
 		std::cin >> command;
 
-		if (command == s_StartRunningCmd) khexplore.StartRobot();
-		if (command == s_StopRunningCmd) khexplore.StopRobot();
-		if (command == s_StartVSCmd) khexplore.StartLearning();
-		if (command == s_StopVSCmd) khexplore.StopLearning();
-		if (command == s_StartInfoCmd) khexplore.StartVerbosity();
-		if (command == s_StopInfoCmd) khexplore.StopVerbosity();
-		if (command == s_StopOperator) khexplore.StopMoving();
+		if (command == s_StartRunningCmd) pKhexplore->StartRobot();
+		if (command == s_StopRunningCmd) pKhexplore->StopRobot();
+		if (command == s_StartVSCmd) pKhexplore->StartLearning();
+		if (command == s_StopVSCmd) pKhexplore->StopLearning();
+		if (command == s_StartInfoCmd) pKhexplore->StartVerbosity();
+		if (command == s_StopInfoCmd) pKhexplore->StopVerbosity();
+		if (command == s_StopOperator) pKhexplore->StopMoving();
 		if (command == s_Settings)
 		{
-			khexplore.OpenSettingsMenu();
+			pKhexplore->OpenSettingsMenu();
 			ListCommands();
 		}
 
-		if (command == s_SaveRBFNodesCmd) khexplore.SaveNodes(path);
-		if (command == s_LoadRBFNodesCmd) khexplore.LoadNodes(path);
+		if (command == s_SaveRBFNodesCmd) pKhexplore->SaveNodes(path);
+		if (command == s_LoadRBFNodesCmd) pKhexplore->LoadNodes(path);
 
 		if (command == s_Help) ListCommands();
 	} while (command != s_EndProgram);
 
 	// stop our robot!
-	khexplore.StopLearning();
-	khexplore.StopRobot();
+	pKhexplore->StopLearning();
+	pKhexplore->StopRobot();
+	delete pKhexplore;
 
 	std::cout << "Goodbye!" << std::endl;
     return 0;

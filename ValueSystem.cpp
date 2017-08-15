@@ -17,13 +17,9 @@ void CValueSystem::DoCycle()
 SIOSet CValueSystem::Correct(std::vector<SIOSet> history)
 {
 	SIOSet correction = history.front();
-	CSensorData next;
+	//CSensorData next = history.back();
+	CSensorData next = PredictChange(correction.sensors, correction.speed);
 
-	if (history.size() < 2)
-		next = PredictChange(correction.sensors, correction.speed);
-	else
-		next = history[1].sensors;
-	
 	std::vector<std::pair<CSpeed, double>> speedFitness;
 	//std::map<CSpeed, double> speedFitness;
 
@@ -91,7 +87,9 @@ double CValueSystem::Fitness(CSensorData old, CSensorData change, CSpeed speed)
 	double backPart;
 	backPart = change[Direction_Back].sensor * 5; // expect alues of up to +- 1000
 
-	return - speedPart + frontPart + sidePart + backPart;
+	double fit = - speedPart + frontPart + sidePart + backPart;
+	if(old[Direction_Front].proximity == Proximity_Collision && speed.Left()>0 && speed.Right()>0) fit += 100000;
+	return fit;
 }
 
 CSensorData CValueSystem::PredictChange(CSensorData start, CSpeed speed)

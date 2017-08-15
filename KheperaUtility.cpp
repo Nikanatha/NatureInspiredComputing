@@ -40,7 +40,7 @@ CSensorData CKheperaUtility::GetSensorData()
 	}
 	catch (...)
 	{
-//		printf("Error reading sensor data!");
+		printf("Error reading sensor data!");
 		return GetLastNetworkResult().sensors;
 	}
 
@@ -56,7 +56,7 @@ void CKheperaUtility::SetSpeed(int left, int right)
 	}
 	catch (...)
 	{
-//		printf("Error setting speed!");
+		printf("Error setting speed!");
 	}	
 }
 
