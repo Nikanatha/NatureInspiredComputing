@@ -134,7 +134,7 @@ CSensorData CValueSystem::PredictChange(CSensorData start, CSpeed speed)
 		EDirection dir = it->first;
 		EDirection newDir = (EDirection)(((int)dir + limit + ((int)turnDir - (int)Direction_Front)) % limit);
 //		next[newDir] = SValue((it->second.sensor + moved[newDir].sensor) / 2);
-		next[newDir] = SValue(min(max(0, it->second.sensor), 1024));
+		next[newDir] = SValue(fmin(fmax(0, it->second.sensor), 1024));
 	}
 
 	// return gradient
