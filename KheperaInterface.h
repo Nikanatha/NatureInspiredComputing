@@ -2,8 +2,8 @@
 #define __KHEPERAINTERFACE_H
 
 //#define SIM_ONLY
-#define WINDOWS
-//#define LINUX
+//#define WINDOWS
+#define LINUX
 
 #ifdef LINUX 
 	#include <termios.h>

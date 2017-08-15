@@ -73,11 +73,11 @@ with open(path, "r") as fileread:
             #extract all positive integers rom string
             append = []
             append.append( [int(s) for s in splitline[0].split() if s.isdigit()] )
-            append.append( re.findall(r"[-+]?\d*\.\d+|\d+", splitline[1]))
+            append.append( [int(s) for s in splitline[1].split() if s.isdigit()])
             controller.append(np.hstack(append))
             #writes the value Systemtmp to the array
             if len(valuesysteminputtemp):     
-                valueSystem.append(np.asarray(valuesysteminputtemp[0].astype(np.float)))
+                valueSystem.append(valuesysteminputtemp[0])
                 valuesysteminputtemp = []
             burnflag()
         elif (nodeaddlineflag == 1):
@@ -86,10 +86,13 @@ with open(path, "r") as fileread:
             splitline = line.split("==")
             append = []
             append.append( [int(s) for s in splitline[0].split() if s.isdigit()] )
-            append.append( re.findall(r"[-+]?\d*\.\d+|\d+", splitline[1]))
+            append.append( [int(s) for s in splitline[1].split() if s.isdigit()])
             #append.append( re.findall(r"[-+]?(\d+(\.\d*)?|\.\d+)([eE][-+]?\d+)?", splitline[1]))
+            #print re.findall(r"[-+]?(\d+(\.\d*)?|\.\d+)([eE][-+]?\d+)?", splitline[1])
+            
             #print np.hstack(append)
             valuesysteminputtemp.append(np.hstack(append))
+            #print valuesysteminputtemp
             burnflag()
 
 
@@ -101,20 +104,21 @@ for iter in range (0,8):
 
 controllerarray = np.asarray(controllercollumn[7])
 valueSystemArray = np.asarray(valueSystemcollumn[7])
-controllerspeed = controllerarray.astype(np.float)
-valueSystemspeed = valueSystemArray.astype(np.float)
+controllerspeed = controllerarray
+valueSystemspeed = valueSystemArray
 
 controlleranglearray = np.asarray(controllercollumn[6])
 valueSystemanglearray = np.asarray(valueSystemcollumn[6])
-controllerangle = controlleranglearray.astype(np.float)
-valueSystemangle = valueSystemanglearray.astype(np.float)
+controllerangle = controlleranglearray
+valueSystemangle = valueSystemanglearray
 
 
 print len(valueSystemArray)
 print len(controllerspeed)
+print controllerspeed
 
-speeddelta =map(float.__sub__, controllerspeed , valueSystemspeed)
-angledelte =map(float.__sub__, controllerangle , valueSystemangle)
+speeddelta =list(np.array(controllerspeed) - np.array(valueSystemspeed))
+angledelte =list(np.array(controllerangle) - np.array(valueSystemangle))
 fig, axs = plt.subplots(2, 2)
 axs[0, 0].plot(np.arange(0,len(speeddelta),1),speeddelta)
 axs[0, 0].set_title("controllerspeed-valuesystemspeed")
