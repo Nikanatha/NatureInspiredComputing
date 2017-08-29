@@ -1,9 +1,10 @@
 #include <math.h>
 #include <iostream>
+#include <algorithm>
 
 #include "Node.h"
 
-double CNode::Sigma = 10;
+double CNode::Sigma = 1;
 double CNode::LearningWeight = 0.3;
 const double CNode::DecayRate = 0.9;
 
@@ -51,6 +52,7 @@ void CNode::Adapt(CSensorData input, CSpeed difference)
 
 	CSpeed change = difference * activation * LearningWeight;
 	m_Weight += change;
+	m_Weight.Limit();
 }
 
 void CNode::Adapt(CSensorData input, CSpeed old, CSpeed better, double totalActivity)
@@ -65,6 +67,7 @@ void CNode::Adapt(CSensorData input, CSpeed old, CSpeed better, double totalActi
 	double aChange = (better.Angle() - old.Angle()) * strength;
 	m_Weight.IncreaseVelocity(vChange);
 	m_Weight.IncreaseAngle(aChange);
+	m_Weight.Limit();
 }
 
 CSensorData CNode::Center()
@@ -110,4 +113,88 @@ void CNode::Decay()
 void CNode::AddActivation(double act)
 {
 	m_Activity += act;
+}
+
+
+void CNeuralNetwork::AddNode(CSensorData sensors, CSpeed speed)
+{
+	CNode node(sensors, speed);
+
+	this->push_back(node);
+	std::cout << "Added new ";
+	node.Dump();
+	std::cout << std::endl;
+
+}
+
+void CNeuralNetwork::Forget(int maxCount)
+{
+	std::sort(this->begin(), this->end(), CNode::CompareActivity);
+
+	int count = 0;
+	for (auto it = this->begin(); it != this->end(); it++)
+	{
+		count++;
+		if (count > maxCount)
+		{
+			std::cout << "Forgetting ";
+			it->Dump();
+			std::cout << std::endl;
+		}
+	}
+
+	this->resize(maxCount);
+}
+
+int CNeuralNetwork::Count()
+{
+	return this->size();
+}
+
+SIOSet CNeuralNetwork::Evaluate(CSensorData sensors)
+{
+	double activation = 0;
+	double maxAct = 0;
+	CSpeed speed;
+
+	for (int n = 0; n < this->size(); n++)
+	{
+		double act;
+		CSpeed out;
+		act = this->at(n).Activate(sensors, out);
+		speed += out;
+		activation += act;
+		maxAct = fmax(maxAct, act);
+	}
+
+	if (activation > 0) speed /= activation;
+
+	SIOSet result;
+	result.sensors = sensors;
+	result.speed = speed;
+
+	if (activation>1) printf("Activation is too high (%f)\n", activation);
+	return result;
+}
+
+void CNeuralNetwork::Adapt(SIOSet ideal)
+{
+	double activation = 0;
+	CSpeed current;
+
+	for (int n = 0; n < this->size(); n++)
+	{
+		double act;
+		CSpeed out;
+		act = this->at(n).Calculate(ideal.sensors, out);
+		current += out;
+		activation += act;
+	}
+
+	if (activation > 0)	current /= activation;
+
+	for (int n = 0; n < this->size(); n++)
+	{
+		this->at(n).Adapt(ideal.sensors, current, ideal.speed, activation);
+	}
 }

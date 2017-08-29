@@ -3,6 +3,13 @@
 
 #include "SensorData.h"
 #include "Speed.h"
+#include <vector>
+
+struct SIOSet
+{
+	CSensorData sensors;
+	CSpeed speed;
+};
 
 class CNode
 {
@@ -36,6 +43,17 @@ private:
 	CSensorData m_Center;
 	CSpeed m_Weight;
 	double m_Activity;
+};
+
+class CNeuralNetwork : public std::vector<CNode>
+{
+public:
+	void AddNode(CSensorData, CSpeed speed);
+	void Forget(int maxCount);
+	int Count();
+
+	SIOSet Evaluate(CSensorData sensors);
+	void Adapt(SIOSet ideal);
 };
 
 #endif
