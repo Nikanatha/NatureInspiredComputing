@@ -8,7 +8,29 @@
 CController::CController(CKheperaUtility * pUtil, CRbfSettings* pSettings) : CThreadableBase(pUtil)
 {
 	m_pSettings = pSettings;
-	RebuildNetwork();
+	//RebuildNetwork();
+
+	int steps = 3;
+	if (steps>0)
+	{
+		for (int i = 0; i < pow(steps, (int)Direction_Back + 1); i++)
+		{
+			CSensorData center;
+			int mod;
+			int div;
+
+			div = i;
+			for (int d = (int)Direction_FrontLeft; d <= (int)Direction_Back + 1; d++)
+			{
+				mod = div%steps;
+				div = div / steps;
+
+				center[(EDirection)(d - 1)] = mod * 1000 / (steps - 1);
+			}
+
+			m_NetworkNodes.AddNode(center, CSpeed(m_pUtil->GetUniformRandom(0, 20), m_pUtil->GetUniformRandom(-PI / 2, PI / 2)));
+		}
+	}
 }
 
 void CController::LoadNodesFromFile(std::string path)
