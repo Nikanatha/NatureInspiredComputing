@@ -7,11 +7,18 @@ public:
 	CRbfSettings();
 
 public:
-	double Sigma;
-	double Learn;
-	double Decay;
-	double MinActivation;
-	int MaxNodes;
+	double Sigma();
+	double Learn();
+	void SetLearn(double val);
+	//double Decay();
+	//void SetDecay();
+	//double MinActivation();
+	//void SetMinActivation();
+	int MaxNodes();
+	void SetMaxNodes(int val);
+
+private:
+	int m_MaxNodes;
 };
 
 class CMscSettings

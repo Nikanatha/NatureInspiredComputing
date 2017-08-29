@@ -6,19 +6,14 @@
 #include <vector>
 
 #include "Common.h"
-#include "SensorData.h"
-#include "Speed.h"
+#include "Node.h"
+//#include "SensorData.h"
+//#include "Speed.h"
 
 #define HISTORY_LENGTH 10
 
 // types
 class KheperaInterface;
-
-struct SIOSet
-{
-	CSensorData sensors;
-	CSpeed speed;
-};
 
 typedef std::lock_guard<std::mutex> ScopedMutexLocker;
 

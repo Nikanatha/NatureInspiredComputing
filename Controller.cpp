@@ -8,36 +8,12 @@
 CController::CController(CKheperaUtility * pUtil, CRbfSettings* pSettings) : CThreadableBase(pUtil)
 {
 	m_pSettings = pSettings;
-
-	// generate nodes
-	bool gen = false;
-	int steps = 3;
-	if (gen)
-	{
-		for (int i = 0; i < pow(steps, (int)Direction_Back + 1); i++)
-		{
-			CSensorData center;
-			int mod;
-			int div;
-
-			div = i;
-			for (int d = (int)Direction_FrontLeft; d <= (int)Direction_Back+1; d++)
-			{
-				mod = div%steps;
-				div = div / steps;
-
-				center[(EDirection)(d-1)] = mod * 1000 / (steps-1);
-			}
-
-			AddNode(center, CSpeed(m_pUtil->GetUniformRandom(0, 20), m_pUtil->GetUniformRandom(-PI / 2, PI / 2)));
-		}
-	}
+	RebuildNetwork();
 }
 
 void CController::LoadNodesFromFile(std::string path)
 {
-	// Delete current nodes
-	m_NetworkNodes.clear();
+	CNeuralNetwork newNetwork;
 
 	std::fstream file;
 	std::string line;
@@ -64,9 +40,10 @@ void CController::LoadNodesFromFile(std::string path)
 			ss >> left >> right;
 			speed.SetComponents(left, right);
 
-			AddNode(sensors, speed);
+			newNetwork.AddNode(sensors, speed);
 		}
 
+		m_NetworkNodes = newNetwork;
 	}
 	else std::cout << "Unable to open file";
 
@@ -121,28 +98,14 @@ void CController::DoCycle()
 	SIOSet ideal = m_pUtil->GetLastCorrectedResult();
 	Adapt(ideal);
 
-	// check for surplus of nodes
-	if (m_NetworkNodes.size() > m_pSettings->MaxNodes)
-	{
-		Forget();
-	}
+	if (m_NetworkNodes.Count() != m_pSettings->MaxNodes()) RebuildNetwork();
 }
 
 void CController::Adapt(SIOSet ideal)
 {
-	double activation = 0;
-	CSpeed current;
+	auto current = m_NetworkNodes.Evaluate(ideal.sensors);
 
-	for (int n = 0; n < m_NetworkNodes.size(); n++)
-	{
-		double act;
-		CSpeed out;
-		act = m_NetworkNodes[n].Calculate(ideal.sensors, out);
-		current += out;
-		activation += act;
-	}
-
-	if (activation > 0)	current /= activation;
+	m_NetworkNodes.Adapt(ideal);
 
 	// output info
 	std::ofstream file;
@@ -158,7 +121,7 @@ void CController::Adapt(SIOSet ideal)
 	}
 	if (babble)
 	{
-		CSpeed output = current;
+		CSpeed output = current.speed;
 		output.Limit();
 		file << "Controller's results:" << std::endl;
 		ideal.sensors.Dump(file);
@@ -167,82 +130,46 @@ void CController::Adapt(SIOSet ideal)
 	}
 
 	file.close();
+}
 
-	for (int n = 0; n < m_NetworkNodes.size(); n++)
+void CController::RebuildNetwork()
+{
+	CNeuralNetwork newNetwork;
+	CNeuralNetwork oldNetwork = m_NetworkNodes;
+	int nodeCount = m_pSettings->MaxNodes();
+
+	for (int i = 0; i < nodeCount; i++)
 	{
-		//m_NetworkNodes[n].Adapt(ideal.sensors, ideal.speed - current);
-		m_NetworkNodes[n].Adapt(ideal.sensors, current, ideal.speed, activation);
+		Int8 raw = { {
+				(int)round(m_pUtil->GetUniformRandom(0,1024)),
+				(int)round(m_pUtil->GetUniformRandom(0,1024)),
+				(int)round(m_pUtil->GetUniformRandom(0,1024)),
+				(int)round(m_pUtil->GetUniformRandom(0,1024)),
+				(int)round(m_pUtil->GetUniformRandom(0,1024)),
+				(int)round(m_pUtil->GetUniformRandom(0,1024)),
+				(int)round(m_pUtil->GetUniformRandom(0,1024)),
+				(int)round(m_pUtil->GetUniformRandom(0,1024))
+			} };
+		CSensorData center = CSensorData(raw);
+		CSpeed weight = oldNetwork.Evaluate(center).speed;
+
+		newNetwork.AddNode(center, weight);
 	}
-}
 
-void CController::AddNode(CSensorData sensors, CSpeed speed)
-{
-	CNode node(sensors, speed);
-	
-        m_NetworkNodes.push_back(node);
-        std::cout << "Added new ";
-		node.Dump();
-        std::cout << std::endl;
-    
-}
-
-void CController::Forget()
-{
-    printf("Too much knowledge! Must forget!");
-	std::sort(m_NetworkNodes.begin(), m_NetworkNodes.end(), CNode::CompareActivity);
-    
-    int count = 0;
-    for (auto it = m_NetworkNodes.begin(); it != m_NetworkNodes.end(); it++)
-    {
-        count++;
-        if(count > m_pSettings->MaxNodes)
-        {
-			std::cout << "Forgetting ";
-			it->Dump();
-			std::cout << std::endl;
-        }
-    }
-    
-	m_NetworkNodes.resize(m_pSettings->MaxNodes);
+	m_NetworkNodes = newNetwork;
 }
 
 SIOSet CController::Evaluate(CSensorData sensors)
 {
-	double activation = 0;
-	double maxAct = 0;
-	CSpeed speed;
-
-	for (int n = 0; n < m_NetworkNodes.size(); n++)
-	{
-		double act;
-		CSpeed out;
-		act = m_NetworkNodes[n].Activate(sensors, out);
-		speed += out;
-		activation += act;
-		maxAct = fmax(maxAct, act);
-	}
-
-	if (activation > 0) speed /= activation;
-
-	SIOSet result;
-	result.sensors = sensors;
-	result.speed = speed;
-
-	// add extra nodes if activation is too low
-	if (maxAct < 0.5)
-	{
-		AddNode(sensors, speed);
-	}
-
-	return result;
+	return m_NetworkNodes.Evaluate(sensors);
 }
 
 void CController::ListNodes()
 {
     std::cout << "These are my nodes:" << std::endl;
-    for (auto it = m_NetworkNodes.begin(); it != m_NetworkNodes.end(); it++)
-    {
-		it->Dump();
-        std::cout << std::endl;
-    }
+    //for (auto it = m_NetworkNodes.begin(); it != m_NetworkNodes.end(); it++)
+    //{
+	//	it->Dump();
+    //    std::cout << std::endl;
+    //}
 }

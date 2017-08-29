@@ -21,15 +21,13 @@ protected:
 private:
 	SIOSet Evaluate(CSensorData sensors);
 	void Adapt(SIOSet ideal);
-
-	// rbf network functions
-	void AddNode(CSensorData, CSpeed speed);
-	void Forget();
+	
+	void RebuildNetwork();
 
 private:
 	CRbfSettings* m_pSettings;
 
-	std::vector<CNode> m_NetworkNodes;
+	CNeuralNetwork m_NetworkNodes;
 };
 
 #endif
