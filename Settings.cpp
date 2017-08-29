@@ -5,7 +5,7 @@
 
 CRbfSettings::CRbfSettings()
 {
-	SetMaxNodes(10);
+	SetMaxNodes(pow(3,6));
 }
 
 double CRbfSettings::Sigma()
@@ -31,7 +31,7 @@ int CRbfSettings::MaxNodes()
 void CRbfSettings::SetMaxNodes(int val)
 {
 	m_MaxNodes = val;
-	CNode::Sigma = (-1024.0 / (2 * m_MaxNodes*log(0.5)));
+	CNode::Sigma = (-sqrt(6)*1024.0 / (2 * m_MaxNodes*log(0.5)));
 }
 
 CMscSettings::CMscSettings()
