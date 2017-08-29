@@ -17,19 +17,18 @@ void CValueSystem::DoCycle()
 
 SIOSet CValueSystem::Correct(std::vector<SIOSet> history)
 {
+	std::vector<std::pair<CSpeed, double>> speedFitness;
 	SIOSet correction = history.front();
+	CSensorData next = PredictChange(correction.sensors, correction.speed);
 
 	// if repetitions are required, just output the last speed
 	if (m_Repetitions > 0)
 	{
 		m_Repetitions--;
 		correction.speed = m_RepeatSpeed;
-		return correction;
+		speedFitness.push_back(std::make_pair(m_RepeatSpeed, Fitness(correction.sensors, PredictChange(correction.sensors, correction.speed), m_RepeatSpeed)));
 	}
 
-	CSensorData next = PredictChange(correction.sensors, correction.speed);
-	std::vector<std::pair<CSpeed, double>> speedFitness;
-	
 	// insert controller's results
 	speedFitness.push_back(std::make_pair(correction.speed, Fitness(correction.sensors, next, correction.speed)));
 
@@ -113,7 +112,7 @@ double CValueSystem::Fitness(CSensorData old, CSensorData change, CSpeed speed)
 	
 	double speedPart;
 	if (speed.Velocity() < 0) speedPart = 0;
-	else speedPart = (speed.Velocity()-50)*100; //exp(-speed.Velocity()); // expect values of up to 100
+	else speedPart = (speed.Velocity()-50)*10; //exp(-speed.Velocity()); // expect values of up to 100
 
 
 	double frontPart;
@@ -125,10 +124,21 @@ double CValueSystem::Fitness(CSensorData old, CSensorData change, CSpeed speed)
 	double backPart;
 	backPart = change[Direction_Back].sensor * 5; // expect alues of up to +- 1000
 
-	double fit = - speedPart + frontPart + sidePart + backPart;
-	if(old[Direction_Front].proximity == Proximity_Close && speed.Left()>0 && speed.Right()>0)
+	double fit = speedPart + frontPart + sidePart + backPart;
+
+	bool reflex = false;
+
+	if (change.Collision()) reflex = true;
+	if (old[Direction_Front].proximity >= Proximity_Close && speed.Left() > 0 && speed.Right() > 0) reflex = true;
+	
+	if(reflex)
 	{
-		Exception("Reflex triggered!", -1);
+		std::cout << "Reflex triggered at ";
+		old.Dump();
+		std::cout << std::endl;
+		fit += 10000;
+		m_Repetitions++;
+		//Exception("Reflex triggered!", -1);
 	}
 
 	return fit;
