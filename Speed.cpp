@@ -3,7 +3,7 @@
 #include "Common.h"
 #include "Speed.h"
 
-#define MAX_SPEED 5
+#define MAX_SPEED 100
 
 CSpeed::CSpeed()
 {
@@ -76,6 +76,7 @@ void CSpeed::SetComponents(double left, double right)
 void CSpeed::Limit()
 {
 	m_Velocity = fmin(m_Velocity, MAX_SPEED);
+	m_Velocity = fmax(m_Velocity, -MAX_SPEED);
 }
 
 CSpeed CSpeed::operator+(CSpeed other)
