@@ -63,11 +63,18 @@ void CNode::Adapt(CSensorData input, CSpeed old, CSpeed better, double totalActi
 	
 	double strength = LearningWeight * activation / totalActivity;
 
+	std::cout << "Node act = " << activation << "Total = " << totalActivity << "Change strength = " << strength << std::endl;
+	std::cout << "  Old speed = v " << m_Weight.Velocity() << " a " << m_Weight.Angle() << std::endl;
+
 	double vChange = (better.Velocity() - old.Velocity()) * strength;
 	double aChange = (better.Angle() - old.Angle()) * strength;
 	m_Weight.IncreaseVelocity(vChange);
 	m_Weight.IncreaseAngle(aChange);
+
 	m_Weight.Limit();
+
+	std::cout << "  New speed = v " << m_Weight.Velocity() << " a " << m_Weight.Angle() << std::endl;
+
 }
 
 CSensorData CNode::Center()
@@ -99,7 +106,7 @@ double CNode::BaseFunction(CSensorData sensors)
 	for (auto sens = sensors.begin(); sens != sensors.end(); sens++)
 	{
 		int diff = sens->second.sensor - m_Center[sens->first].sensor;
-		sqdist += pow(DIFF_FACTOR*diff, 2); // TODO: replae explicit 1000
+		sqdist += pow(diff, 2);
 	}
 
 	return exp(-sqrt(sqdist) / Sigma);
