@@ -111,9 +111,8 @@ double CValueSystem::Fitness(CSensorData old, CSensorData change, CSpeed speed)
 	// weight directions in a way that front should not increase, neither should back (to prevent driving backwards)
 	
 	double speedPart;
-	if (speed.Velocity() < 0) speedPart = 0;
-	else speedPart = (speed.Velocity()-50)*10; //exp(-speed.Velocity()); // expect values of up to 100
-
+	if (speed.Velocity() < 0) speedPart = abs(speed.Velocity());
+	else speedPart = 0;
 
 	double frontPart;
 	frontPart = (change[Direction_FrontLeft].sensor + change[Direction_Front].sensor + change[Direction_FrontRight].sensor) * 2; // expect values of up to +- 3000
@@ -144,6 +143,13 @@ double CValueSystem::Fitness(CSensorData old, CSensorData change, CSpeed speed)
 	return fit;
 }
 
+SValue PredictValue(SValue start, double dirSpeed)
+{
+	double oldV = start.sensor;
+	double newV = oldV + exp(oldV - 1024)*dirSpeed;
+	return SValue((int)round(newV));
+}
+
 CSensorData CValueSystem::PredictChange(CSensorData start, CSpeed speed)
 {
 	// very basic, naive assumptions:
@@ -158,37 +164,21 @@ CSensorData CValueSystem::PredictChange(CSensorData start, CSpeed speed)
 
 	// increases front and side front, decrease back
 	EDirection dir;
+	dir = Direction_Left;
+	moved[dir] = PredictValue(start[dir], speed.Left());
 	dir = Direction_FrontLeft;
-	moved[dir] = SValue(start[dir].sensor + straight);
+	moved[dir] = PredictValue(start[dir], (speed.Left() + straight) / 2);
 	dir = Direction_Front;
-	moved[dir] = SValue(start[dir].sensor + straight);
+	moved[dir] = PredictValue(start[dir], straight);
 	dir = Direction_FrontRight;
-	moved[dir] = SValue(start[dir].sensor + straight);
+	moved[dir] = PredictValue(start[dir], (speed.Right() + straight) / 2);
+	dir = Direction_Right;
+	moved[dir] = PredictValue(start[dir], speed.Right());
 
 	dir = Direction_Back;
-	moved[dir] = SValue(start[dir].sensor - straight);
+	moved[dir] = PredictValue(start[dir], - straight);
 
-	dir = Direction_Left;
-	moved[dir] = SValue(start[dir].sensor);
-	dir = Direction_Right;
-	moved[dir] = SValue(start[dir].sensor);
-
-	// turning component
-	EDirection turnDir;
-	turnDir = AngleToDirection(speed.Angle());
-	
-	int limit = Direction_Back + 1;
-
-	for (auto it = moved.begin(); it != moved.end(); it++)
-	{
-		EDirection dir = it->first;
-		EDirection newDir = (EDirection)(((int)dir + limit + ((int)turnDir - (int)Direction_Front)) % limit);
-//		next[newDir] = SValue((it->second.sensor + moved[newDir].sensor) / 2);
-		next[newDir] = SValue(fmin(fmax(0, it->second.sensor), 1024));
-	}
-
-	// return gradient
-	return next;//.GradientFrom(start);
+	return next;
 }
 
 std::pair<CSpeed, double> CValueSystem::FitSpeed(CSensorData start, CSpeed speed)
