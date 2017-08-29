@@ -3,6 +3,7 @@
 
 CValueSystem::CValueSystem(CKheperaUtility * pUtil) : CThreadableBase(pUtil)
 {
+	m_Repetitions = 0;
 }
 
 void CValueSystem::DoCycle()
@@ -17,12 +18,18 @@ void CValueSystem::DoCycle()
 SIOSet CValueSystem::Correct(std::vector<SIOSet> history)
 {
 	SIOSet correction = history.front();
-	//CSensorData next = history.back();
+
+	// if repetitions are required, just output the last speed
+	if (m_Repetitions > 0)
+	{
+		m_Repetitions--;
+		correction.speed = m_RepeatSpeed;
+		return correction;
+	}
+
 	CSensorData next = PredictChange(correction.sensors, correction.speed);
-
 	std::vector<std::pair<CSpeed, double>> speedFitness;
-	//std::map<CSpeed, double> speedFitness;
-
+	
 	// insert controller's results
 	speedFitness.push_back(std::make_pair(correction.speed, Fitness(correction.sensors, next, correction.speed)));
 
@@ -94,6 +101,7 @@ SIOSet CValueSystem::Correct(std::vector<SIOSet> history)
 	}
 
 	correction.speed = best.first;
+	m_RepeatSpeed = correction.speed;
 	return correction;
 }
 
@@ -184,6 +192,7 @@ std::pair<CSpeed, double> CValueSystem::FitSpeed(CSensorData start, CSpeed speed
 	}
 	catch(...)
 	{
+		m_Repetitions = 10;
 		return std::make_pair(CSpeed(0,0), 100000);
 	}
 

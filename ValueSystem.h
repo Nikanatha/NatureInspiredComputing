@@ -17,6 +17,10 @@ private:
 	CSensorData PredictChange(CSensorData start, CSpeed speed);
 
 	std::pair<CSpeed, double> FitSpeed(CSensorData start, CSpeed speed);
+
+private:
+	int m_Repetitions;
+	CSpeed m_RepeatSpeed;
 };
 
 #endif
