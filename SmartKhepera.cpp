@@ -92,9 +92,9 @@ void CSmartKhepera::OpenSettingsMenu()
 		if (command != s_Help && command != s_EndProgram)		std::cin >> val;
 
 		if (command == s_MaxSpeed) m_pUtil->MaxSpeed = val;
-		if (command == s_RbfNodeCount) m_pRbfSettings->MaxNodes = round(val);
-		if (command == s_RbfSigma) CNode::Sigma = val;
-		if (command == s_RbfLearnFactor) CNode::LearningWeight = val;
+		if (command == s_RbfNodeCount) m_pRbfSettings->SetMaxNodes(round(val));
+		//if (command == s_RbfSigma) CNode::Sigma = val;
+		if (command == s_RbfLearnFactor) m_pRbfSettings->SetLearn(val);
 		if (command == s_Help) ListSettings();
 	} while (command != s_EndProgram);
 
@@ -109,7 +109,7 @@ void ListSettings()
 
 	std::cout << "   " << s_MaxSpeed << "        : maximum robot speed" << std::endl;
 	std::cout << "   " << s_RbfNodeCount << "        : RBF network maximum node count" << std::endl;
-	std::cout << "   " << s_RbfSigma << "        : RBF network node width" << std::endl;
+	//std::cout << "   " << s_RbfSigma << "        : RBF network node width" << std::endl;
 	std::cout << "   " << s_RbfLearnFactor << "        : RBF network node learning weight" << std::endl;
 
 	std::cout << std::endl;
