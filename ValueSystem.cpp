@@ -112,7 +112,8 @@ double CValueSystem::Fitness(CSensorData old, CSensorData change, CSpeed speed)
 	// weight directions in a way that front should not increase, neither should back (to prevent driving backwards)
 	
 	double speedPart;
-	speedPart = 0; //exp(-speed.Velocity()); // expect values of up to 100
+	if (speed.Velocity() < 0) speedPart = 0;
+	else speedPart = (speed.Velocity()-50)*100; //exp(-speed.Velocity()); // expect values of up to 100
 
 
 	double frontPart;
@@ -192,7 +193,7 @@ std::pair<CSpeed, double> CValueSystem::FitSpeed(CSensorData start, CSpeed speed
 	}
 	catch(...)
 	{
-		m_Repetitions = 10;
+		m_Repetitions = 3;
 		return std::make_pair(CSpeed(0,0), 100000);
 	}
 
