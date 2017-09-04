@@ -1,0 +1,12 @@
+
+*.db
+*.opendb
+*.obj
+*.exe
+*.tlog
+*.ipch
+*.ilk
+*.log
+*.pdb
+*.idb
+KheperaInterface.h
