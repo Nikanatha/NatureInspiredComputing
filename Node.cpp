@@ -62,23 +62,12 @@ void CNode::Adapt(CSensorData input, CSpeed old, CSpeed better, double totalActi
 	activation = Calculate(input, output);
 	
 	double strength = LearningWeight * activation / totalActivity;
-	bool print = strength > 0.001;
-	if (print)
-	{
-		std::cout << "Node act = " << activation << "Total = " << totalActivity << "Change strength = " << strength << std::endl;
-		std::cout << "  Old speed = v " << m_Weight.Velocity() << " a " << m_Weight.Angle() << std::endl;
-	}
 	double vChange = (better.Velocity() - old.Velocity()) * strength;
 	double aChange = (better.Angle() - old.Angle()) * strength;
 	m_Weight.IncreaseVelocity(vChange);
 	m_Weight.IncreaseAngle(aChange);
 
 	m_Weight.Limit();
-	
-	if (print)
-	{
-		std::cout << "  New speed = v " << m_Weight.Velocity() << " a " << m_Weight.Angle() << std::endl;
-	}
 }
 
 CSensorData CNode::Center()
@@ -184,7 +173,7 @@ SIOSet CNeuralNetwork::Evaluate(CSensorData sensors)
 	result.sensors = sensors;
 	result.speed = speed;
 
-	if (activation>1) printf("Activation is too high (%f)\n", activation);
+	//if (activation>1) printf("Activation is too high (%f)\n", activation);
 	return result;
 }
 
@@ -203,6 +192,7 @@ void CNeuralNetwork::Adapt(SIOSet ideal)
 	}
 
 	if (activation > 0)	current /= activation;
+	ideal.speed.Limit();
 
 	for (int n = 0; n < this->size(); n++)
 	{

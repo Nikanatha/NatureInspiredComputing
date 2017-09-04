@@ -18,19 +18,18 @@ void CValueSystem::DoCycle()
 SIOSet CValueSystem::Correct(std::vector<SIOSet> history)
 {
 	std::vector<std::pair<CSpeed, double>> speedFitness;
-	SIOSet correction = history.front();
-	CSensorData next = PredictChange(correction.sensors, correction.speed);
+	SIOSet correction = history.back();
 
 	// if repetitions are required, just output the last speed
 	if (m_Repetitions > 0)
 	{
 		m_Repetitions--;
 		correction.speed = m_RepeatSpeed;
-		speedFitness.push_back(std::make_pair(m_RepeatSpeed, Fitness(correction.sensors, PredictChange(correction.sensors, correction.speed), m_RepeatSpeed)));
+		speedFitness.push_back(FitSpeed(correction.sensors, m_RepeatSpeed));
 	}
 
 	// insert controller's results
-	speedFitness.push_back(std::make_pair(correction.speed, Fitness(correction.sensors, next, correction.speed)));
+	speedFitness.push_back(FitSpeed(correction.sensors, correction.speed));
 
 	// generate alternatives
 	CSpeed alt;
@@ -39,58 +38,44 @@ SIOSet CValueSystem::Correct(std::vector<SIOSet> history)
 		// backwards
 	altBackwards = correction.speed;
 	altBackwards.SetVelocity(-altBackwards.Velocity());
-	speedFitness.push_back(std::make_pair(altBackwards, Fitness(correction.sensors,
-		PredictChange(correction.sensors, altBackwards),
-		altBackwards)));
+	speedFitness.push_back(FitSpeed(correction.sensors, altBackwards));
 
 		// more left
 	alt = correction.speed;
 	alt.IncreaseAngle(m_pUtil->GetUniformRandom());
-	speedFitness.push_back(std::make_pair(alt, Fitness(correction.sensors,
-		PredictChange(correction.sensors, alt),
-		alt)));
+	speedFitness.push_back(FitSpeed(correction.sensors, alt));
+
 	altBackwards = alt;
 	altBackwards.SetVelocity(-altBackwards.Velocity());
-	speedFitness.push_back(std::make_pair(altBackwards, Fitness(correction.sensors,
-		PredictChange(correction.sensors, altBackwards),
-		altBackwards)));
+	speedFitness.push_back(FitSpeed(correction.sensors, altBackwards));
 
 		// more right
 	alt = correction.speed;
 	alt.IncreaseAngle(-m_pUtil->GetUniformRandom());
-	speedFitness.push_back(std::make_pair(alt, Fitness(correction.sensors,
-		PredictChange(correction.sensors, alt),
-		alt)));
+	speedFitness.push_back(FitSpeed(correction.sensors, alt));
+
 	altBackwards = alt;
 	altBackwards.SetVelocity(-altBackwards.Velocity());
-	speedFitness.push_back(std::make_pair(altBackwards, Fitness(correction.sensors,
-		PredictChange(correction.sensors, altBackwards),
-		altBackwards)));
+	speedFitness.push_back(FitSpeed(correction.sensors, altBackwards));
 
 	
 		// more speed
 	alt = correction.speed;
 	alt *= 1 + m_pUtil->GetUniformRandom();
-	speedFitness.push_back(std::make_pair(alt, Fitness(correction.sensors,
-		PredictChange(correction.sensors, alt),
-		alt)));
+	speedFitness.push_back(FitSpeed(correction.sensors, alt));
+
 	altBackwards = alt;
 	altBackwards.SetVelocity(-altBackwards.Velocity());
-	speedFitness.push_back(std::make_pair(altBackwards, Fitness(correction.sensors,
-		PredictChange(correction.sensors, altBackwards),
-		altBackwards)));
+	speedFitness.push_back(FitSpeed(correction.sensors, altBackwards));
 
 		// less speed
 	alt = correction.speed;
 	alt *= m_pUtil->GetUniformRandom();
-	speedFitness.push_back(std::make_pair(alt, Fitness(correction.sensors,
-		PredictChange(correction.sensors, alt),
-		alt)));
+	speedFitness.push_back(FitSpeed(correction.sensors, alt));
+
 	altBackwards = alt;
 	altBackwards.SetVelocity(-altBackwards.Velocity());
-	speedFitness.push_back(std::make_pair(altBackwards, Fitness(correction.sensors,
-		PredictChange(correction.sensors, altBackwards),
-		altBackwards)));
+	speedFitness.push_back(FitSpeed(correction.sensors, altBackwards));
 		
 	// choose best solution
 	std::pair<CSpeed, double> best = speedFitness.front();
@@ -104,38 +89,41 @@ SIOSet CValueSystem::Correct(std::vector<SIOSet> history)
 	return correction;
 }
 
-double CValueSystem::Fitness(CSensorData old, CSensorData change, CSpeed speed)
+double CValueSystem::Fitness(CSensorData position, CSpeed speed)
 {
 	// maximize velocity
 	// minimize total change
 	// weight directions in a way that front should not increase, neither should back (to prevent driving backwards)
 	
-	double speedPart;
-	if (speed.Velocity() < 0) speedPart = abs(speed.Velocity());
-	else speedPart = 0;
+	CSpeed limited = speed;
+	limited.Limit();
 
-	double frontPart;
-	frontPart = (change[Direction_FrontLeft].sensor + change[Direction_Front].sensor + change[Direction_FrontRight].sensor) * 2; // expect values of up to +- 3000
+	double speedPart = exp(5 * abs(speed.Velocity()) / abs(limited.Velocity()));
+	if (speed.Velocity() < 0) speedPart *= 2;
 
-	double sidePart;
-	sidePart = (change[Direction_Left].sensor + change[Direction_Right].sensor) * 1; // expect values of up to +- 2000
+	CSensorData future = PredictChange(position, speed);
+	CSensorData farFuture = PredictChange(future, speed);
 
-	double backPart;
-	backPart = change[Direction_Back].sensor * 5; // expect alues of up to +- 1000
+	double sensorPart = 0;
+	for (int d = (int)Direction_Left; d <= (int)Direction_Back; d++)
+	{
+		EDirection dir = (EDirection)d;
+		sensorPart += future[dir].sensor;
+		sensorPart += farFuture[dir].sensor;
+	}
 
-	double fit = speedPart + frontPart + sidePart + backPart;
+	double fit = speedPart + sensorPart;
 
 	bool reflex = false;
-
-	if (change.Collision()) reflex = true;
-	if (old[Direction_Front].proximity >= Proximity_Close && speed.Left() > 0 && speed.Right() > 0) reflex = true;
+	if (farFuture.Collision()) reflex = true;
+	//if (position[Direction_Front].proximity >= Proximity_Close && speed.Left() > 0 && speed.Right() > 0) reflex = true;
 	
 	if(reflex)
 	{
 		std::cout << "Reflex triggered at ";
-		old.Dump();
+		position.Dump();
 		std::cout << std::endl;
-		fit += 10000;
+		fit += 100000;
 		m_Repetitions++;
 		//Exception("Reflex triggered!", -1);
 	}
@@ -145,18 +133,22 @@ double CValueSystem::Fitness(CSensorData old, CSensorData change, CSpeed speed)
 
 SValue PredictValue(SValue start, double dirSpeed)
 {
+	// very basic assumption:
+	// approaching occurs on a semi-linear curve, the faster the closer.
 	double oldV = start.sensor;
-	double newV = oldV + exp(oldV - 1024)*dirSpeed;
-	return SValue((int)round(newV));
+	double expScale = exp(oldV - 1024);
+	double newV = round(oldV + expScale*dirSpeed);
+	if (newV == oldV)
+	{
+		if (dirSpeed > 0) newV++;
+		if (dirSpeed < 0) newV--;
+	}
+	if (newV < 0) newV = 0;
+	return SValue((int)newV);
 }
 
 CSensorData CValueSystem::PredictChange(CSensorData start, CSpeed speed)
 {
-	// very basic, naive assumptions:
-		// linear (instead of exponential) sensor value increase for approaching
-		// turning results in shifting the sensor values around
-
-	CSensorData moved;
 	CSensorData next;
 
 	// straight component
@@ -165,18 +157,18 @@ CSensorData CValueSystem::PredictChange(CSensorData start, CSpeed speed)
 	// increases front and side front, decrease back
 	EDirection dir;
 	dir = Direction_Left;
-	moved[dir] = PredictValue(start[dir], speed.Left());
+	next[dir] = PredictValue(start[dir], speed.Left());
 	dir = Direction_FrontLeft;
-	moved[dir] = PredictValue(start[dir], (speed.Left() + straight) / 2);
+	next[dir] = PredictValue(start[dir], (speed.Left() + straight) / 2);
 	dir = Direction_Front;
-	moved[dir] = PredictValue(start[dir], straight);
+	next[dir] = PredictValue(start[dir], straight);
 	dir = Direction_FrontRight;
-	moved[dir] = PredictValue(start[dir], (speed.Right() + straight) / 2);
+	next[dir] = PredictValue(start[dir], (speed.Right() + straight) / 2);
 	dir = Direction_Right;
-	moved[dir] = PredictValue(start[dir], speed.Right());
+	next[dir] = PredictValue(start[dir], speed.Right());
 
 	dir = Direction_Back;
-	moved[dir] = PredictValue(start[dir], - straight);
+	next[dir] = PredictValue(start[dir], - straight);
 
 	return next;
 }
@@ -187,9 +179,7 @@ std::pair<CSpeed, double> CValueSystem::FitSpeed(CSensorData start, CSpeed speed
 
 	try
 	{
-	fit = Fitness(start,
-		PredictChange(start, speed),
-		speed);
+		fit = Fitness(start, speed);
 	}
 	catch(...)
 	{

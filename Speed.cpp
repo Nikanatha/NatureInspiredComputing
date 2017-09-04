@@ -3,7 +3,9 @@
 #include "Common.h"
 #include "Speed.h"
 
-#define MAX_SPEED 100
+#include "KheperaInterface.h" // for Exception. TODO: move into separate file.
+
+#define MAX_SPEED 30
 
 CSpeed::CSpeed()
 {
@@ -24,6 +26,7 @@ double CSpeed::Velocity() const
 
 void CSpeed::SetVelocity(double v)
 {
+	if (isnan(v)) throw Exception("Attempted to set NaN velocity!", -1);
 	m_Velocity = v;
 }
 
@@ -39,6 +42,8 @@ double CSpeed::Angle() const
 
 void CSpeed::SetAngle(double a)
 {
+	if (isnan(a)) throw Exception("Attempted to set NaN angle!", -1);
+
 	double simple = a;
 	while (simple > PI) simple -= 2 * PI;
 	while (simple < -PI) simple += 2 * PI;
@@ -52,22 +57,42 @@ void CSpeed::IncreaseAngle(double a)
 
 double CSpeed::Left() const
 {
-	return m_Velocity * (cos(m_Angle) - sin(m_Angle));
+	double val = m_Velocity * (cos(m_Angle) - sin(m_Angle));
+	if (isnan(val))
+	{
+		printf("Speed side val is NaN. V = %f, A = %f\n", m_Velocity, m_Angle);
+	}
+	return val;
 }
 
 double CSpeed::Right() const
 {
-	return m_Velocity * (cos(m_Angle) + sin(m_Angle));
+	double val = m_Velocity * (cos(m_Angle) + sin(m_Angle));
+	if (isnan(val))
+	{
+		printf("Speed side val is NaN. V = %f, A = %f\n", m_Velocity, m_Angle);
+	}
+	return val;
 }
 
 void CSpeed::SetComponents(double left, double right)
 {
+	if (left == 0 && right == 0)
+	{
+		SetAngle(0);
+		SetVelocity(0);
+		return;
+	}
+
 	double straight = (left + right) / 2; // cos(a)*v
 	double turn = right - straight; // sin(a)*v
 
 	double a = atan2(turn, straight);
+	if (isnan(a)) throw Exception("Resulting angle is NaN. Left: " + std::to_string(left) + ", Right: " + std::to_string(left), 87);
+
 	double v = straight / cos(a);
 	if (v == 0) v = turn / sin(a);
+	if (isnan(v)) throw Exception("Resulting velocity is NaN. Left: " + std::to_string(left) + ", Right: " + std::to_string(left), 87);
 
 	SetAngle(a);
 	SetVelocity(v);
