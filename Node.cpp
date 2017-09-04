@@ -8,8 +8,6 @@ double CNode::Sigma = 1;
 double CNode::LearningWeight = 0.3;
 const double CNode::DecayRate = 0.9;
 
-#define DIFF_FACTOR 0.05
-
 CNode::CNode()
 {
 	m_Center = CSensorData();
@@ -98,8 +96,8 @@ double CNode::BaseFunction(CSensorData sensors)
 
 	for (auto sens = sensors.begin(); sens != sensors.end(); sens++)
 	{
-		int diff = sens->second.sensor - m_Center[sens->first].sensor;
-		sqdist += pow(diff, 2);
+		double diff = sens->second.sensor - m_Center[sens->first].sensor;
+		sqdist += pow(diff/1024.0, 2);
 	}
 
 	return exp(-sqrt(sqdist) / Sigma);
@@ -173,7 +171,8 @@ SIOSet CNeuralNetwork::Evaluate(CSensorData sensors)
 	result.sensors = sensors;
 	result.speed = speed;
 
-	//if (activation>1) printf("Activation is too high (%f)\n", activation);
+//	if (activation>1.2) printf("Activation is too high (%f)\n", activation);
+	if (activation<0.8) printf("Activation is too low (%f)\n", activation);
 	return result;
 }
 

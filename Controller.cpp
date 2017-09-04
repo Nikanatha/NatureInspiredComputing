@@ -10,7 +10,7 @@ CController::CController(CKheperaUtility * pUtil, CRbfSettings* pSettings) : CTh
 	m_pSettings = pSettings;
 	//RebuildNetwork();
 
-	int steps = 3;
+	int steps = 0;
 	if (steps>0)
 	{
 		for (int i = 0; i < pow(steps, (int)Direction_Back + 1); i++)
@@ -30,6 +30,21 @@ CController::CController(CKheperaUtility * pUtil, CRbfSettings* pSettings) : CTh
 
 			m_NetworkNodes.AddNode(center, CSpeed(m_pUtil->GetUniformRandom(0, 20), m_pUtil->GetUniformRandom(-PI / 2, PI / 2)));
 		}
+	}
+	else
+	{
+		for (int f = (int)Direction_Left; f < (int)Direction_Back + 1; f++)
+		{
+			CSensorData center;
+			for (int d = (int)Direction_Left; d < (int)Direction_Back + 1; d++)
+			{
+				center[(EDirection)d] = 0;
+			}
+			center[(EDirection)f] = 1024;
+			m_NetworkNodes.AddNode(center, CSpeed(m_pUtil->GetUniformRandom(0, 20), m_pUtil->GetUniformRandom(-PI / 2, PI / 2)));
+		}
+
+		CNode::Sigma = 2 * 2;
 	}
 }
 
@@ -120,7 +135,7 @@ void CController::DoCycle()
 	SIOSet ideal = m_pUtil->GetLastCorrectedResult();
 	Adapt(ideal);
 
-	if (m_NetworkNodes.Count() != m_pSettings->MaxNodes()) RebuildNetwork();
+	//if (m_NetworkNodes.Count() != m_pSettings->MaxNodes()) RebuildNetwork();
 }
 
 void CController::Adapt(SIOSet ideal)
