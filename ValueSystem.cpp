@@ -155,18 +155,17 @@ double CValueSystem::SensorFitness(CSensorData sensors)
 
 SValue PredictValue(SValue start, double dirSpeed)
 {
-	// very basic assumption:
-	// approaching occurs on a semi-linear curve, the faster the closer.
-	double oldV = start.sensor;
-	double expScale = 10*exp(oldV - 1024);
-	double newV = round(oldV + expScale*dirSpeed);
-	if (newV == oldV)
+	// assumption:
+	// approaching occurs on an exponential curve
+	double speedFactor = exp(dirSpeed / 100);
+	int newVal = (int)round(start.sensor*speedFactor);
+	if (newVal == start.sensor)
 	{
-		if (dirSpeed > 0) newV++;
-		if (dirSpeed < 0) newV--;
+		if (dirSpeed < 0) newVal--;
+		if (dirSpeed > 0) newVal++;
 	}
-	if (newV < 0) newV = 0;
-	return SValue((int)newV);
+
+	return SValue(newVal);
 }
 
 CSensorData CValueSystem::PredictChange(CSensorData start, CSpeed speed)
