@@ -1,4 +1,4 @@
-
+*.o
 *.db
 *.opendb
 *.obj
@@ -9,12 +9,6 @@
 *.log
 *.pdb
 *.idb
-KheperaInterface.h
 .vs/Khexplorer/v15/.suo
 *.enc
-History.txt
-RBF_box.txt
-History.txt
-RBF.txt
-History.txt
 *.txt
