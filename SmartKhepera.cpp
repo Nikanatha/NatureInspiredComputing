@@ -1,6 +1,6 @@
-#include <iostream>
-
 #include "SmartKhepera.h"
+
+#include <iostream>
 
 static const std::string s_MaxSpeed = "speed";
 static const std::string s_RbfNodeCount = "nodes";

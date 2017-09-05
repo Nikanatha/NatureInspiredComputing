@@ -1,36 +1,18 @@
 #ifndef __KHEPERAINTERFACE_H
 #define __KHEPERAINTERFACE_H
 
-//#define SIM_ONLY
-#define WINDOWS
-//#define LINUX
+#include "KheperaDefines.h"
 
 #ifdef LINUX 
 	#include <termios.h>
 #endif // LINUX
-
 #ifdef WINDOWS
-//#include <fstream>
-#include <windows.h>
+	#include <windows.h>
 #endif // WINDOWS
 
 #include <stdexcept>
 #include <string>
 using std::string;
-
-typedef enum ledstate
-{
-	Off = 0,
-	On,
-	Toggle
-} LEDState;
-
-typedef struct { int data[2];  } Int2;
-typedef struct { int data[6];  } Int6;
-typedef struct { int data[8];  } Int8;
-typedef struct { int data[16]; } Int16;
-typedef struct { int data[32]; } Int32; 
-typedef struct { int data[64]; } Int64;
 
 class KheperaInterface
 {

@@ -144,6 +144,7 @@
   <ItemGroup>
     <ClInclude Include="Controller.h" />
     <ClInclude Include="Common.h" />
+    <ClInclude Include="KheperaDefines.h" />
     <ClInclude Include="KheperaUtility.h" />
     <ClInclude Include="KheperaInterface.h" />
     <ClInclude Include="Node.h" />

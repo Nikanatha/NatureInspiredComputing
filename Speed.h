@@ -18,6 +18,7 @@ public:
 	double Left() const;
 	double Right() const;
 	void SetComponents(double left, double right);
+	void SetAngularComponents(double v, double a);
 
 	void Limit();
 
@@ -36,6 +37,7 @@ public:
 private:
 	double m_Velocity;
 	double m_Angle;
+	bool m_VelocityFlipped;
 };
 
 #endif

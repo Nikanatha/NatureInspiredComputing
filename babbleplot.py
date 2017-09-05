@@ -10,7 +10,7 @@ import numpy as np
 import re
 #import map
 
-path = "/home/jakob/studium/master3/NIC/FORK/NatureInspiredComputing/History.txt"
+path = "History.txt"
 #path = "/home/jh432/NatureInspiredComputing/babble1.txt"
 
 
@@ -46,8 +46,8 @@ def check(tocheckstring):
         nodeaddlineflag = 1 
     elif datacheck in tocheckstring:
         datalineflag = 1
-    else:
-        print "no codewords in the line"
+    #else:
+        #print("no codewords in the line")
     return 0;
     
 def burnflag():
@@ -111,8 +111,8 @@ controllerangle = controlleranglearray.astype(np.float)
 valueSystemangle = valueSystemanglearray.astype(np.float)
 
 
-print len(valueSystemArray)
-print len(controllerspeed)
+#print(len(valueSystemArray))
+#print len(controllerspeed)
 
 speeddelta =map(float.__sub__, controllerspeed , valueSystemspeed)
 angledelte =map(float.__sub__, controllerangle , valueSystemangle)
@@ -139,3 +139,5 @@ axs[0, 1].set_title("valueSystemangle")
 axs[1, 0].plot(np.arange(0,len(controllerangle),1), controllerangle, '.')
 axs[1, 0].set_title("controllerangle")
 axs[1, 1].axis('off')
+
+plt.show()

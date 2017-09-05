@@ -1,5 +1,5 @@
 #include "ValueSystem.h"
-
+#include <fstream>
 
 CValueSystem::CValueSystem(CKheperaUtility * pUtil) : CThreadableBase(pUtil)
 {
@@ -42,7 +42,7 @@ SIOSet CValueSystem::Correct(std::vector<SIOSet> history)
 
 		// more left
 	alt = correction.speed;
-	alt.IncreaseAngle(m_pUtil->GetUniformRandom());
+	alt.IncreaseAngle(PI/4);
 	speedFitness.push_back(FitSpeed(correction.sensors, alt));
 
 	altBackwards = alt;
@@ -51,7 +51,7 @@ SIOSet CValueSystem::Correct(std::vector<SIOSet> history)
 
 		// more right
 	alt = correction.speed;
-	alt.IncreaseAngle(-m_pUtil->GetUniformRandom());
+	alt.IncreaseAngle(-PI/4);
 	speedFitness.push_back(FitSpeed(correction.sensors, alt));
 
 	altBackwards = alt;
@@ -91,42 +91,64 @@ SIOSet CValueSystem::Correct(std::vector<SIOSet> history)
 
 double CValueSystem::Fitness(CSensorData position, CSpeed speed)
 {
-	// maximize velocity
-	// minimize total change
-	// weight directions in a way that front should not increase, neither should back (to prevent driving backwards)
-	
-	CSpeed limited = speed;
-	limited.Limit();
+	double fit = 0;
 
-	double speedPart = exp(5 * abs(speed.Velocity()) / abs(limited.Velocity()));
-	if (speed.Velocity() < 0) speedPart *= 2;
-
-	CSensorData future = PredictChange(position, speed);
-	CSensorData farFuture = PredictChange(future, speed);
-
-	double sensorPart = 0;
-	for (int d = (int)Direction_Left; d <= (int)Direction_Back; d++)
+	int steps = 3;
+	CSensorData older = position;
+	while (steps > 0)
 	{
-		EDirection dir = (EDirection)d;
-		sensorPart += future[dir].sensor;
-		sensorPart += farFuture[dir].sensor;
+		CSensorData future = PredictChange(older, speed);
+		fit += SensorFitness(future);
+		older = future;
+		steps--;
+	}
+	fit /= 3;
+
+	fit += 5*SpeedFitness(speed);
+
+	// output info
+	std::ofstream file;
+	file.open("Fitness.txt", std::ios_base::app);
+
+	bool babble = true;
+	if (babble)
+	{
+		position.Dump(file);
+		file << " ==> Angle: " << (double)((int)(100 * speed.Angle())) / 100.0 << " Speed: " << (double)((int)(100 * speed.Velocity())) / 100.0;
+		file << " => Fitness: " << fit;
+		file << std::endl;
 	}
 
-	double fit = speedPart + sensorPart;
+	return fit;
+}
 
-	bool reflex = false;
-	if (farFuture.Collision()) reflex = true;
-	//if (position[Direction_Front].proximity >= Proximity_Close && speed.Left() > 0 && speed.Right() > 0) reflex = true;
-	
-	if(reflex)
+double CValueSystem::SpeedFitness(CSpeed speed)
+{
+	double V = exp(-abs(speed.Velocity()));
+	double A = abs(speed.Angle());
+	double backPenalty = -speed.Velocity() / abs(speed.Velocity());
+	return V + 1.2*A + backPenalty;
+}
+
+double CValueSystem::SensorFitness(CSensorData sensors)
+{
+	double fit = 0;
+
+	double penalty = 10 * 1024;
+	if (sensors.Collision())
 	{
-		std::cout << "Reflex triggered at ";
-		position.Dump();
-		std::cout << std::endl;
-		fit += 100000;
-		m_Repetitions++;
-		//Exception("Reflex triggered!", -1);
+		if (sensors[Direction_Back].proximity == Proximity_Collision)
+			fit += penalty / 2;
+		else
+			fit += penalty;
 	}
+
+	fit += 1 * sensors[Direction_Left].sensor;
+	fit += 1.2 * sensors[Direction_FrontLeft].sensor;
+	fit += 1.3 * sensors[Direction_Front].sensor;
+	fit += 1.2 * sensors[Direction_FrontRight].sensor;
+	fit += 1 * sensors[Direction_Right].sensor;
+	fit += 5 * sensors[Direction_Back].sensor;
 
 	return fit;
 }
@@ -136,7 +158,7 @@ SValue PredictValue(SValue start, double dirSpeed)
 	// very basic assumption:
 	// approaching occurs on a semi-linear curve, the faster the closer.
 	double oldV = start.sensor;
-	double expScale = exp(oldV - 1024);
+	double expScale = 10*exp(oldV - 1024);
 	double newV = round(oldV + expScale*dirSpeed);
 	if (newV == oldV)
 	{

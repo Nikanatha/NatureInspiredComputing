@@ -1,6 +1,8 @@
 #ifndef __SmartKhepera_H__
 #define __SmartKhepera_H__
 
+#include <string>
+
 #include "Settings.h"
 #include "KheperaUtility.h"
 #include "Controller.h"

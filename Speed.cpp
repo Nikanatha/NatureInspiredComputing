@@ -5,29 +5,31 @@
 
 #include "KheperaInterface.h" // for Exception. TODO: move into separate file.
 
+#define MIN_SPEED 5
 #define MAX_SPEED 30
 
 CSpeed::CSpeed()
 {
-	SetVelocity(0);
-	SetAngle(0);
+	m_VelocityFlipped = false;
+	SetAngularComponents(0, 0);
 }
 
 CSpeed::CSpeed(double velocity, double angle)
 {
-	SetVelocity(velocity);
-	SetAngle(angle);
+	m_VelocityFlipped;
+	SetAngularComponents(velocity, angle);
 }
 
 double CSpeed::Velocity() const
 {
-	return m_Velocity;
+	return m_VelocityFlipped ? -m_Velocity : m_Velocity;
 }
 
 void CSpeed::SetVelocity(double v)
 {
 	if (isnan(v)) throw Exception("Attempted to set NaN velocity!", -1);
-	m_Velocity = v;
+	m_Velocity = m_VelocityFlipped ? -v : v;
+	Limit();
 }
 
 void CSpeed::IncreaseVelocity(double v)
@@ -47,7 +49,15 @@ void CSpeed::SetAngle(double a)
 	double simple = a;
 	while (simple > PI) simple -= 2 * PI;
 	while (simple < -PI) simple += 2 * PI;
+
+	if (abs(simple) > PI / 2)
+	{
+		m_VelocityFlipped = !m_VelocityFlipped;
+		simple += simple < 0 ? PI : -PI;
+	}
+
 	m_Angle = simple;
+	Limit();
 }
 
 void CSpeed::IncreaseAngle(double a)
@@ -57,7 +67,7 @@ void CSpeed::IncreaseAngle(double a)
 
 double CSpeed::Left() const
 {
-	double val = m_Velocity * (cos(m_Angle) - sin(m_Angle));
+	double val = Velocity() * (cos(Angle()) - sin(Angle()));
 	if (isnan(val))
 	{
 		printf("Speed side val is NaN. V = %f, A = %f\n", m_Velocity, m_Angle);
@@ -67,7 +77,7 @@ double CSpeed::Left() const
 
 double CSpeed::Right() const
 {
-	double val = m_Velocity * (cos(m_Angle) + sin(m_Angle));
+	double val = Velocity() * (cos(Angle()) + sin(Angle()));
 	if (isnan(val))
 	{
 		printf("Speed side val is NaN. V = %f, A = %f\n", m_Velocity, m_Angle);
@@ -79,8 +89,7 @@ void CSpeed::SetComponents(double left, double right)
 {
 	if (left == 0 && right == 0)
 	{
-		SetAngle(0);
-		SetVelocity(0);
+		SetAngularComponents(0, 0);
 		return;
 	}
 
@@ -94,27 +103,49 @@ void CSpeed::SetComponents(double left, double right)
 	if (v == 0) v = turn / sin(a);
 	if (isnan(v)) throw Exception("Resulting velocity is NaN. Left: " + std::to_string(left) + ", Right: " + std::to_string(left), 87);
 
-	SetAngle(a);
+	SetAngularComponents(v, a);
+}
+
+void CSpeed::SetAngularComponents(double v, double a)
+{
 	SetVelocity(v);
+	SetAngle(a);
 }
 
 void CSpeed::Limit()
 {
+	if (m_VelocityFlipped)
+	{
+		m_Velocity = -m_Velocity;
+		m_VelocityFlipped = false;
+	}
+
+	if (m_Velocity < 0)
+	{
+//		m_Velocity = fmin(m_Velocity, -MIN_SPEED);
+		m_Velocity = fmax(m_Velocity, -MAX_SPEED);
+		return;
+	}
+
 	m_Velocity = fmin(m_Velocity, MAX_SPEED);
-	m_Velocity = fmax(m_Velocity, -MAX_SPEED);
+//	m_Velocity = fmax(m_Velocity, MIN_SPEED);
 }
 
 CSpeed CSpeed::operator+(CSpeed other)
 {
 	CSpeed sum;
-	sum.SetComponents(this->Left() + other.Left(), this->Right() + other.Right());
+	double left = this->Left() + other.Left();
+	double right = this->Right() + other.Right();
+	sum.SetComponents(left, right);
 	return sum;
 }
 
 CSpeed CSpeed::operator-(CSpeed other)
 {
 	CSpeed diff;
-	diff.SetComponents(this->Left() - other.Left(), this->Right() - other.Right());
+	double left = this->Left() - other.Left();
+	double right = this->Right() - other.Right();
+	diff.SetComponents(left, right);
 	return diff;
 }
 

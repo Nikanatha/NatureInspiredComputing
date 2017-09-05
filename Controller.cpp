@@ -45,6 +45,13 @@ CController::CController(CKheperaUtility * pUtil, CRbfSettings* pSettings) : CTh
 		}
 
 		CNode::Sigma = 2 * 2;
+
+		//CreateTrainingData();
+		for (int i = 0; i < 100 * m_TrainingData.size(); i++)
+		{
+			int ind = i%m_TrainingData.size();
+			//Adapt(m_TrainingData[ind]);
+		}
 	}
 }
 
@@ -209,4 +216,134 @@ void CController::ListNodes()
 	//	it->Dump();
     //    std::cout << std::endl;
     //}
+}
+
+
+
+
+void CController::CreateTrainingData()
+{
+	m_TrainingData.clear();
+
+	Int8 sensors;
+	SIOSet set;
+	int FAR_SENSOR_VAL = 0;
+	int DISTANCE_LIMIT = 1000;
+
+	// free field
+	sensors.data[0] = FAR_SENSOR_VAL;
+	sensors.data[1] = FAR_SENSOR_VAL;
+	sensors.data[2] = FAR_SENSOR_VAL;
+	sensors.data[3] = FAR_SENSOR_VAL;
+	sensors.data[4] = FAR_SENSOR_VAL;
+	sensors.data[5] = FAR_SENSOR_VAL;
+	sensors.data[6] = FAR_SENSOR_VAL;
+	sensors.data[7] = FAR_SENSOR_VAL;
+	set.sensors = CSensorData(sensors);
+	set.speed.SetComponents(20, 20);
+	m_TrainingData.push_back(set);
+
+	// corridor
+	//sensors.data[0] = DISTANCE_LIMIT;
+	//sensors.data[1] = 0.5*DISTANCE_LIMIT;
+	//sensors.data[2] = FAR_SENSOR_VAL;
+	//sensors.data[3] = FAR_SENSOR_VAL;
+	//sensors.data[4] = 0.5*DISTANCE_LIMIT;
+	//sensors.data[5] = DISTANCE_LIMIT;
+	//sensors.data[6] = FAR_SENSOR_VAL;
+	//sensors.data[7] = FAR_SENSOR_VAL;
+	//set.sensors = CSensorData(sensors);
+	//set.speed.SetComponents(20, 20);
+	//m_TrainingData.push_back(set);
+
+	// back to dead end
+	//sensors.data[0] = DISTANCE_LIMIT;
+	//sensors.data[1] = FAR_SENSOR_VAL;
+	//sensors.data[2] = FAR_SENSOR_VAL;
+	//sensors.data[3] = FAR_SENSOR_VAL;
+	//sensors.data[4] = FAR_SENSOR_VAL;
+	//sensors.data[5] = DISTANCE_LIMIT;
+	//sensors.data[6] = DISTANCE_LIMIT;
+	//sensors.data[7] = DISTANCE_LIMIT;
+	//set.sensors = CSensorData(sensors);
+	//set.speed.SetComponents(20, 20);
+	//m_TrainingData.push_back(set);
+
+	// soft left corner
+	//sensors.data[0] = DISTANCE_LIMIT;
+	//sensors.data[1] = DISTANCE_LIMIT;
+	//sensors.data[2] = FAR_SENSOR_VAL;
+	//sensors.data[3] = FAR_SENSOR_VAL;
+	//sensors.data[4] = FAR_SENSOR_VAL;
+	//sensors.data[5] = FAR_SENSOR_VAL;
+	//sensors.data[6] = FAR_SENSOR_VAL;
+	//sensors.data[7] = FAR_SENSOR_VAL;
+	//set.sensors = CSensorData(sensors);
+	//set.speed.SetComponents(20, 10);
+	//m_TrainingData.push_back(set);
+
+	// left corner
+	sensors.data[0] = DISTANCE_LIMIT;
+	sensors.data[1] = DISTANCE_LIMIT;
+	sensors.data[2] = DISTANCE_LIMIT;
+	sensors.data[3] = FAR_SENSOR_VAL;
+	sensors.data[4] = FAR_SENSOR_VAL;
+	sensors.data[5] = FAR_SENSOR_VAL;
+	sensors.data[6] = FAR_SENSOR_VAL;
+	sensors.data[7] = FAR_SENSOR_VAL;
+	set.sensors = CSensorData(sensors);
+	set.speed.SetComponents(0, -10);
+	m_TrainingData.push_back(set);
+
+	// frontal left
+	//sensors.data[0] = FAR_SENSOR_VAL;
+	//sensors.data[1] = FAR_SENSOR_VAL;
+	//sensors.data[2] = DISTANCE_LIMIT;
+	//sensors.data[3] = DISTANCE_LIMIT;
+	//sensors.data[4] = FAR_SENSOR_VAL;
+	//sensors.data[5] = FAR_SENSOR_VAL;
+	//sensors.data[6] = FAR_SENSOR_VAL;
+	//sensors.data[7] = FAR_SENSOR_VAL;
+	//set.sensors = CSensorData(sensors);
+	//set.speed.SetComponents(0, -10);
+	//m_TrainingData.push_back(set);
+
+	// frontal right
+	//sensors.data[0] = FAR_SENSOR_VAL;
+	//sensors.data[1] = FAR_SENSOR_VAL;
+	//sensors.data[2] = FAR_SENSOR_VAL;
+	//sensors.data[3] = DISTANCE_LIMIT;
+	//sensors.data[4] = DISTANCE_LIMIT;
+	//sensors.data[5] = FAR_SENSOR_VAL;
+	//sensors.data[6] = FAR_SENSOR_VAL;
+	//sensors.data[7] = FAR_SENSOR_VAL;
+	//set.sensors = CSensorData(sensors);
+	//set.speed.SetComponents(-10, 0);
+	//m_TrainingData.push_back(set);
+
+	// soft right corner
+	//sensors.data[0] = FAR_SENSOR_VAL;
+	//sensors.data[1] = FAR_SENSOR_VAL;
+	//sensors.data[2] = FAR_SENSOR_VAL;
+	//sensors.data[3] = FAR_SENSOR_VAL;
+	//sensors.data[4] = DISTANCE_LIMIT;
+	//sensors.data[5] = DISTANCE_LIMIT;
+	//sensors.data[6] = FAR_SENSOR_VAL;
+	//sensors.data[7] = FAR_SENSOR_VAL;
+	//set.sensors = CSensorData(sensors);
+	//set.speed.SetComponents(10, 20);
+	//m_TrainingData.push_back(set);
+
+	// right corner
+	sensors.data[0] = FAR_SENSOR_VAL;
+	sensors.data[1] = FAR_SENSOR_VAL;
+	sensors.data[2] = FAR_SENSOR_VAL;
+	sensors.data[3] = DISTANCE_LIMIT;
+	sensors.data[4] = DISTANCE_LIMIT;
+	sensors.data[5] = DISTANCE_LIMIT;
+	sensors.data[6] = FAR_SENSOR_VAL;
+	sensors.data[7] = FAR_SENSOR_VAL;
+	set.sensors = CSensorData(sensors);
+	set.speed.SetComponents(-10, 0);
+	m_TrainingData.push_back(set);
 }

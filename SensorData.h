@@ -3,7 +3,7 @@
 
 #include <map>
 #include <iostream>
-#include "KheperaInterface.h"
+#include "KheperaDefines.h"
 
 enum EDirection
 {

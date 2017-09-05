@@ -7,7 +7,7 @@
 #define NEIGHBOR_WEIGHT 1
 #define PROX_NEAR_VALUE 200
 #define PROX_CLOSE_VALUE 500
-#define PROX_COLLISION_VALUE 1000
+#define PROX_COLLISION_VALUE 1020
 
 CSensorData::CSensorData(Int8 rawSensors)
 {
@@ -117,7 +117,7 @@ EProximity SValue::ProximityFromValue(double sensorVal)
 	if (sensorVal > PROX_COLLISION_VALUE) return Proximity_Collision;
 	if (sensorVal > PROX_CLOSE_VALUE) return Proximity_Close;
 	if (sensorVal > PROX_NEAR_VALUE) return Proximity_Near;
-	if (sensorVal > 0) return Proximity_Clear;
+	if (sensorVal >= 0) return Proximity_Clear;
 	return Proximity_Retreat;
 }
 

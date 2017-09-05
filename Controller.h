@@ -22,12 +22,14 @@ private:
 	SIOSet Evaluate(CSensorData sensors);
 	void Adapt(SIOSet ideal);
 	
+	void CreateTrainingData();
 	void RebuildNetwork();
 
 private:
 	CRbfSettings* m_pSettings;
 
 	CNeuralNetwork m_NetworkNodes;
+	std::vector<SIOSet> m_TrainingData;
 };
 
 #endif
