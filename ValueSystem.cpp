@@ -94,15 +94,16 @@ double CValueSystem::Fitness(CSensorData position, CSpeed speed)
 	double fit = 0;
 
 	int steps = 3;
+	int current = steps;
 	CSensorData older = position;
-	while (steps > 0)
+	while (current > 0)
 	{
 		CSensorData future = PredictChange(older, speed);
 		fit += SensorFitness(future);
 		older = future;
-		steps--;
+		current--;
 	}
-	fit /= 3;
+	fit /= steps;
 
 	fit += 5*SpeedFitness(speed);
 
@@ -127,7 +128,7 @@ double CValueSystem::SpeedFitness(CSpeed speed)
 	double V = exp(-abs(speed.Velocity()));
 	double A = abs(speed.Angle());
 	double backPenalty = -speed.Velocity() / abs(speed.Velocity());
-	return V + 1.2*A + backPenalty;
+	return 2*V + 1.2*A + backPenalty;
 }
 
 double CValueSystem::SensorFitness(CSensorData sensors)
@@ -141,6 +142,10 @@ double CValueSystem::SensorFitness(CSensorData sensors)
 			fit += penalty / 2;
 		else
 			fit += penalty;
+	}
+	else if (sensors.CloseToCollision())
+	{
+		fit += penalty / 2;
 	}
 
 	fit += 1 * sensors[Direction_Left].sensor;

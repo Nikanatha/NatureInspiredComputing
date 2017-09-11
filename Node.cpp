@@ -63,7 +63,7 @@ void CNode::Adapt(CSensorData input, CSpeed old, CSpeed better, double totalActi
 	
 	if (activation > 0.5)
 	{
-		std::cout << "Node activity = " << activation << ", Old L R = " << m_Weight.Left() << " " << m_Weight.Right() << ", ";
+		//std::cout << "Node activity = " << activation << ", Old L R = " << m_Weight.Left() << " " << m_Weight.Right() << ", ";
 	}
 
 	CSpeed change = (better - old) * LearningWeight;
@@ -71,7 +71,7 @@ void CNode::Adapt(CSensorData input, CSpeed old, CSpeed better, double totalActi
 	
 	if (activation > 0.5)
 	{
-		std::cout << "New L R = " << m_Weight.Left() << " " << m_Weight.Right() << std::endl;
+		//std::cout << "New L R = " << m_Weight.Left() << " " << m_Weight.Right() << std::endl;
 	}
 
 	m_Weight.Limit();

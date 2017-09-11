@@ -43,6 +43,7 @@ public:
 	CSensorData(Int8 rawSensors = { {0, 0, 0, 0, 0, 0, 0, 0} });
 	void Dump(std::ostream &stream = std::cout);
 	bool Collision();
+	bool CloseToCollision();
 
 	CSensorData GradientFrom(CSensorData previous);
 

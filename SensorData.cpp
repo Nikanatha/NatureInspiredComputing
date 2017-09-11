@@ -36,6 +36,15 @@ bool CSensorData::Collision()
 	return false;
 }
 
+bool CSensorData::CloseToCollision()
+{
+	for (auto it = this->begin(); it != this->end(); it++)
+	{
+		if (it->second.proximity == Proximity_Close) return true;
+	}
+	return Collision();
+}
+
 CSensorData CSensorData::GradientFrom(CSensorData previous)
 {
 	CSensorData gradient;
