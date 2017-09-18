@@ -4,21 +4,19 @@
 class CSpeed
 {
 public:
+	static double MaxSpeed;
+
+public:
 	CSpeed();
-	CSpeed(double velocity, double angle);
+	CSpeed(double left, double right);
 
 	double Velocity() const;
 	void SetVelocity(double v);
 	void IncreaseVelocity(double v);
 
-	double Angle() const;
-	void SetAngle(double a);
-	void IncreaseAngle(double a);
-
 	double Left() const;
 	double Right() const;
 	void SetComponents(double left, double right);
-	void SetAngularComponents(double v, double a);
 
 	void Limit();
 
@@ -35,9 +33,9 @@ public:
 	bool operator<(const CSpeed& other) const;
 
 private:
+	double m_Left;
+	double m_Right;
 	double m_Velocity;
-	double m_Angle;
-	bool m_VelocityFlipped;
 };
 
 #endif

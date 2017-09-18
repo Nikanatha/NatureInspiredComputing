@@ -4,32 +4,24 @@
 #include "ThreadableBase.h"
 #include "Settings.h"
 #include "SensorData.h"
-#include "Node.h"
+#include "BraitenbergWeights.h"
 
 class CController : public CThreadableBase
 {
 public:
-	CController(CKheperaUtility* pUtil, CRbfSettings* pSettings);
+	CController(CKheperaUtility* pUtil, CBraitenbergWeights* pWeights);
 
-	void LoadNodesFromFile(std::string path);
-	void SaveNodesToFile(std::string path);
-    void ListNodes();
+	void LoadFromFile(std::string path);
+	void SaveToFile(std::string path);
 
 protected:
 	virtual void DoCycle();
 
 private:
 	SIOSet Evaluate(CSensorData sensors);
-	void Adapt(SIOSet ideal);
-	
-	void CreateTrainingData();
-	void RebuildNetwork();
 
 private:
-	CRbfSettings* m_pSettings;
-
-	CNeuralNetwork m_NetworkNodes;
-	std::vector<SIOSet> m_TrainingData;
+	CBraitenbergWeights* m_pWeights;
 };
 
 #endif

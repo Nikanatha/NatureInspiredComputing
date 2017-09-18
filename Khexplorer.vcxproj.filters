@@ -51,13 +51,13 @@
     <ClInclude Include="Settings.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Node.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Speed.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="KheperaDefines.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BraitenbergWeights.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -92,10 +92,10 @@
     <ClCompile Include="Settings.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Node.cpp">
+    <ClCompile Include="Speed.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Speed.cpp">
+    <ClCompile Include="BraitenbergWeights.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

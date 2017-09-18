@@ -7,7 +7,7 @@
 class CThreadableBase
 {
 public:
-	CThreadableBase(CKheperaUtility* pUtil, int waitTime = 50);
+	CThreadableBase(CKheperaUtility* pUtil, int waitTime = 100);
 	~CThreadableBase();
 
 	void Start();

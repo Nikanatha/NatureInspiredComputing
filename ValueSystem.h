@@ -2,27 +2,22 @@
 #define __ValueSystem_H__
 
 #include "ThreadableBase.h"
+#include "BraitenbergWeights.h"
 
 class CValueSystem : public CThreadableBase
 {
 public:
-	CValueSystem(CKheperaUtility* pUtil);
+	CValueSystem(CKheperaUtility* pUtil, CBraitenbergWeights* pWeights);
 
 protected:
 	virtual void DoCycle();
 
 private:
-	SIOSet Correct(std::vector<SIOSet> history);
-	double Fitness(CSensorData position, CSpeed speed);
-	double SpeedFitness(CSpeed speed);
-	double SensorFitness(CSensorData sensors);
-	CSensorData PredictChange(CSensorData start, CSpeed speed);
-
-	std::pair<CSpeed, double> FitSpeed(CSensorData start, CSpeed speed);
+	double HistoryFitness(std::vector<SIOSet> history);
+	void Correct(std::vector<SIOSet> history);
 
 private:
-	int m_Repetitions;
-	CSpeed m_RepeatSpeed;
+	CBraitenbergWeights* m_pControllerWeights;
 };
 
 #endif

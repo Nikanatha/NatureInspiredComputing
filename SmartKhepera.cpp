@@ -3,9 +3,9 @@
 #include <iostream>
 
 static const std::string s_MaxSpeed = "speed";
-static const std::string s_RbfNodeCount = "nodes";
-static const std::string s_RbfSigma = "sigma";
-static const std::string s_RbfLearnFactor = "learn";
+//static const std::string s_RbfNodeCount = "nodes";
+//static const std::string s_RbfSigma = "sigma";
+//static const std::string s_RbfLearnFactor = "learn";
 
 static const std::string s_Help = "help";
 static const std::string s_EndProgram = "exit";
@@ -14,12 +14,12 @@ void ListSettings();
 
 CSmartKhepera::CSmartKhepera()
 {
-	m_pRbfSettings = new CRbfSettings();
-
 	m_pUtil = new CKheperaUtility();
-	m_pControl = new CController(m_pUtil, m_pRbfSettings);
+
+	m_pWeights = new CBraitenbergWeights();
+	m_pControl = new CController(m_pUtil, m_pWeights);
 	m_pOperate = new COperator(m_pUtil);
-	m_pValues = new CValueSystem(m_pUtil);
+	m_pValues = new CValueSystem(m_pUtil, m_pWeights);
 }
 
 CSmartKhepera::~CSmartKhepera()
@@ -32,7 +32,7 @@ CSmartKhepera::~CSmartKhepera()
 	delete m_pControl;
 	delete m_pUtil;
 
-	delete m_pRbfSettings;
+	delete m_pWeights;
 }
 
 
@@ -91,10 +91,8 @@ void CSmartKhepera::OpenSettingsMenu()
 
 		if (command != s_Help && command != s_EndProgram)		std::cin >> val;
 
-		if (command == s_MaxSpeed) m_pUtil->MaxSpeed = val;
-		if (command == s_RbfNodeCount) m_pRbfSettings->SetMaxNodes(round(val));
+		if (command == s_MaxSpeed) CSpeed::MaxSpeed = val;
 		//if (command == s_RbfSigma) CNode::Sigma = val;
-		if (command == s_RbfLearnFactor) m_pRbfSettings->SetLearn(val);
 		if (command == s_Help) ListSettings();
 	} while (command != s_EndProgram);
 
@@ -108,9 +106,9 @@ void ListSettings()
 	std::cout << "   " << s_EndProgram << "         : exits the settings" << std::endl;
 
 	std::cout << "   " << s_MaxSpeed << "        : maximum robot speed" << std::endl;
-	std::cout << "   " << s_RbfNodeCount << "        : RBF network maximum node count" << std::endl;
+	//std::cout << "   " << s_RbfNodeCount << "        : RBF network maximum node count" << std::endl;
 	//std::cout << "   " << s_RbfSigma << "        : RBF network node width" << std::endl;
-	std::cout << "   " << s_RbfLearnFactor << "        : RBF network node learning weight" << std::endl;
+	//std::cout << "   " << s_RbfLearnFactor << "        : RBF network node learning weight" << std::endl;
 
 	std::cout << std::endl;
 }
@@ -118,11 +116,11 @@ void ListSettings()
 
 void CSmartKhepera::SaveNodes(std::string path)
 {
-	m_pControl->SaveNodesToFile(path);
+	m_pControl->SaveToFile(path);
 
 }
 void CSmartKhepera::LoadNodes(std::string path)
 {
-	m_pControl->LoadNodesFromFile(path);
+	m_pControl->LoadFromFile(path);
 
 }

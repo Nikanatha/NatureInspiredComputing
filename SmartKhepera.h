@@ -5,6 +5,7 @@
 
 #include "Settings.h"
 #include "KheperaUtility.h"
+#include "BraitenbergWeights.h"
 #include "Controller.h"
 #include "ValueSystem.h"
 #include "Operator.h"
@@ -31,9 +32,8 @@ public:
 	void LoadNodes(std::string path);
 
 private:
-	CRbfSettings* m_pRbfSettings;
-
 	CKheperaUtility* m_pUtil;
+	CBraitenbergWeights* m_pWeights;
 	CController* m_pControl;
 	CValueSystem* m_pValues;
 	COperator* m_pOperate;

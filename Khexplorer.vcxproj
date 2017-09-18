@@ -142,12 +142,12 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BraitenbergWeights.h" />
     <ClInclude Include="Controller.h" />
     <ClInclude Include="Common.h" />
     <ClInclude Include="KheperaDefines.h" />
     <ClInclude Include="KheperaUtility.h" />
     <ClInclude Include="KheperaInterface.h" />
-    <ClInclude Include="Node.h" />
     <ClInclude Include="Operator.h" />
     <ClInclude Include="SensorData.h" />
     <ClInclude Include="Settings.h" />
@@ -158,11 +158,11 @@
     <ClInclude Include="ValueSystem.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BraitenbergWeights.cpp" />
     <ClCompile Include="Controller.cpp" />
     <ClCompile Include="KheperaUtility.cpp" />
     <ClCompile Include="KheperaInterface.cpp" />
     <ClCompile Include="Khexplorer.cpp" />
-    <ClCompile Include="Node.cpp" />
     <ClCompile Include="Operator.cpp" />
     <ClCompile Include="SensorData.cpp" />
     <ClCompile Include="Settings.cpp" />

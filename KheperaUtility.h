@@ -6,11 +6,14 @@
 #include <vector>
 
 #include "Common.h"
-#include "Node.h"
-//#include "SensorData.h"
-//#include "Speed.h"
+#include "SensorData.h"
+#include "Speed.h"
 
-#define HISTORY_LENGTH 10
+struct SIOSet
+{
+	CSensorData sensors;
+	CSpeed speed;
+};
 
 // types
 class KheperaInterface;
@@ -35,12 +38,12 @@ public:
 	SIOSet GetLastNetworkResult();
 	std::vector<SIOSet> GetNetworkResults();
 
-	// for value system output 
-	void SetCorrectedResult(SIOSet results);
-	SIOSet GetLastCorrectedResult();
+	// for value system
+	void ClearHistory();
 
 	// randomness
 	double GetUniformRandom(double min = 0, double max = 1);
+	double GetGaussianRandom(double sigma = 1, double mean = 0);
 
 	// info dumping
 	void SetVerbosity(bool bVerbose);
@@ -50,6 +53,7 @@ private:
 	std::default_random_engine m_rGenerator;
 
 	std::vector<SIOSet> m_NetworkResults;
+	std::vector<double> m_Fitnesses;
 	SIOSet m_LastCorrectedResult;
 
 	std::mutex m_KheperaMutex;

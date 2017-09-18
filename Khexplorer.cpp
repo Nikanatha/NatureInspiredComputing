@@ -21,7 +21,7 @@ static const std::string s_StopOperator = "hobble";
 
 static const std::string s_SaveRBFNodesCmd = "save";
 static const std::string s_LoadRBFNodesCmd = "load";
-static const std::string path = "RBF.txt";
+static const std::string path = "Controller.txt";
 
 int main()
 {
