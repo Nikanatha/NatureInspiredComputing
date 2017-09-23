@@ -63,9 +63,12 @@ void CKheperaUtility::SetSpeed(int left, int right)
 void CKheperaUtility::AddNetworkResult(SIOSet results)
 {
 	ScopedMutexLocker lock(m_ResultMutex);
+	bool bump = results.sensors.Collision() > 0;
+	if (m_NetworkResults.size() > 0 && m_NetworkResults.back().sensors.Collision() > 0) bump = false;
 	m_NetworkResults.push_back(results);
 
 	// output info
+	if (bump)	std::cout << "BUMP!" << std::endl;
 	if (m_bVerbose)
 	{
         std::cout << "Controller's results:" << std::endl;
@@ -91,6 +94,8 @@ std::vector<SIOSet> CKheperaUtility::GetNetworkResults()
 void CKheperaUtility::ClearHistory()
 {
 	ScopedMutexLocker lock(m_ResultMutex);
+	if (m_NetworkResults.size() == 0) return;
+
 	SIOSet last = m_NetworkResults.back();
 	m_NetworkResults.clear();
 	m_NetworkResults.push_back(last);

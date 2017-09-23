@@ -2,7 +2,7 @@
 
 #include "Operator.h"
 
-COperator::COperator(CKheperaUtility * pUtil) : CThreadableBase(pUtil)
+COperator::COperator(CKheperaUtility * pUtil) : CThreadedUtilityUser(pUtil)
 {
 
 }

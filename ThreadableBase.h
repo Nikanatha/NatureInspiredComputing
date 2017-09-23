@@ -2,12 +2,11 @@
 #define __ThreadableBase_H__
 
 #include <thread>
-#include "KheperaUtility.h"
 
 class CThreadableBase
 {
 public:
-	CThreadableBase(CKheperaUtility* pUtil, int waitTime = 100);
+	CThreadableBase(int waitTime = 100);
 	~CThreadableBase();
 
 	void Start();
@@ -22,8 +21,6 @@ private:
 
 protected:
 	virtual void DoCycle() = 0;
-
-	CKheperaUtility* m_pUtil;
 };
 
 #endif

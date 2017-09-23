@@ -2,9 +2,8 @@
 
 #include "ThreadableBase.h"
 
-CThreadableBase::CThreadableBase(CKheperaUtility * pUtil, int waitTime)
+CThreadableBase::CThreadableBase(int waitTime)
 {
-	m_pUtil = pUtil;
 	m_Wait = waitTime;
 }
 

@@ -12,6 +12,8 @@ public:
 	CBraitenbergWeights();
 
 	void Dump(std::ostream &stream = std::cout);
+	void LoadFromFile(std::string path);
+	void SaveToFile(std::string path);
 
 	void VarySensorWeights(double sigma, std::function<double(double, double)> &rndFunc);
 	void MultiplySpeed(double factor);

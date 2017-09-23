@@ -1,7 +1,7 @@
 #ifndef __KHEPERADEFINES_H
 #define __KHEPERADEFINES_H
 
-#define SIM_ONLY
+//#define SIM_ONLY
 
 // Define operating system
 #define WINDOWS

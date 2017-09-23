@@ -1,10 +1,10 @@
 #ifndef __ValueSystem_H__
 #define __ValueSystem_H__
 
-#include "ThreadableBase.h"
+#include "ThreadedUtilityUser.h"
 #include "BraitenbergWeights.h"
 
-class CValueSystem : public CThreadableBase
+class CValueSystem : public CThreadedUtilityUser
 {
 public:
 	CValueSystem(CKheperaUtility* pUtil, CBraitenbergWeights* pWeights);
@@ -18,6 +18,7 @@ private:
 
 private:
 	CBraitenbergWeights* m_pControllerWeights;
+	double m_PreviousFitness;
 };
 
 #endif

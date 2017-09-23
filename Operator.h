@@ -1,9 +1,9 @@
 #ifndef __Operator_H__
 #define __Operator_H__
 
-#include "ThreadableBase.h"
+#include "ThreadedUtilityUser.h"
 
-class COperator : public CThreadableBase
+class COperator : public CThreadedUtilityUser
 {
 public:
 	COperator(CKheperaUtility* pUtil);

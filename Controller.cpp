@@ -6,7 +6,7 @@
 #include <iostream>
 #include "Controller.h"
 
-CController::CController(CKheperaUtility * pUtil, CBraitenbergWeights* pWeights) : CThreadableBase(pUtil)
+CController::CController(CKheperaUtility * pUtil, CBraitenbergWeights* pWeights) : CThreadedUtilityUser(pUtil)
 {
 	m_pWeights = pWeights;
 

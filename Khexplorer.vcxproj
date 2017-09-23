@@ -155,6 +155,7 @@
     <ClInclude Include="Speed.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="ThreadableBase.h" />
+    <ClInclude Include="ThreadedUtilityUser.h" />
     <ClInclude Include="ValueSystem.h" />
   </ItemGroup>
   <ItemGroup>
@@ -169,6 +170,7 @@
     <ClCompile Include="SmartKhepera.cpp" />
     <ClCompile Include="Speed.cpp" />
     <ClCompile Include="ThreadableBase.cpp" />
+    <ClCompile Include="ThreadedUtilityUser.cpp" />
     <ClCompile Include="ValueSystem.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

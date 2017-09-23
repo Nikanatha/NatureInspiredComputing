@@ -1,12 +1,12 @@
 #ifndef __Controller_H__
 #define __Controller_H__
 
-#include "ThreadableBase.h"
+#include "ThreadedUtilityUser.h"
 #include "Settings.h"
 #include "SensorData.h"
 #include "BraitenbergWeights.h"
 
-class CController : public CThreadableBase
+class CController : public CThreadedUtilityUser
 {
 public:
 	CController(CKheperaUtility* pUtil, CBraitenbergWeights* pWeights);
