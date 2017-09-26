@@ -10,7 +10,7 @@ CController::CController(CKheperaUtility * pUtil, CBraitenbergWeights* pWeights)
 {
 	m_pWeights = pWeights;
 
-	LoadFromFile("default.txt");
+	LoadFromFile("best.txt");
 }
 
 void CController::LoadFromFile(std::string path)

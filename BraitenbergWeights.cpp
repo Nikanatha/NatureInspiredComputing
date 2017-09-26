@@ -11,6 +11,8 @@ CBraitenbergWeights::CBraitenbergWeights()
 {
 	for (int i = 0; i < this->size() - 1; i++) (*this)[i].SetComponents(0, 0);
 	(*this)[this->size() - 1].SetComponents(1, 1);
+
+	LoadFromFile("default.txt");
 }
 
 void CBraitenbergWeights::Dump(std::ostream & stream)
